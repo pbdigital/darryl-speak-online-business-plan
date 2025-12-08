@@ -1,6 +1,5 @@
 "use client";
 
-import { ShieldCheck, Target } from "lucide-react";
 import { WorkbookTextarea } from "../ui";
 
 export function StepGoalsIntentions() {
@@ -8,7 +7,7 @@ export function StepGoalsIntentions() {
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
       <div className="mb-10 text-center">
         <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-blue-600">
-          Step 5 of 8
+          Step 5 of 9
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
           Goals & Obstacles
@@ -18,42 +17,41 @@ export function StepGoalsIntentions() {
         </p>
       </div>
 
-      <WorkbookTextarea
-        label="Top Goals for 2026"
-        placeholder="Personal, professional, health, relationships, financial..."
-        rows={5}
-      />
-
-      <div className="mt-12 grid gap-8 md:grid-cols-2">
-        {/* Obstacles Card */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 shadow-sm transition-shadow hover:shadow-md">
-          <h4 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-slate-900">
-            <ShieldCheck size={16} /> Obstacles
-          </h4>
-          <textarea
-            className="w-full resize-none bg-transparent text-slate-600 outline-none placeholder:text-slate-300"
-            rows={6}
-            placeholder="What specific challenges might hold you back? Market conditions, limiting beliefs, lack of resources, time constraints..."
-          />
-        </div>
-
-        {/* Strategies Card */}
-        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-8 shadow-sm transition-shadow hover:shadow-md">
-          <h4 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-blue-900">
-            <Target size={16} /> Strategies
-          </h4>
-          <textarea
-            className="w-full resize-none bg-transparent text-slate-600 outline-none placeholder:text-blue-200"
-            rows={6}
-            placeholder="What are the specific actions to overcome them? Training, accountability, systems, support..."
-          />
-        </div>
+      {/* Goals and Intentions Section */}
+      <div className="mb-12 space-y-4">
+        <WorkbookTextarea
+          label="What are your top goals or intentions for the coming year? (Personal, professional, health, relationships?)"
+          placeholder="Be specific about what you want to achieve..."
+          rows={4}
+        />
+        <WorkbookTextarea
+          label="Why are these goals important to you?"
+          placeholder="Connect your goals to your deeper motivations and values..."
+          rows={3}
+        />
+        <WorkbookTextarea
+          label="How do you plan to work towards achieving these goals?"
+          placeholder="What systems, habits, or strategies will you put in place?"
+          rows={3}
+        />
+        <WorkbookTextarea
+          label="What are 1-3 steps you can take right away to work towards these goals?"
+          placeholder="Immediate actions you can take this week..."
+          rows={3}
+        />
       </div>
 
-      <div className="mt-12">
+      {/* Obstacles and Strategies Section */}
+      <h3 className="mb-6 text-lg font-bold text-slate-900">Obstacles & Strategies</h3>
+      <div className="space-y-4">
         <WorkbookTextarea
-          label="What intentions do you want to set for the new year?"
-          placeholder="How do you want to feel? What experiences do you want to have? How do you want to show up?"
+          label="What potential obstacles or challenges do you foresee in achieving your goals?"
+          placeholder="Market conditions, limiting beliefs, lack of resources, time constraints..."
+          rows={4}
+        />
+        <WorkbookTextarea
+          label="What strategies or actions can you take to overcome these obstacles?"
+          placeholder="Training, accountability, systems, support..."
           rows={4}
         />
       </div>

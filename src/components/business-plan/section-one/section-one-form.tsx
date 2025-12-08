@@ -12,9 +12,10 @@ import { StepSelfReflection } from "./steps/step-self-reflection";
 import { StepGoalsIntentions } from "./steps/step-goals-intentions";
 import { StepWellness } from "./steps/step-wellness";
 import { StepMantra } from "./steps/step-mantra";
+import { StepCelebration } from "./steps/step-celebration";
 import { StepComplete } from "./steps/step-complete";
 
-const TOTAL_STEPS = 9; // 0-8
+const TOTAL_STEPS = 10; // 0-9 (Overview + 8 content steps + Complete)
 
 export function SectionOneForm() {
   const [activeStep, setActiveStep] = useState(0);
@@ -67,6 +68,8 @@ export function SectionOneForm() {
       case 7:
         return <StepMantra />;
       case 8:
+        return <StepCelebration />;
+      case 9:
         return <StepComplete />;
       default:
         return null;

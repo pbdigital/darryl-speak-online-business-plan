@@ -19,7 +19,7 @@ export function StepOverview({ onStart }: StepOverviewProps) {
       />
 
       <div className="mx-auto max-w-3xl px-4">
-        <div className="mb-12 grid gap-12 md:grid-cols-2">
+        <div className="mb-12 space-y-8">
           <DefinitionBox
             title="What It Is"
             content="This section is your opportunity to thoughtfully (and honestly) reflect on the past year and set goals for the year ahead with intentionality and purpose."
@@ -28,13 +28,15 @@ export function StepOverview({ onStart }: StepOverviewProps) {
             title="Why It Matters"
             content="By understanding where you've been, you can better plan where you're going. Self-awareness fosters clarity, motivation, and meaningful progress."
           />
+          <DefinitionBox
+            title="How to Fill It Out"
+            content="Answer the prompts as honestly and fully as possible. Take your time, and feel free to revisit this section throughout the year."
+          />
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center">
-          <p className="mb-6 italic text-slate-600">
-            &ldquo;How to Fill It Out: Answer the prompts as honestly and fully
-            as possible. Take your time, and feel free to revisit this section
-            throughout the year.&rdquo;
+          <p className="mb-6 text-slate-600">
+            This section includes two parts: <strong>Last Year in Review</strong> (your production numbers and reflection questions) and the <strong>New Year&apos;s Reflection &amp; Intention-Setting Worksheet</strong> (a deeper dive into gratitude, values, goals, and accountability).
           </p>
           <button
             onClick={onStart}
