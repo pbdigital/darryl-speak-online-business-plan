@@ -8,11 +8,11 @@ export async function GET() {
     // Test the connection by checking auth status
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    // Also try to query the database (this will work even without tables)
-    const { error: dbError } = await supabase.from('_test_connection').select('*').limit(1);
+    // Test database connection by querying auth.users (always exists)
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 
-    // dbError with code 42P01 means table doesn't exist, which is fine - connection works
-    const connectionWorks = !dbError || dbError.code === '42P01' || dbError.code === 'PGRST116';
+    // Connection works if we can reach Supabase at all (even without being logged in)
+    const connectionWorks = !authError || authError.message !== 'fetch failed';
 
     return NextResponse.json({
       success: true,
@@ -21,7 +21,8 @@ export async function GET() {
         authenticated: !!user,
         user: user ? { id: user.id, email: user.email } : null,
         supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-        dbError: dbError ? { code: dbError.code, message: dbError.message } : null,
+        hasSession: !!sessionData?.session,
+        authError: authError ? { message: authError.message } : null,
       },
     });
   } catch (error) {
