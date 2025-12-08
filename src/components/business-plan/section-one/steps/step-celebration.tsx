@@ -24,22 +24,26 @@ export function StepCelebration() {
       <div className="space-y-2">
         <WorkbookTextarea
           label="What milestones or achievements will you celebrate along the way?"
-          placeholder="Quarterly goals, first listing, income milestones, personal wins..."
+          fieldName="celebrationMilestones"
+          placeholder="Every 5 transactions, take my family to dinner. At $100k GCI, book that Hawaii trip..."
           rows={3}
         />
         <WorkbookTextarea
           label="How often will you pause to reflect on your progress and adjust your goals if needed?"
-          placeholder="Weekly, monthly, quarterly? What will trigger a review?"
+          fieldName="reflectionFrequency"
+          placeholder="Weekly review every Sunday. Monthly deep dive on the first. Quarterly planning retreat..."
           rows={3}
         />
         <WorkbookTextarea
           label="What else would you like to reflect on, improve upon, stop, start or continue this coming year?"
-          placeholder="Habits to break, new practices to start, things to let go of..."
+          fieldName="improvementsAndChanges"
+          placeholder="STOP: checking email first thing. START: morning routine before work. CONTINUE: Monday prospecting blocks..."
           rows={4}
         />
         <WorkbookTextarea
           label="What is really important to you right now and moving into the new year?"
-          placeholder="Your core focus, what matters most, your non-negotiables..."
+          fieldName="coreImportance"
+          placeholder="Being present for my kids while building a business that supports our dreams. Finding balance..."
           rows={4}
         />
       </div>

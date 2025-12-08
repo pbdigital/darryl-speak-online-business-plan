@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle2, Clock, FileText, Sparkles } from "lucide-react";
+import { CheckCircle2, Clock, FileText, Sparkles, Star } from "lucide-react";
 import { WorkbookTextarea, WorkbookInput, AnimatedCheckmark } from "../ui";
+import { useSectionOneStore } from "@/stores/section-one-store";
 
 interface StepCompleteProps {
   startTime?: number;
@@ -11,6 +12,10 @@ interface StepCompleteProps {
 export function StepComplete({ startTime }: StepCompleteProps) {
   const [showReveal, setShowReveal] = useState(true);
   const [revealPhase, setRevealPhase] = useState(0);
+
+  // Get data from store
+  const filledFieldCount = useSectionOneStore((state) => state.getFilledFieldCount());
+  const mantra = useSectionOneStore((state) => state.data.mantra);
 
   // Calculate time spent
   const timeSpent = startTime
@@ -93,7 +98,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
       </div>
 
       {/* Summary Card - Elegant sage tones */}
-      <div className="mb-10 overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-sage-50 shadow-sm">
+      <div className="mb-10 overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-slate-50 shadow-sm">
         <div className="border-b border-emerald-100 bg-white/50 px-8 py-5">
           <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-emerald-800">
             <Sparkles className="h-4 w-4" /> Your Reflection Summary
@@ -105,8 +110,8 @@ export function StepComplete({ startTime }: StepCompleteProps) {
               <FileText className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-slate-900">32</div>
-              <div className="text-xs text-slate-500">Questions Reflected</div>
+              <div className="text-2xl font-bold text-slate-900">{filledFieldCount}</div>
+              <div className="text-xs text-slate-500">Questions Answered</div>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -130,6 +135,21 @@ export function StepComplete({ startTime }: StepCompleteProps) {
             </div>
           </div>
         </div>
+
+        {/* Mantra Display */}
+        {mantra && (
+          <div className="border-t border-emerald-100 bg-white/30 px-8 py-6">
+            <div className="flex items-center gap-3">
+              <Star className="h-5 w-5 text-emerald-600" />
+              <div>
+                <div className="text-xs text-slate-500">Your 2026 Mantra</div>
+                <div className="text-xl font-black uppercase tracking-wide text-slate-900">
+                  {mantra}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Celebration Questions - Subtle styling */}
@@ -140,12 +160,14 @@ export function StepComplete({ startTime }: StepCompleteProps) {
         <div className="space-y-2">
           <WorkbookTextarea
             label="How will you celebrate milestones along the way?"
-            placeholder="Small rewards, sharing wins with someone, treating yourself..."
+            fieldName="celebrationMethod"
+            placeholder="Dinner at my favorite restaurant after every 5 transactions. Weekend trip at $100k GCI..."
             rows={3}
           />
           <WorkbookTextarea
             label="What words of encouragement would you give to your future self?"
-            placeholder="Write a message for when times get tough..."
+            fieldName="encouragementMessage"
+            placeholder="Dear future me: Remember why you started. Every 'no' is closer to a 'yes'. You've got this..."
             rows={3}
           />
         </div>
@@ -162,8 +184,8 @@ export function StepComplete({ startTime }: StepCompleteProps) {
           document—revisit it throughout the year.
         </p>
         <div className="grid gap-8 md:grid-cols-2">
-          <WorkbookInput label="Signature" placeholder="Your name" />
-          <WorkbookInput label="Date" placeholder="MM/DD/YYYY" type="text" />
+          <WorkbookInput label="Signature" fieldName="signature" placeholder="Your name" />
+          <WorkbookInput label="Date" fieldName="completionDate" placeholder="MM/DD/YYYY" type="text" />
         </div>
       </div>
     </div>

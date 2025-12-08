@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface PlanHeroProps {
@@ -10,6 +11,13 @@ interface PlanHeroProps {
   className?: string;
 }
 
+const DARRYL_QUOTES = [
+  "The best business plan is the one you actually use.",
+  "Success leaves clues. Follow the system.",
+  "Your breakthrough year starts with a single decision.",
+  "Plan your work, then work your plan.",
+];
+
 export function PlanHero({
   year = 2026,
   userName,
@@ -18,6 +26,12 @@ export function PlanHero({
   className,
 }: PlanHeroProps) {
   const progressPercentage = Math.round((completedSections / totalSections) * 100);
+
+  // Get a consistent quote based on the day of year (changes daily)
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  const quote = DARRYL_QUOTES[dayOfYear % DARRYL_QUOTES.length];
 
   return (
     <section
@@ -125,6 +139,26 @@ export function PlanHero({
               Your blueprint for breakthroughs, listings, and a life worth
               smiling about.
             </p>
+
+            {/* Darryl Quote Section */}
+            <div className="mt-8 flex items-center gap-4">
+              <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border-2 border-white/20">
+                <Image
+                  src="/darryl.png"
+                  alt="Darryl Davis"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <p className="text-sm italic text-slate-300">
+                  &ldquo;{quote}&rdquo;
+                </p>
+                <p className="mt-1 text-xs font-medium text-slate-500">
+                  — Darryl Davis
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Right side - Progress card (glass effect) */}

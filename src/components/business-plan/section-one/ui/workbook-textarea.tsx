@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  useSectionOneStore,
+  type SectionOneData,
+} from "@/stores/section-one-store";
 
 interface WorkbookTextareaProps {
   label: string;
+  fieldName?: keyof SectionOneData;
   placeholder?: string;
   rows?: number;
   className?: string;
@@ -15,6 +19,7 @@ interface WorkbookTextareaProps {
 
 export function WorkbookTextarea({
   label,
+  fieldName,
   placeholder,
   rows = 3,
   className,
@@ -22,8 +27,14 @@ export function WorkbookTextarea({
   onChange,
   showWordCount = true,
 }: WorkbookTextareaProps) {
-  const [internalValue, setInternalValue] = useState("");
-  const value = controlledValue ?? internalValue;
+  // Get store value if fieldName is provided
+  const storeValue = useSectionOneStore((state) =>
+    fieldName ? (state.data[fieldName] as string) : ""
+  );
+  const updateField = useSectionOneStore((state) => state.updateField);
+
+  // Use store value if fieldName provided, otherwise use controlled/uncontrolled pattern
+  const value = fieldName ? storeValue : (controlledValue ?? "");
   const hasContent = value.trim().length > 0;
   const wordCount = hasContent
     ? value.trim().split(/\s+/).filter(Boolean).length
@@ -31,10 +42,10 @@ export function WorkbookTextarea({
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
-    if (onChange) {
+    if (fieldName) {
+      updateField(fieldName, newValue);
+    } else if (onChange) {
       onChange(newValue);
-    } else {
-      setInternalValue(newValue);
     }
   };
 

@@ -24,17 +24,20 @@ export function StepGratitude() {
       <div className="space-y-2">
         <WorkbookTextarea
           label="What are you most grateful for from the past year?"
-          placeholder="Experiences, opportunities, growth, wins..."
+          fieldName="gratefulFor"
+          placeholder="I'm grateful for the opportunity to help 12 families find their dream homes this year..."
           rows={3}
         />
         <WorkbookTextarea
           label="Who are the people you are most grateful for, and why?"
-          placeholder="Family, mentors, clients, colleagues, friends..."
+          fieldName="gratefulPeople"
+          placeholder="My mentor Jane who pushed me to take on that challenging listing. My spouse for supporting my crazy hours..."
           rows={3}
         />
         <WorkbookTextarea
           label="What moments or experiences brought you the most joy?"
-          placeholder="Big or small moments that made you smile..."
+          fieldName="joyfulMoments"
+          placeholder="Handing the keys to the Martinez family and seeing their kids run to their new rooms..."
           rows={3}
         />
       </div>

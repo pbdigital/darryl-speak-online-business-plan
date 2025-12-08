@@ -21,22 +21,26 @@ export function StepGoalsIntentions() {
       <div className="mb-12 space-y-4">
         <WorkbookTextarea
           label="What are your top goals or intentions for the coming year? (Personal, professional, health, relationships?)"
-          placeholder="Be specific about what you want to achieve..."
+          fieldName="topGoalsIntentions"
+          placeholder="Close 30 transactions. Hire a buyer's agent. Run a half marathon. Have dinner with family 4 nights a week..."
           rows={4}
         />
         <WorkbookTextarea
           label="Why are these goals important to you?"
-          placeholder="Connect your goals to your deeper motivations and values..."
+          fieldName="goalsImportance"
+          placeholder="30 transactions will let me save for my kids' college. The buyer's agent will free me to focus on listings..."
           rows={3}
         />
         <WorkbookTextarea
           label="How do you plan to work towards achieving these goals?"
-          placeholder="What systems, habits, or strategies will you put in place?"
+          fieldName="goalStrategies"
+          placeholder="Daily prospecting from 8-10am. Weekly pipeline review. Monthly business planning sessions..."
           rows={3}
         />
         <WorkbookTextarea
           label="What are 1-3 steps you can take right away to work towards these goals?"
-          placeholder="Immediate actions you can take this week..."
+          fieldName="immediateSteps"
+          placeholder="1. Set up my daily prospecting block in my calendar. 2. Reach out to 3 agents about joining my team..."
           rows={3}
         />
       </div>
@@ -46,12 +50,14 @@ export function StepGoalsIntentions() {
       <div className="space-y-4">
         <WorkbookTextarea
           label="What potential obstacles or challenges do you foresee in achieving your goals?"
-          placeholder="Market conditions, limiting beliefs, lack of resources, time constraints..."
+          fieldName="potentialObstacles"
+          placeholder="Market uncertainty. My tendency to avoid cold calling. Finding the right buyer's agent to hire..."
           rows={4}
         />
         <WorkbookTextarea
           label="What strategies or actions can you take to overcome these obstacles?"
-          placeholder="Training, accountability, systems, support..."
+          fieldName="obstacleStrategies"
+          placeholder="Join an accountability group for prospecting. Work with a coach on scripts. Interview 10 candidates before hiring..."
           rows={4}
         />
       </div>

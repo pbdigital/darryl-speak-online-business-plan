@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Star, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { WorkbookTextarea } from "../ui";
+import { useSectionOneStore } from "@/stores/section-one-store";
 
 const MANTRA_SUGGESTIONS = [
   "RELENTLESS",
@@ -16,9 +17,16 @@ const MANTRA_SUGGESTIONS = [
 ];
 
 export function StepMantra() {
-  const [mantra, setMantra] = useState("");
+  // Get mantra from store
+  const mantra = useSectionOneStore((state) => state.data.mantra);
+  const updateField = useSectionOneStore((state) => state.updateField);
+
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestionIndex, setSuggestionIndex] = useState(0);
+
+  const setMantra = (value: string) => {
+    updateField("mantra", value);
+  };
 
   const handleSuggestionSelect = (suggestion: string) => {
     setMantra(suggestion);
@@ -145,17 +153,20 @@ export function StepMantra() {
       <div className="space-y-2">
         <WorkbookTextarea
           label="How will you hold yourself accountable for your goals and intentions?"
+          fieldName="accountabilityMethod"
           placeholder="I will check in with myself every Sunday evening to review my progress..."
           rows={3}
         />
         <WorkbookTextarea
           label="Is there a person or people that you can partner with to stay accountable?"
-          placeholder="My accountability partner is... We meet every..."
+          fieldName="accountabilityPartner"
+          placeholder="My accountability partner is Sarah from my office. We meet every Monday to review our weekly goals..."
           rows={3}
         />
         <WorkbookTextarea
           label="What tools or methods will you use to track your progress throughout the year?"
-          placeholder="I will use a weekly planning sheet and monthly review..."
+          fieldName="progressTrackingTools"
+          placeholder="I'll use my CRM for pipeline tracking, a spreadsheet for GCI, and the Power Agent weekly planning sheet..."
           rows={3}
         />
       </div>
