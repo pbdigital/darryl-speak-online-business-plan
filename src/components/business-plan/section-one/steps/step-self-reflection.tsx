@@ -40,17 +40,17 @@ export function StepSelfReflection() {
       </div>
 
       {/* Values and Priorities Section */}
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8">
-        <h3 className="mb-6 text-lg font-bold text-slate-900">Values and Priorities</h3>
+      <div>
+        <h3 className="mb-8 text-lg font-bold text-slate-900">Values and Priorities</h3>
         <div className="space-y-2">
           <WorkbookTextarea
             label="What are your core values, and how did you align with them in the past year?"
-            placeholder="Integrity, family, excellence, growth, service..."
+            placeholder="My core values are integrity and family. This year I aligned with them by always being honest with clients, even when it cost me a deal..."
             rows={3}
           />
           <WorkbookTextarea
             label="Are there any values or priorities you want to shift or focus on in the coming year?"
-            placeholder="What matters most to you moving forward?"
+            placeholder="I want to prioritize my health more. I've been neglecting exercise and it's affecting my energy levels..."
             rows={3}
           />
         </div>

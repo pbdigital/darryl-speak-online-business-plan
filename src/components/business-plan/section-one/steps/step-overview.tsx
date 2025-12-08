@@ -40,7 +40,7 @@ export function StepOverview({ onStart }: StepOverviewProps) {
           </p>
           <button
             onClick={onStart}
-            className="transform rounded-full bg-[#0F172A] px-10 py-4 font-bold text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-slate-800 hover:shadow-xl"
+            className="transform rounded-full bg-[#1E293B] px-10 py-4 font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
           >
             Start Reflection
           </button>
