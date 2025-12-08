@@ -172,21 +172,197 @@ const totalExpenses = useBusinessPlanStore(
 --text-muted: #6b7280;     /* Secondary text */
 ```
 
-### API Routes & Data Fetching
+### API Architecture (Supabase Edge Functions + RLS)
 
-- **Server Components** by default for data fetching
-- **API routes** only for mutations and external integrations (SSO callbacks)
-- **Use Supabase RLS** for authorization, not API-level checks
-- **Return JSON envelope** for all API responses:
+#### Overview
+
+All database interactions go through **Supabase Edge Functions** following REST best practices:
+- **Edge Functions** handle business logic, validation, and data transformation
+- **Row Level Security (RLS)** enforces authorization at the database level
+- **Client** calls Edge Functions via fetch, never queries Supabase directly for mutations
+
+#### Why Edge Functions?
+
+1. **Security** - Business logic stays server-side, not exposed in client bundles
+2. **Validation** - Zod schemas validate input before touching the database
+3. **Consistency** - Single source of truth for data operations
+4. **Flexibility** - Can add logging, rate limiting, webhooks without client changes
+
+#### Edge Function Structure
+
+```
+supabase/
+└── functions/
+    ├── business-plans/
+    │   └── index.ts          # CRUD for business plans
+    ├── plan-sections/
+    │   └── index.ts          # CRUD for plan sections
+    └── _shared/
+        ├── cors.ts           # CORS headers helper
+        ├── response.ts       # Standard response envelope
+        └── validate.ts       # Zod validation helper
+```
+
+#### REST Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/business-plans` | List user's business plans |
+| `GET` | `/business-plans/:id` | Get single business plan |
+| `POST` | `/business-plans` | Create new business plan |
+| `PUT` | `/business-plans/:id` | Update business plan |
+| `DELETE` | `/business-plans/:id` | Delete business plan |
+| `GET` | `/plan-sections?plan_id=:id` | Get sections for a plan |
+| `PUT` | `/plan-sections/:id` | Update a section (auto-save) |
+
+#### Standard Response Envelope
+
+All Edge Functions return JSON in this format:
 
 ```typescript
-// Standard API response format
+// Success response
 {
-  "success": true | false,
+  "success": true,
   "data": { ... },
-  "errors": [ { "field": "email", "message": "Invalid email" } ]
+  "meta": {
+    "timestamp": "2024-12-08T10:30:00Z"
+  }
+}
+
+// Error response
+{
+  "success": false,
+  "errors": [
+    { "field": "year", "message": "Year must be between 2024 and 2030" }
+  ],
+  "meta": {
+    "timestamp": "2024-12-08T10:30:00Z"
+  }
 }
 ```
+
+#### Edge Function Example
+
+```typescript
+// supabase/functions/business-plans/index.ts
+import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
+
+const createPlanSchema = z.object({
+  year: z.number().min(2024).max(2030),
+});
+
+Deno.serve(async (req) => {
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_ANON_KEY')!,
+    { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
+  );
+
+  // Get authenticated user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    return Response.json({ success: false, errors: [{ message: 'Unauthorized' }] }, { status: 401 });
+  }
+
+  if (req.method === 'POST') {
+    const body = await req.json();
+    const parsed = createPlanSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return Response.json({
+        success: false,
+        errors: parsed.error.issues.map(i => ({ field: i.path.join('.'), message: i.message }))
+      }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
+      .from('business_plans')
+      .insert({ user_id: user.id, year: parsed.data.year })
+      .select()
+      .single();
+
+    if (error) {
+      return Response.json({ success: false, errors: [{ message: error.message }] }, { status: 500 });
+    }
+
+    return Response.json({ success: true, data }, { status: 201 });
+  }
+
+  // ... handle other methods
+});
+```
+
+#### Client-Side Usage
+
+```typescript
+// src/lib/api/business-plans.ts
+import { createClient } from '@/lib/supabase/client';
+
+const FUNCTIONS_URL = process.env.NEXT_PUBLIC_SUPABASE_URL + '/functions/v1';
+
+export async function createBusinessPlan(year: number) {
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  const response = await fetch(`${FUNCTIONS_URL}/business-plans`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session?.access_token}`,
+    },
+    body: JSON.stringify({ year }),
+  });
+
+  return response.json();
+}
+```
+
+#### Row Level Security (RLS)
+
+RLS policies handle authorization - Edge Functions don't need to check ownership:
+
+```sql
+-- Users can only see their own business plans
+CREATE POLICY "Users can view own plans"
+  ON business_plans FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- Users can only insert plans for themselves
+CREATE POLICY "Users can create own plans"
+  ON business_plans FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- Users can only update their own plans
+CREATE POLICY "Users can update own plans"
+  ON business_plans FOR UPDATE
+  USING (auth.uid() = user_id);
+
+-- Users can only delete their own plans
+CREATE POLICY "Users can delete own plans"
+  ON business_plans FOR DELETE
+  USING (auth.uid() = user_id);
+```
+
+#### When to Use Direct Supabase Queries
+
+Use direct Supabase client queries (with RLS) for:
+- **Read-only operations** in Server Components (data fetching for initial page load)
+- **Real-time subscriptions** (listening for changes)
+
+Use Edge Functions for:
+- **All mutations** (POST, PUT, DELETE)
+- **Complex business logic** (calculations, validations)
+- **Operations requiring multiple queries** (transactions)
+
+### API Routes (Next.js)
+
+Next.js API routes (`src/app/api/`) are used only for:
+- **SSO callbacks** (WordPress OAuth redirect handling)
+- **Webhooks** (external service integrations)
+- **Non-database operations** (health checks, etc.)
+
+**Do NOT** use Next.js API routes for database CRUD - use Edge Functions instead.
 
 ### Error Handling
 
