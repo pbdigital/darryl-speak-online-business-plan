@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { CheckCircle2, Clock, Grid2X2, Sparkles } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { CheckCircle2, Clock, Grid2X2, ArrowRight } from "lucide-react";
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { SwotGridSummary } from "../ui";
 
@@ -13,20 +13,29 @@ export function StepComplete({ startTime }: StepCompleteProps) {
   const [showReveal, setShowReveal] = useState(true);
   const [revealPhase, setRevealPhase] = useState(0);
 
-  // Get data from store
-  const filledFieldCount = useSectionTwoStore((state) =>
-    state.getFilledFieldCount()
+  // Get raw data from store (stable references)
+  const strengths = useSectionTwoStore((state) => state.data.strengths);
+  const weaknesses = useSectionTwoStore((state) => state.data.weaknesses);
+  const opportunities = useSectionTwoStore((state) => state.data.opportunities);
+  const threats = useSectionTwoStore((state) => state.data.threats);
+
+  // Filter filled items with useMemo to avoid infinite loops
+  const filledStrengths = useMemo(
+    () => strengths.filter((s) => s.strength.trim()),
+    [strengths]
   );
-  const filledStrengths = useSectionTwoStore((state) =>
-    state.getFilledStrengths()
+  const filledWeaknesses = useMemo(
+    () => weaknesses.filter((w) => w.weakness.trim()),
+    [weaknesses]
   );
-  const filledWeaknesses = useSectionTwoStore((state) =>
-    state.getFilledWeaknesses()
+  const filledOpportunities = useMemo(
+    () => opportunities.filter((o) => o.possibility.trim()),
+    [opportunities]
   );
-  const filledOpportunities = useSectionTwoStore((state) =>
-    state.getFilledOpportunities()
+  const filledThreats = useMemo(
+    () => threats.filter((t) => t.threat.trim()),
+    [threats]
   );
-  const filledThreats = useSectionTwoStore((state) => state.getFilledThreats());
 
   // Calculate total items (not fields)
   const totalItems =
@@ -62,10 +71,10 @@ export function StepComplete({ startTime }: StepCompleteProps) {
               : "scale-75 opacity-0"
           }`}
         >
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#1E293B]">
             {revealPhase >= 2 ? (
               <svg
-                className="h-10 w-10 text-emerald-500"
+                className="h-10 w-10 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -103,110 +112,95 @@ export function StepComplete({ startTime }: StepCompleteProps) {
 
   return (
     <div className="animate-fade-in-up mx-auto max-w-4xl px-4">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-emerald-600">
-          Complete
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          SWOT Analysis Complete
-        </h2>
-        <p className="text-slate-500">
-          Your strategic assessment at a glance.
-        </p>
-      </div>
+      {/* Hero Header */}
+      <div className="mb-8 overflow-hidden rounded-3xl bg-[#1E293B] p-8 text-white md:p-10">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="mb-3 flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+              <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">
+                Section Complete
+              </span>
+            </div>
+            <h2 className="text-2xl font-extrabold md:text-3xl">
+              SWOT Analysis
+            </h2>
+            <p className="mt-2 text-slate-400">
+              Your strategic position at a glance
+            </p>
+          </div>
 
-      {/* Summary Card */}
-      <div className="mb-10 overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-slate-50 shadow-sm">
-        <div className="border-b border-emerald-100 bg-white/50 px-8 py-5">
-          <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-emerald-800">
-            <Sparkles className="h-4 w-4" /> Your SWOT Summary
-          </h3>
-        </div>
-        <div className="grid gap-6 p-8 md:grid-cols-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-              <Grid2X2 className="h-5 w-5 text-emerald-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-slate-900">
-                {totalItems}
+          {/* Stats Row */}
+          <div className="flex gap-6 border-t border-slate-700 pt-6 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <Grid2X2 className="h-4 w-4 text-slate-400" />
+                <span className="text-2xl font-bold">{totalItems}</span>
               </div>
-              <div className="text-xs text-slate-500">Items Identified</div>
+              <div className="text-xs text-slate-400">Items</div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-              <Clock className="h-5 w-5 text-emerald-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-slate-900">
-                {timeSpent > 0 ? `~${timeSpent}` : "—"}
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <Clock className="h-4 w-4 text-slate-400" />
+                <span className="text-2xl font-bold">
+                  {timeSpent > 0 ? timeSpent : "—"}
+                </span>
               </div>
-              <div className="text-xs text-slate-500">Minutes Invested</div>
+              <div className="text-xs text-slate-400">Minutes</div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-slate-900">2 of 5</div>
-              <div className="text-xs text-slate-500">Sections Complete</div>
+            <div className="text-center">
+              <span className="text-2xl font-bold">2</span>
+              <span className="text-lg text-slate-500">/5</span>
+              <div className="text-xs text-slate-400">Sections</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* SWOT Grid Visual Summary */}
-      <div className="mb-10">
-        <h3 className="mb-6 text-center text-sm font-bold uppercase tracking-wider text-slate-700">
-          Your Strategic Position
-        </h3>
-        <SwotGridSummary
-          strengths={filledStrengths}
-          weaknesses={filledWeaknesses}
-          opportunities={filledOpportunities}
-          threats={filledThreats}
-        />
-      </div>
+      {/* SWOT Grid */}
+      <SwotGridSummary
+        strengths={filledStrengths}
+        weaknesses={filledWeaknesses}
+        opportunities={filledOpportunities}
+        threats={filledThreats}
+        className="mb-8"
+      />
 
-      {/* Key Insights Section */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-900">
-          Key Takeaways
+      {/* Strategic Actions - Compact */}
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+        <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+          Strategic Actions
         </h3>
-        <p className="mb-6 text-sm leading-relaxed text-slate-500">
-          Based on your SWOT analysis, consider these strategic priorities:
-        </p>
-        <ul className="space-y-3 text-sm text-slate-600">
-          <li className="flex items-start gap-3">
-            <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-emerald-400" />
-            <span>
-              <strong>Leverage:</strong> Use your strengths to capitalize on
-              opportunities
+        <div className="grid gap-3 md:grid-cols-2">
+          <div className="flex items-center gap-3 rounded-lg bg-white p-3">
+            <ArrowRight className="h-4 w-4 text-[#1E293B]" />
+            <span className="text-sm text-slate-600">
+              <strong className="text-slate-900">Leverage</strong> strengths to
+              seize opportunities
             </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-amber-400" />
-            <span>
-              <strong>Improve:</strong> Address weaknesses that could block
-              opportunities
+          </div>
+          <div className="flex items-center gap-3 rounded-lg bg-white p-3">
+            <ArrowRight className="h-4 w-4 text-[#1E293B]" />
+            <span className="text-sm text-slate-600">
+              <strong className="text-slate-900">Improve</strong> weaknesses
+              blocking growth
             </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-blue-400" />
-            <span>
-              <strong>Monitor:</strong> Watch for threats that could exploit
-              weaknesses
+          </div>
+          <div className="flex items-center gap-3 rounded-lg bg-white p-3">
+            <ArrowRight className="h-4 w-4 text-[#1E293B]" />
+            <span className="text-sm text-slate-600">
+              <strong className="text-slate-900">Monitor</strong> threats
+              exploiting gaps
             </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-rose-400" />
-            <span>
-              <strong>Prepare:</strong> Use strengths to defend against threats
+          </div>
+          <div className="flex items-center gap-3 rounded-lg bg-white p-3">
+            <ArrowRight className="h-4 w-4 text-[#1E293B]" />
+            <span className="text-sm text-slate-600">
+              <strong className="text-slate-900">Defend</strong> with strengths
+              against threats
             </span>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </div>
   );

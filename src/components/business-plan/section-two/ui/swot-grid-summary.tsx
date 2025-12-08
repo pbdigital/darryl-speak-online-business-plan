@@ -17,12 +17,6 @@ interface SwotGridSummaryProps {
   className?: string;
 }
 
-const actionBadgeColors = {
-  accept: "bg-slate-200 text-slate-700",
-  delegate: "bg-slate-200 text-slate-700",
-  improve: "bg-slate-200 text-slate-700",
-};
-
 export function SwotGridSummary({
   strengths,
   weaknesses,
@@ -33,15 +27,15 @@ export function SwotGridSummary({
   return (
     <div className={cn("grid gap-4 md:grid-cols-2", className)}>
       {/* Strengths Quadrant */}
-      <div className="rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-6">
+      <div className="rounded-2xl border border-slate-200 bg-[#e8f4f8] p-6">
         <div className="mb-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-200">
-            <Zap className="h-4 w-4 text-emerald-700" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1E293B]">
+            <Zap className="h-4 w-4 text-white" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wide text-emerald-800">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1E293B]">
             Strengths
           </h3>
-          <span className="ml-auto text-xs font-medium text-emerald-600">
+          <span className="ml-auto text-xs font-medium text-slate-500">
             {strengths.length} item{strengths.length !== 1 ? "s" : ""}
           </span>
         </div>
@@ -50,28 +44,28 @@ export function SwotGridSummary({
             {strengths.map((item, idx) => (
               <li
                 key={idx}
-                className="flex items-start gap-2 text-sm text-emerald-900"
+                className="flex items-start gap-2 text-sm text-slate-700"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-400" />
+                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#1E293B]" />
                 <span>{item.strength}</span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm italic text-emerald-600/60">No items yet</p>
+          <p className="text-sm italic text-slate-400">No items yet</p>
         )}
       </div>
 
       {/* Weaknesses Quadrant */}
-      <div className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-6">
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
         <div className="mb-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-200">
-            <AlertCircle className="h-4 w-4 text-amber-700" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1E293B]">
+            <AlertCircle className="h-4 w-4 text-white" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wide text-amber-800">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1E293B]">
             Weaknesses
           </h3>
-          <span className="ml-auto text-xs font-medium text-amber-600">
+          <span className="ml-auto text-xs font-medium text-slate-500">
             {weaknesses.length} item{weaknesses.length !== 1 ? "s" : ""}
           </span>
         </div>
@@ -80,17 +74,12 @@ export function SwotGridSummary({
             {weaknesses.map((item, idx) => (
               <li
                 key={idx}
-                className="flex items-start gap-2 text-sm text-amber-900"
+                className="flex items-start gap-2 text-sm text-slate-700"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-amber-400" />
+                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400" />
                 <span className="flex-1">{item.weakness}</span>
                 {item.action && (
-                  <span
-                    className={cn(
-                      "rounded-full px-2 py-0.5 text-xs font-bold uppercase",
-                      actionBadgeColors[item.action]
-                    )}
-                  >
+                  <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-bold uppercase text-slate-600">
                     {item.action[0]}
                   </span>
                 )}
@@ -98,20 +87,20 @@ export function SwotGridSummary({
             ))}
           </ul>
         ) : (
-          <p className="text-sm italic text-amber-600/60">No items yet</p>
+          <p className="text-sm italic text-slate-400">No items yet</p>
         )}
       </div>
 
       {/* Opportunities Quadrant */}
-      <div className="rounded-2xl border-2 border-blue-200 bg-blue-50 p-6">
+      <div className="rounded-2xl border border-slate-200 bg-[#e8f4f8] p-6">
         <div className="mb-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-200">
-            <TrendingUp className="h-4 w-4 text-blue-700" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1E293B]">
+            <TrendingUp className="h-4 w-4 text-white" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wide text-blue-800">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1E293B]">
             Opportunities
           </h3>
-          <span className="ml-auto text-xs font-medium text-blue-600">
+          <span className="ml-auto text-xs font-medium text-slate-500">
             {opportunities.length} item{opportunities.length !== 1 ? "s" : ""}
           </span>
         </div>
@@ -120,28 +109,28 @@ export function SwotGridSummary({
             {opportunities.map((item, idx) => (
               <li
                 key={idx}
-                className="flex items-start gap-2 text-sm text-blue-900"
+                className="flex items-start gap-2 text-sm text-slate-700"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-400" />
+                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#1E293B]" />
                 <span>{item.possibility}</span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm italic text-blue-600/60">No items yet</p>
+          <p className="text-sm italic text-slate-400">No items yet</p>
         )}
       </div>
 
       {/* Threats Quadrant */}
-      <div className="rounded-2xl border-2 border-rose-200 bg-rose-50 p-6">
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
         <div className="mb-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-200">
-            <Shield className="h-4 w-4 text-rose-700" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1E293B]">
+            <Shield className="h-4 w-4 text-white" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wide text-rose-800">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1E293B]">
             Threats
           </h3>
-          <span className="ml-auto text-xs font-medium text-rose-600">
+          <span className="ml-auto text-xs font-medium text-slate-500">
             {threats.length} item{threats.length !== 1 ? "s" : ""}
           </span>
         </div>
@@ -150,15 +139,15 @@ export function SwotGridSummary({
             {threats.map((item, idx) => (
               <li
                 key={idx}
-                className="flex items-start gap-2 text-sm text-rose-900"
+                className="flex items-start gap-2 text-sm text-slate-700"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-rose-400" />
+                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400" />
                 <span>{item.threat}</span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm italic text-rose-600/60">No items yet</p>
+          <p className="text-sm italic text-slate-400">No items yet</p>
         )}
       </div>
     </div>
