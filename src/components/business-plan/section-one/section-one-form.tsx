@@ -2,7 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { ArrowLeft, ChevronRight, MoreHorizontal, Trash2, FileX } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useSectionOneStore, SectionOneData } from "@/stores/section-one-store";
 
 import { StepOverview } from "./steps/step-overview";
 import { StepProductionNumbers } from "./steps/step-production-numbers";
@@ -24,6 +32,23 @@ const ENCOURAGEMENT_MESSAGES: Record<number, string> = {
   8: "Almost there. Keep going.",
 };
 
+// Map each step to its corresponding fields in the store
+const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
+  1: [
+    "listingsTaken", "sellerSidesClosed", "buyerSidesClosed", "renterTransactions",
+    "grossClosedCommissions", "didAchieveGoals", "biggestStruggles",
+    "biggestAccomplishment", "prospectingMethods", "wantToContinue",
+  ],
+  2: ["significantAchievements", "challengesAndOvercoming", "learnedAboutSelf"],
+  3: ["gratefulFor", "gratefulPeople", "joyfulMoments"],
+  4: ["mostFulfilled", "leastSatisfied", "overallWellbeing", "coreValuesAlignment", "valuePrioritiesShift"],
+  5: ["topGoalsIntentions", "goalsImportance", "goalStrategies", "immediateSteps", "potentialObstacles", "obstacleStrategies"],
+  6: ["selfCarePriorities", "nurturingWellbeing", "selfCareMethods", "skillsToImprove", "learningCommitment", "giveBackCommunity", "positiveImpact"],
+  7: ["mantra", "accountabilityMethod", "accountabilityPartner", "progressTrackingTools"],
+  8: ["celebrationMilestones", "reflectionFrequency", "improvementsAndChanges", "coreImportance"],
+  9: ["celebrationMethod", "encouragementMessage", "signature", "completionDate"],
+};
+
 export function SectionOneForm() {
   const [activeStep, setActiveStep] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
@@ -32,6 +57,32 @@ export function SectionOneForm() {
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
+
+  const { updateField, resetSection } = useSectionOneStore();
+
+  const handleClearPage = useCallback(() => {
+    const fields = STEP_FIELDS[activeStep];
+    if (!fields) return;
+
+    fields.forEach((field) => {
+      const isNumericField = [
+        "listingsTaken", "sellerSidesClosed", "buyerSidesClosed",
+        "renterTransactions", "grossClosedCommissions",
+      ].includes(field);
+
+      if (isNumericField) {
+        updateField(field, null as unknown as SectionOneData[typeof field]);
+      } else {
+        updateField(field, "" as SectionOneData[typeof field]);
+      }
+    });
+  }, [activeStep, updateField]);
+
+  const handleClearAll = useCallback(() => {
+    if (window.confirm("Are you sure you want to clear all data in Section 1? This cannot be undone.")) {
+      resetSection();
+    }
+  }, [resetSection]);
 
   // Simulated auto-save indicator with animated checkmark
   useEffect(() => {
@@ -155,9 +206,31 @@ export function SectionOneForm() {
               </>
             ) : null}
           </div>
-          <button className="text-slate-400 transition-colors hover:text-slate-900">
-            <MoreHorizontal size={20} />
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="text-slate-400 transition-colors hover:text-slate-900">
+                <MoreHorizontal size={20} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem
+                onClick={handleClearPage}
+                disabled={activeStep === 0}
+                className="cursor-pointer"
+              >
+                <FileX className="mr-2 h-4 w-4" />
+                Clear Page
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleClearAll}
+                className="cursor-pointer text-red-600 focus:text-red-600"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Clear All Data
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 

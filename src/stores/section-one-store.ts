@@ -136,7 +136,7 @@ const initialData: SectionOneData = {
 };
 
 // Total number of fields for progress calculation
-const TOTAL_FIELDS = 48;
+const TOTAL_FIELDS = 46;
 
 interface SectionOneStore {
   data: SectionOneData;
