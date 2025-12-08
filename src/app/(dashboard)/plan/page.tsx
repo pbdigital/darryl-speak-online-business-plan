@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { LogoutButton } from './logout-button';
-import { PlanHero, SectionCard, SectionOneCardWrapper } from '@/components/business-plan';
+import { PlanHero, SectionCard, SectionOneCardWrapper, SectionTwoCardWrapper } from '@/components/business-plan';
 import { Users } from 'lucide-react';
 
 const sections = [
@@ -107,6 +107,16 @@ export default async function PlanPage() {
             if (section.sectionNumber === 1) {
               return (
                 <SectionOneCardWrapper
+                  key={section.sectionNumber}
+                  {...section}
+                />
+              );
+            }
+
+            // Section 2 uses client-side store for real-time progress
+            if (section.sectionNumber === 2) {
+              return (
+                <SectionTwoCardWrapper
                   key={section.sectionNumber}
                   {...section}
                 />
