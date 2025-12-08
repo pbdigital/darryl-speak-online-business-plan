@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
-import { ChevronRight, Check, Clock, Circle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 type SectionStatus = "not_started" | "in_progress" | "completed";
 
 interface SectionCardProps {
   sectionNumber: number;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   description: string;
   href: string;
   status?: SectionStatus;
@@ -18,25 +17,48 @@ interface SectionCardProps {
   className?: string;
 }
 
-const statusConfig = {
-  not_started: {
-    label: "Not Started",
-    icon: Circle,
-    chipClass: "bg-muted text-muted-foreground",
-    buttonText: "Start Section",
-  },
-  in_progress: {
-    label: "In Progress",
-    icon: Clock,
-    chipClass: "bg-amber-100 text-amber-700",
-    buttonText: "Continue",
-  },
-  completed: {
-    label: "Completed",
-    icon: Check,
-    chipClass: "bg-emerald-100 text-emerald-700",
-    buttonText: "Review",
-  },
+// Section-specific icons
+const sectionIcons: Record<number, React.ReactNode> = {
+  1: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-full w-full">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  ),
+  2: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-full w-full">
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+  ),
+  3: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-full w-full">
+      <path d="M23 6l-9.5 9.5-5-5L1 18" />
+      <path d="M17 6h6v6" />
+    </svg>
+  ),
+  4: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-full w-full">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+      <line x1="9" y1="9" x2="9.01" y2="9" strokeWidth="2.5" />
+      <line x1="15" y1="9" x2="15.01" y2="9" strokeWidth="2.5" />
+    </svg>
+  ),
+  5: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-full w-full">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  ),
+};
+
+const statusLabels: Record<SectionStatus, string> = {
+  not_started: "Not Started",
+  in_progress: "In Progress",
+  completed: "Completed",
 };
 
 export function SectionCard({
@@ -49,63 +71,81 @@ export function SectionCard({
   progress = 0,
   className,
 }: SectionCardProps) {
-  const config = statusConfig[status];
-  const StatusIcon = config.icon;
+  const isCompleted = status === "completed";
+  const isInProgress = status === "in_progress";
+  const displayIcon = sectionIcons[sectionNumber];
 
   return (
     <Link
       href={href}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all duration-200",
-        "hover:shadow-lg hover:border-primary/30",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 transition-all duration-300",
+        "hover:border-slate-900/10 hover:shadow-2xl",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2",
         className
       )}
     >
-      {/* Section Header */}
-      <div className="bg-primary px-5 py-4 text-primary-foreground">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold uppercase tracking-wider text-white/70">
-            Section {sectionNumber}
-          </span>
-          <div
-            className={cn(
-              "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
-              config.chipClass
-            )}
-          >
-            <StatusIcon className="h-3 w-3" />
-            {config.label}
-          </div>
-        </div>
-        <h3 className="mt-2 text-lg font-bold leading-tight">{title}</h3>
-        {subtitle && (
-          <p className="mt-0.5 text-sm font-medium text-white/80">{subtitle}</p>
-        )}
+      {/* Corner decoration - changes color on hover */}
+      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-bl-[100px] bg-slate-50 transition-colors duration-300 group-hover:bg-[#0F172A]" />
+
+      {/* Icon in corner */}
+      <div className="absolute right-5 top-5 h-6 w-6 text-slate-300 transition-colors duration-300 group-hover:text-white">
+        {displayIcon}
       </div>
 
-      {/* Card Body */}
-      <div className="flex flex-1 flex-col p-5">
-        <p className="flex-1 text-sm text-muted-foreground">{description}</p>
+      {/* Section label */}
+      <div className="mb-4">
+        <span className="text-xs font-black uppercase tracking-widest text-slate-300">
+          Section {sectionNumber}
+        </span>
+      </div>
 
-        {/* Progress Bar */}
-        <div className="mt-4">
-          <div className="mb-1.5 flex items-center justify-between text-xs">
-            <span className="text-muted-foreground">Progress</span>
-            <span className="font-medium text-foreground">{progress}%</span>
-          </div>
-          <Progress value={progress} className="h-2" />
+      {/* Title */}
+      <h3 className="text-2xl font-bold leading-tight text-slate-900 transition-colors group-hover:text-blue-900">
+        {title}
+        {subtitle && (
+          <span className="font-normal text-slate-500"> {subtitle}</span>
+        )}
+      </h3>
+
+      {/* Description */}
+      <p className="mb-8 mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-500">
+        {description}
+      </p>
+
+      {/* Progress section */}
+      <div className="mt-auto w-full">
+        <div className="mb-2 flex items-end justify-between">
+          <span
+            className={cn(
+              "text-xs font-bold uppercase tracking-wide",
+              isCompleted ? "text-emerald-600" : "text-slate-900"
+            )}
+          >
+            {statusLabels[status]}
+          </span>
+          <span className="text-xs font-medium text-slate-400">{progress}%</span>
         </div>
 
-        {/* CTA Button */}
-        <div
-          className={cn(
-            "mt-4 flex items-center justify-center gap-2 rounded-lg border py-2.5 text-sm font-medium transition-colors",
-            "group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary"
-          )}
-        >
-          {config.buttonText}
-          <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        {/* Progress bar */}
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+          <div
+            className={cn(
+              "h-full transition-all duration-1000 ease-out",
+              isCompleted ? "bg-emerald-500" : "bg-[#0F172A]"
+            )}
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        {/* CTA */}
+        <div className="mt-6 flex items-center text-sm font-bold uppercase tracking-wide text-slate-900 transition-transform group-hover:translate-x-1">
+          {isCompleted
+            ? "Review Section"
+            : isInProgress
+            ? "Continue Workbook"
+            : "Start Section"}
+          <ArrowRight className="ml-2 h-4 w-4" />
         </div>
       </div>
     </Link>
