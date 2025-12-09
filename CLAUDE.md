@@ -430,6 +430,29 @@ We need to build a **WordPress plugin on darrylspeaks.com** to handle Power Agen
 
 ---
 
+## Reference Documents
+
+The source material for this application exists in two formats:
+
+| Document | Purpose |
+|----------|---------|
+| `Your Ultimate 2026 Real Estate Business Plan.pdf` | Original PDF design with visual layout, branding, and styling |
+| `Your Ultimate 2026 Real Estate Business Plan.md` | Developer-friendly markdown with all questions, field types, and form structure annotations |
+
+**Use the markdown file** (`Your Ultimate 2026 Real Estate Business Plan.md`) as the primary reference when:
+- Building form components (includes field type annotations like `text`, `textarea`, `currency`, `calculated`)
+- Understanding the exact wording of questions and prompts
+- Implementing section structure and navigation flow
+- Identifying which fields are calculated vs user-input
+
+**Use the PDF** (`Your Ultimate 2026 Real Estate Business Plan.pdf`) as reference for:
+- Visual design and branding
+- Color schemes and typography
+- Layout inspiration and spacing
+- Client-facing look and feel
+
+---
+
 ## Business Plan Structure (from PDF)
 
 The 2026 Business Plan PDF has **5 major sections** across 57 pages:

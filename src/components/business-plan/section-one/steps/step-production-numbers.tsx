@@ -32,19 +32,22 @@ export function StepProductionNumbers() {
           </div>
 
           <div className="grid grid-cols-1 gap-x-12 gap-y-4 md:grid-cols-2">
-            <WorkbookInput label="Listings Taken" placeholder="#" type="number" />
+            <WorkbookInput label="Listings Taken" fieldName="listingsTaken" placeholder="#" type="number" />
             <WorkbookInput
               label="Seller Sides Closed"
+              fieldName="sellerSidesClosed"
               placeholder="#"
               type="number"
             />
             <WorkbookInput
               label="Buyer Sides Closed"
+              fieldName="buyerSidesClosed"
               placeholder="#"
               type="number"
             />
             <WorkbookInput
               label="Renter Transactions"
+              fieldName="renterTransactions"
               placeholder="#"
               type="number"
             />
@@ -52,6 +55,7 @@ export function StepProductionNumbers() {
           <div className="mt-4 border-t border-slate-50 pt-4">
             <WorkbookInput
               label="Gross Closed Commissions"
+              fieldName="grossClosedCommissions"
               placeholder="0.00"
               prefix="$"
               type="number"
@@ -73,27 +77,32 @@ export function StepProductionNumbers() {
       <div className="space-y-2">
         <WorkbookTextarea
           label="Did you achieve your goals last year? Why or why not?"
-          placeholder="Be specific about what worked and what didn't..."
+          fieldName="didAchieveGoals"
+          placeholder="I hit 80% of my transaction goal. I fell short because I didn't prospect consistently in Q2..."
           rows={3}
         />
         <WorkbookTextarea
           label="What were your biggest struggles?"
-          placeholder="Market conditions? Mindset? Inventory? Time management?"
+          fieldName="biggestStruggles"
+          placeholder="Inventory was tight all spring. I also struggled with time management and let admin tasks pile up..."
           rows={3}
         />
         <WorkbookTextarea
           label="What was your biggest accomplishment?"
-          placeholder="Don't be shy—celebrate your wins!"
+          fieldName="biggestAccomplishment"
+          placeholder="I closed my first million-dollar listing! Also built a referral system that brought in 5 new clients..."
           rows={3}
         />
         <WorkbookTextarea
           label="How did you prospect last year?"
-          placeholder="What methods did you use? What was most effective?"
+          fieldName="prospectingMethods"
+          placeholder="Mostly sphere calls and open houses. I tried door knocking in Q3 but wasn't consistent..."
           rows={3}
         />
         <WorkbookTextarea
           label="What went well that you want to continue?"
-          placeholder="Strategies, habits, or approaches worth keeping..."
+          fieldName="wantToContinue"
+          placeholder="My Monday morning sphere calls. Also my client appreciation events - they generated 3 referrals..."
           rows={3}
         />
       </div>

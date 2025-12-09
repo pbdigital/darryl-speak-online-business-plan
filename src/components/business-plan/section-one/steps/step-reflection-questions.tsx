@@ -35,17 +35,20 @@ export function StepReflectionQuestions() {
       <div className="space-y-2">
         <WorkbookTextarea
           label="What were your most significant achievements and milestones in the past year?"
-          placeholder="Think about both personal and professional wins..."
+          fieldName="significantAchievements"
+          placeholder="I'm most proud of closing my biggest deal ever in Q3. I also finally hired an assistant which freed up 10 hours a week..."
           rows={4}
         />
         <WorkbookTextarea
           label="What challenges did you face, and how did you overcome them?"
-          placeholder="Reflect on the obstacles and what you learned from them..."
+          fieldName="challengesAndOvercoming"
+          placeholder="The market slowdown in spring was tough. I overcame it by doubling down on my sphere and hosting three client appreciation events..."
           rows={4}
         />
         <WorkbookTextarea
           label="What did you learn about yourself in the past year?"
-          placeholder="New insights, patterns, or realizations..."
+          fieldName="learnedAboutSelf"
+          placeholder="I learned that I work best in the mornings and should schedule my prospecting calls before 11am. I also discovered..."
           rows={4}
         />
       </div>

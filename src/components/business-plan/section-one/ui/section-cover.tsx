@@ -23,7 +23,7 @@ export function SectionCover({
   return (
     <div
       className={cn(
-        "group relative mb-12 overflow-hidden rounded-3xl bg-[#0F172A] p-8 text-white shadow-xl md:p-12",
+        "group relative mb-12 overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E293B] to-[#0F172A] p-8 text-white shadow-xl md:p-12",
         className
       )}
     >

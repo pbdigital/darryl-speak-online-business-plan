@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { LogoutButton } from './logout-button';
-import { PlanHero, SectionCard } from '@/components/business-plan';
+import { PlanHero, SectionCard, SectionOneCardWrapper, SectionTwoCardWrapper } from '@/components/business-plan';
 import { Users } from 'lucide-react';
 
 const sections = [
@@ -103,6 +103,27 @@ export default async function PlanPage() {
       <main className="relative z-20 mx-auto -mt-20 max-w-7xl px-6 pb-20 md:px-12">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {sections.map((section) => {
+            // Section 1 uses client-side store for real-time progress
+            if (section.sectionNumber === 1) {
+              return (
+                <SectionOneCardWrapper
+                  key={section.sectionNumber}
+                  {...section}
+                />
+              );
+            }
+
+            // Section 2 uses client-side store for real-time progress
+            if (section.sectionNumber === 2) {
+              return (
+                <SectionTwoCardWrapper
+                  key={section.sectionNumber}
+                  {...section}
+                />
+              );
+            }
+
+            // Other sections use server-provided data (will be updated when DB integration is added)
             const progressData = sectionProgress[section.sectionNumber as keyof typeof sectionProgress];
             return (
               <SectionCard

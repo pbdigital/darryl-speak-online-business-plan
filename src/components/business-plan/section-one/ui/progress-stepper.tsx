@@ -5,27 +5,25 @@ import { cn } from "@/lib/utils";
 interface ProgressStepperProps {
   currentStep: number;
   totalSteps: number;
-  stepLabels?: string[];
   className?: string;
 }
 
-const DEFAULT_STEP_LABELS = [
+const STEP_LABELS = [
   "Overview",
-  "Step 1",
-  "Step 2",
-  "Step 3",
-  "Step 4",
-  "Step 5",
-  "Step 6",
-  "Step 7",
-  "Step 8",
+  "Production",
+  "Reflection",
+  "Gratitude",
+  "Values",
+  "Goals",
+  "Wellness",
+  "Mantra",
+  "Celebration",
   "Complete",
 ];
 
 export function ProgressStepper({
   currentStep,
   totalSteps,
-  stepLabels = DEFAULT_STEP_LABELS,
   className,
 }: ProgressStepperProps) {
   return (
@@ -77,7 +75,7 @@ export function ProgressStepper({
                       ? "bg-slate-900 ring-4 ring-slate-900/10"
                       : "bg-slate-200 hover:bg-slate-300"
                 )}
-                aria-label={`Step ${i + 1}: ${stepLabels[i] || `Step ${i}`}`}
+                aria-label={`Step ${i + 1}: ${STEP_LABELS[i]}`}
               >
                 {/* Completed checkmark */}
                 {i < currentStep && (
@@ -102,9 +100,9 @@ export function ProgressStepper({
                 )}
               </button>
 
-              {/* Tooltip label on hover */}
+              {/* Tooltip label on hover - now relative to just the dot */}
               <div className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-slate-900 px-2 py-1 text-[10px] font-medium text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                {stepLabels[i] || `Step ${i}`}
+                {STEP_LABELS[i]}
                 <div className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-slate-900" />
               </div>
             </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 type SectionStatus = "not_started" | "in_progress" | "completed";
 
@@ -85,12 +85,26 @@ export function SectionCard({
         className
       )}
     >
-      {/* Corner decoration - changes color on hover */}
-      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-bl-[100px] bg-slate-50 transition-colors duration-300 group-hover:bg-[#0F172A]" />
+      {/* Corner decoration - green when completed, navy on hover otherwise */}
+      <div
+        className={cn(
+          "pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-bl-[100px] transition-colors duration-300",
+          isCompleted
+            ? "bg-emerald-500 group-hover:bg-emerald-600"
+            : "bg-slate-50 group-hover:bg-[#0F172A]"
+        )}
+      />
 
-      {/* Icon in corner */}
-      <div className="absolute right-5 top-5 h-6 w-6 text-slate-300 transition-colors duration-300 group-hover:text-white">
-        {displayIcon}
+      {/* Icon in corner - checkmark when completed */}
+      <div
+        className={cn(
+          "absolute right-5 top-5 transition-colors duration-300",
+          isCompleted
+            ? "h-7 w-7 text-white"
+            : "h-6 w-6 text-slate-300 group-hover:text-white"
+        )}
+      >
+        {isCompleted ? <Check className="h-full w-full" strokeWidth={3} /> : displayIcon}
       </div>
 
       {/* Section label */}
@@ -143,7 +157,7 @@ export function SectionCard({
           {isCompleted
             ? "Review Section"
             : isInProgress
-            ? "Continue Workbook"
+            ? "Continue"
             : "Start Section"}
           <ArrowRight className="ml-2 h-4 w-4" />
         </div>

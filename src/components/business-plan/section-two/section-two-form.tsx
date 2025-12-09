@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, ChevronRight, MoreHorizontal, Trash2, FileX } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  MoreHorizontal,
+  Trash2,
+  FileX,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,46 +16,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSectionOneStore, SectionOneData } from "@/stores/section-one-store";
+import { useSectionTwoStore } from "@/stores/section-two-store";
+import {
+  ProgressStepper,
+  EncouragementToast,
+  AnimatedCheckmark,
+} from "@/components/business-plan/section-one/ui";
 
 import { StepOverview } from "./steps/step-overview";
-import { StepProductionNumbers } from "./steps/step-production-numbers";
-import { StepReflectionQuestions } from "./steps/step-reflection-questions";
-import { StepGratitude } from "./steps/step-gratitude";
-import { StepSelfReflection } from "./steps/step-self-reflection";
-import { StepGoalsIntentions } from "./steps/step-goals-intentions";
-import { StepWellness } from "./steps/step-wellness";
-import { StepMantra } from "./steps/step-mantra";
-import { StepCelebration } from "./steps/step-celebration";
+import { StepStrengths } from "./steps/step-strengths";
+import { StepWeaknesses } from "./steps/step-weaknesses";
+import { StepOpportunities } from "./steps/step-opportunities";
+import { StepThreats } from "./steps/step-threats";
 import { StepComplete } from "./steps/step-complete";
-import { ProgressStepper, EncouragementToast, AnimatedCheckmark } from "./ui";
 
-const TOTAL_STEPS = 10; // 0-9 (Overview + 8 content steps + Complete)
+const TOTAL_STEPS = 6; // 0-5 (Overview + 4 content steps + Complete)
+
+const STEP_LABELS = [
+  "Overview",
+  "Strengths",
+  "Weaknesses",
+  "Opportunities",
+  "Threats",
+  "Complete",
+];
 
 const ENCOURAGEMENT_MESSAGES: Record<number, string> = {
-  2: "Beautifully reflected.",
-  5: "You're doing meaningful work.",
-  8: "Almost there. Keep going.",
+  1: "Strengths identified. Now to address the gaps.",
+  3: "Halfway through. Your strategy is taking shape.",
 };
 
-// Map each step to its corresponding fields in the store
-const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
-  1: [
-    "listingsTaken", "sellerSidesClosed", "buyerSidesClosed", "renterTransactions",
-    "grossClosedCommissions", "didAchieveGoals", "biggestStruggles",
-    "biggestAccomplishment", "prospectingMethods", "wantToContinue",
-  ],
-  2: ["significantAchievements", "challengesAndOvercoming", "learnedAboutSelf"],
-  3: ["gratefulFor", "gratefulPeople", "joyfulMoments"],
-  4: ["mostFulfilled", "leastSatisfied", "overallWellbeing", "coreValuesAlignment", "valuePrioritiesShift"],
-  5: ["topGoalsIntentions", "goalsImportance", "goalStrategies", "immediateSteps", "potentialObstacles", "obstacleStrategies"],
-  6: ["selfCarePriorities", "nurturingWellbeing", "selfCareMethods", "skillsToImprove", "learningCommitment", "giveBackCommunity", "positiveImpact"],
-  7: ["mantra", "accountabilityMethod", "accountabilityPartner", "progressTrackingTools"],
-  8: ["celebrationMilestones", "reflectionFrequency", "improvementsAndChanges", "coreImportance"],
-  9: ["celebrationMethod", "encouragementMessage", "signature", "completionDate"],
-};
-
-export function SectionOneForm() {
+export function SectionTwoForm() {
   const [activeStep, setActiveStep] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
@@ -58,28 +55,45 @@ export function SectionOneForm() {
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
 
-  const { updateField, resetSection } = useSectionOneStore();
+  const {
+    resetSection,
+    resetStrengths,
+    resetWeaknesses,
+    resetOpportunities,
+    resetThreats,
+  } = useSectionTwoStore();
 
   const handleClearPage = useCallback(() => {
-    const fields = STEP_FIELDS[activeStep];
-    if (!fields) return;
-
-    fields.forEach((field) => {
-      const isNumericField = [
-        "listingsTaken", "sellerSidesClosed", "buyerSidesClosed",
-        "renterTransactions", "grossClosedCommissions",
-      ].includes(field);
-
-      if (isNumericField) {
-        updateField(field, null as unknown as SectionOneData[typeof field]);
-      } else {
-        updateField(field, "" as SectionOneData[typeof field]);
-      }
-    });
-  }, [activeStep, updateField]);
+    switch (activeStep) {
+      case 1:
+        resetStrengths();
+        break;
+      case 2:
+        resetWeaknesses();
+        break;
+      case 3:
+        resetOpportunities();
+        break;
+      case 4:
+        resetThreats();
+        break;
+      default:
+        break;
+    }
+  }, [
+    activeStep,
+    resetStrengths,
+    resetWeaknesses,
+    resetOpportunities,
+    resetThreats,
+  ]);
 
   const handleClearAll = useCallback(() => {
-    if (window.confirm("Are you sure you want to clear all data in Section 1? This cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to clear all data in Section 2? This cannot be undone."
+      )
+    ) {
       resetSection();
     }
   }, [resetSection]);
@@ -143,28 +157,18 @@ export function SectionOneForm() {
   };
 
   const renderStep = () => {
-    const stepProps = { startTime };
-
     switch (activeStep) {
       case 0:
         return <StepOverview onStart={() => setActiveStep(1)} />;
       case 1:
-        return <StepProductionNumbers />;
+        return <StepStrengths />;
       case 2:
-        return <StepReflectionQuestions />;
+        return <StepWeaknesses />;
       case 3:
-        return <StepGratitude />;
+        return <StepOpportunities />;
       case 4:
-        return <StepSelfReflection />;
+        return <StepThreats />;
       case 5:
-        return <StepGoalsIntentions />;
-      case 6:
-        return <StepWellness />;
-      case 7:
-        return <StepMantra />;
-      case 8:
-        return <StepCelebration />;
-      case 9:
         return <StepComplete startTime={startTime} />;
       default:
         return null;
@@ -215,7 +219,7 @@ export function SectionOneForm() {
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem
                 onClick={handleClearPage}
-                disabled={activeStep === 0}
+                disabled={activeStep === 0 || activeStep === 5}
                 className="cursor-pointer"
               >
                 <FileX className="mr-2 h-4 w-4" />
@@ -237,7 +241,9 @@ export function SectionOneForm() {
       {/* Main Content with Transitions */}
       <div
         className={`pt-12 transition-all duration-300 ${
-          isTransitioning ? "animate-fade-out-up opacity-0" : "animate-fade-in-up"
+          isTransitioning
+            ? "animate-fade-out-up opacity-0"
+            : "animate-fade-in-up"
         }`}
       >
         {renderStep()}
