@@ -11,12 +11,19 @@ const CONVERSATIONS_PER_APPOINTMENT = 16;
 const REACHOUTS_PER_CONVERSATION = 12.5;
 const WEEKS_PER_YEAR = 52;
 
+// Total steps in Section 3 (excluding overview at 0, content steps 1-8, complete at 9)
+const TOTAL_CONTENT_STEPS = 8;
+
 interface BusinessPlanStore {
   // Income Planning Data
   incomePlanning: IncomePlanningSection;
 
   // Calculated Metrics (derived values)
   calculated: CalculatedMetrics;
+
+  // Step tracking for progress
+  currentStep: number;
+  highestStepReached: number;
 
   // Actions
   updatePersonalExpense: (index: number, amount: number | null) => void;
@@ -34,13 +41,16 @@ interface BusinessPlanStore {
   updateWorkSchedule: (field: 'workDaysPerWeek' | 'weeksOff', value: number | null) => void;
   updateCommitmentText: (field: 'reachingGoalMeans' | 'failingGoalMeans', value: string) => void;
 
+  // Step navigation
+  setCurrentStep: (step: number) => void;
+
   // Reset section
   resetSection: () => void;
 
   // Recalculate all derived values
   recalculate: () => void;
 
-  // Progress tracking
+  // Progress tracking (step-based)
   getProgress: () => number;
   getFilledFieldCount: () => number;
 }
@@ -150,6 +160,8 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
     (set, get) => ({
   incomePlanning: initialIncomePlanning,
   calculated: initialCalculated,
+  currentStep: 0,
+  highestStepReached: 0,
 
   updatePersonalExpense: (index, amount) => {
     set((state) => {
@@ -228,10 +240,20 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
     }));
   },
 
+  setCurrentStep: (step) => {
+    set((state) => ({
+      currentStep: step,
+      // Track the highest step reached (for progress calculation)
+      highestStepReached: Math.max(state.highestStepReached, step),
+    }));
+  },
+
   resetSection: () => {
     set({
       incomePlanning: initialIncomePlanning,
       calculated: initialCalculated,
+      currentStep: 0,
+      highestStepReached: 0,
     });
   },
 
@@ -269,8 +291,25 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   },
 
   getProgress: () => {
-    const filledCount = get().getFilledFieldCount();
-    return Math.round((filledCount / TOTAL_FIELDS) * 100);
+    // Step-based progress: highest step reached / total content steps
+    // Steps: 0=Overview, 1-8=Content steps, 9=Complete
+    // Progress is based on content steps (1-8), so reaching step 9 (complete) = 100%
+    const { highestStepReached } = get();
+
+    // If still on overview (step 0), progress is 0%
+    if (highestStepReached === 0) return 0;
+
+    // If reached complete step (9), progress is 100%
+    if (highestStepReached >= 9) return 100;
+
+    // Otherwise, calculate based on content steps completed
+    // Steps 1-8 are content steps, so (highestStepReached - 1) steps are "completed"
+    // Step 1 = first content step = 0% complete (just started)
+    // Step 8 = last content step = 87.5% complete
+    // Step 9 = complete = 100%
+    // Alternative: current step progress = (step - 1) / 8 * 100 for steps 1-8
+    // Or simpler: step / 9 * 100 (treating step 9 as 100%)
+    return Math.round((highestStepReached / 9) * 100);
   },
 
   recalculate: () => {

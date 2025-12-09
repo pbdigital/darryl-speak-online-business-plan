@@ -50,7 +50,10 @@ const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
 };
 
 export function SectionOneForm() {
-  const [activeStep, setActiveStep] = useState(0);
+  const { currentStep, setCurrentStep, updateField, resetSection } = useSectionOneStore();
+
+  // Local state for UI - initialized from store
+  const [activeStep, setActiveStep] = useState(currentStep);
   const [isSaving, setIsSaving] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -58,7 +61,17 @@ export function SectionOneForm() {
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
 
-  const { updateField, resetSection } = useSectionOneStore();
+  // Sync local state with store on mount (in case store has persisted step)
+  useEffect(() => {
+    if (currentStep > 0 && currentStep !== activeStep) {
+      setActiveStep(currentStep);
+    }
+  }, []); // Only on mount
+
+  // Update store whenever local step changes
+  useEffect(() => {
+    setCurrentStep(activeStep);
+  }, [activeStep, setCurrentStep]);
 
   const handleClearPage = useCallback(() => {
     const fields = STEP_FIELDS[activeStep];
@@ -81,6 +94,7 @@ export function SectionOneForm() {
   const handleClearAll = useCallback(() => {
     if (window.confirm("Are you sure you want to clear all data in Section 1? This cannot be undone.")) {
       resetSection();
+      setActiveStep(0); // Reset to overview
     }
   }, [resetSection]);
 

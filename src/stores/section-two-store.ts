@@ -54,8 +54,15 @@ const initialData: SectionTwoData = {
 // Total fields: 8 strengths x 2 + 8 weaknesses x 2 + 8 opportunities x 2 + 8 threats x 2 = 64
 const TOTAL_FIELDS = 64;
 
+// Total steps in Section 2 (0=Overview, 1-4=Content steps, 5=Complete)
+const TOTAL_STEPS = 6;
+
 interface SectionTwoStore {
   data: SectionTwoData;
+
+  // Step tracking for progress
+  currentStep: number;
+  highestStepReached: number;
 
   // Actions
   updateStrength: (
@@ -71,6 +78,7 @@ interface SectionTwoStore {
     value: string
   ) => void;
   updateThreat: (index: number, field: keyof ThreatItem, value: string) => void;
+  setCurrentStep: (step: number) => void;
   resetSection: () => void;
   resetStrengths: () => void;
   resetWeaknesses: () => void;
@@ -90,6 +98,8 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
   persist(
     (set, get) => ({
       data: initialData,
+      currentStep: 0,
+      highestStepReached: 0,
 
       updateStrength: (index, field, value) => {
         set((state) => {
@@ -134,8 +144,15 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
         });
       },
 
+      setCurrentStep: (step) => {
+        set((state) => ({
+          currentStep: step,
+          highestStepReached: Math.max(state.highestStepReached, step),
+        }));
+      },
+
       resetSection: () => {
-        set({ data: initialData });
+        set({ data: initialData, currentStep: 0, highestStepReached: 0 });
       },
 
       resetStrengths: () => {
@@ -163,34 +180,11 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
       },
 
       getProgress: () => {
-        const data = get().data;
-        let filled = 0;
-
-        // Count filled strength fields
-        data.strengths.forEach((item) => {
-          if (item.strength.trim()) filled++;
-          if (item.useCase.trim()) filled++;
-        });
-
-        // Count filled weakness fields
-        data.weaknesses.forEach((item) => {
-          if (item.weakness.trim()) filled++;
-          if (item.action !== null) filled++;
-        });
-
-        // Count filled opportunity fields
-        data.opportunities.forEach((item) => {
-          if (item.possibility.trim()) filled++;
-          if (item.actionSteps.trim()) filled++;
-        });
-
-        // Count filled threat fields
-        data.threats.forEach((item) => {
-          if (item.threat.trim()) filled++;
-          if (item.actionSteps.trim()) filled++;
-        });
-
-        return Math.round((filled / TOTAL_FIELDS) * 100);
+        // Step-based progress: highest step reached / total steps
+        const { highestStepReached } = get();
+        if (highestStepReached === 0) return 0;
+        if (highestStepReached >= TOTAL_STEPS - 1) return 100;
+        return Math.round((highestStepReached / (TOTAL_STEPS - 1)) * 100);
       },
 
       getFilledFieldCount: () => {

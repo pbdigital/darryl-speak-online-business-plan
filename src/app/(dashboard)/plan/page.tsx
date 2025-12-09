@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { LogoutButton } from './logout-button';
-import { PlanHero, SectionCard, SectionOneCardWrapper, SectionTwoCardWrapper } from '@/components/business-plan';
-import { Users } from 'lucide-react';
+import { PlanHero, SectionCardsGrid } from '@/components/business-plan';
 
 const sections = [
   {
@@ -69,25 +68,9 @@ export default async function PlanPage() {
     ? `${profile.first_name} ${profile.last_name || ''}`.trim()
     : user.email?.split('@')[0] || 'there';
 
-  // TODO: Fetch actual progress data from database
-  type SectionStatus = "not_started" | "in_progress" | "completed";
-
-  const sectionProgress: Record<number, { status: SectionStatus; progress: number }> = {
-    1: { status: "in_progress", progress: 35 },
-    2: { status: "not_started", progress: 0 },
-    3: { status: "not_started", progress: 0 },
-    4: { status: "not_started", progress: 0 },
-    5: { status: "not_started", progress: 0 },
-  };
-
-  const completedSections = Object.values(sectionProgress).filter(
-    (s) => s.status === "completed"
-  ).length;
-
-  // Calculate total progress
-  const totalProgress = Math.round(
-    Object.values(sectionProgress).reduce((acc, s) => acc + s.progress, 0) / 5
-  );
+  // TODO: Calculate completedSections from client-side stores
+  // For now, this is a placeholder - the actual count comes from the SectionCardsGrid component
+  const completedSections = 0;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -101,61 +84,7 @@ export default async function PlanPage() {
 
       {/* Main Content - overlaps the hero */}
       <main className="relative z-20 mx-auto -mt-20 max-w-7xl px-6 pb-20 md:px-12">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {sections.map((section) => {
-            // Section 1 uses client-side store for real-time progress
-            if (section.sectionNumber === 1) {
-              return (
-                <SectionOneCardWrapper
-                  key={section.sectionNumber}
-                  {...section}
-                />
-              );
-            }
-
-            // Section 2 uses client-side store for real-time progress
-            if (section.sectionNumber === 2) {
-              return (
-                <SectionTwoCardWrapper
-                  key={section.sectionNumber}
-                  {...section}
-                />
-              );
-            }
-
-            // Other sections use server-provided data (will be updated when DB integration is added)
-            const progressData = sectionProgress[section.sectionNumber as keyof typeof sectionProgress];
-            return (
-              <SectionCard
-                key={section.sectionNumber}
-                {...section}
-                status={progressData?.status}
-                progress={progressData?.progress}
-              />
-            );
-          })}
-
-          {/* Digital Coach Card - matches the navy hero aesthetic */}
-          <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-[#0F172A] p-8 text-white">
-            {/* Corner decoration to match section cards */}
-            <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-bl-[100px] bg-white/5" />
-
-            <div className="relative z-10">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
-                <Users className="h-6 w-6 text-white/80" />
-              </div>
-
-              <h3 className="text-2xl font-bold">Digital Coach</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                Stuck on your SWOT analysis? Need help calculating GCI? Ask your AI assistant.
-              </p>
-            </div>
-
-            <div className="relative z-10 mt-6 w-full rounded-lg border border-slate-700 bg-slate-800/50 py-3 text-center text-sm font-medium text-slate-400">
-              Coming Soon
-            </div>
-          </div>
-        </div>
+        <SectionCardsGrid sections={sections} />
       </main>
 
       {/* Footer */}

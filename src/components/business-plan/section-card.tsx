@@ -15,6 +15,8 @@ interface SectionCardProps {
   status?: SectionStatus;
   progress?: number;
   className?: string;
+  /** Whether this card should be dimmed (for upcoming sections) */
+  dimmed?: boolean;
 }
 
 // Section-specific icons
@@ -70,6 +72,7 @@ export function SectionCard({
   status = "not_started",
   progress = 0,
   className,
+  dimmed = false,
 }: SectionCardProps) {
   const isCompleted = status === "completed";
   const isInProgress = status === "in_progress";
@@ -82,6 +85,7 @@ export function SectionCard({
         "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 transition-all duration-300",
         "hover:border-slate-900/10 hover:shadow-2xl",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2",
+        dimmed && "opacity-60 hover:opacity-100",
         className
       )}
     >

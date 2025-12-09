@@ -2,13 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-interface ProgressStepperProps {
-  currentStep: number;
-  totalSteps: number;
-  className?: string;
-}
-
-const STEP_LABELS = [
+const DEFAULT_STEP_LABELS = [
   "Overview",
   "Production",
   "Reflection",
@@ -21,10 +15,18 @@ const STEP_LABELS = [
   "Complete",
 ];
 
+interface ProgressStepperProps {
+  currentStep: number;
+  totalSteps: number;
+  className?: string;
+  stepLabels?: string[];
+}
+
 export function ProgressStepper({
   currentStep,
   totalSteps,
   className,
+  stepLabels = DEFAULT_STEP_LABELS,
 }: ProgressStepperProps) {
   return (
     <div className={cn("flex flex-col items-center", className)}>
@@ -75,7 +77,7 @@ export function ProgressStepper({
                       ? "bg-slate-900 ring-4 ring-slate-900/10"
                       : "bg-slate-200 hover:bg-slate-300"
                 )}
-                aria-label={`Step ${i + 1}: ${STEP_LABELS[i]}`}
+                aria-label={`Step ${i + 1}: ${stepLabels[i] || `Step ${i + 1}`}`}
               >
                 {/* Completed checkmark */}
                 {i < currentStep && (
@@ -102,7 +104,7 @@ export function ProgressStepper({
 
               {/* Tooltip label on hover - now relative to just the dot */}
               <div className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-slate-900 px-2 py-1 text-[10px] font-medium text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                {STEP_LABELS[i]}
+                {stepLabels[i] || `Step ${i + 1}`}
                 <div className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-slate-900" />
               </div>
             </div>

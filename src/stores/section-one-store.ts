@@ -138,8 +138,15 @@ const initialData: SectionOneData = {
 // Total number of fields for progress calculation
 const TOTAL_FIELDS = 46;
 
+// Total steps in Section 1 (0=Overview, 1-8=Content steps, 9=Complete)
+const TOTAL_STEPS = 10;
+
 interface SectionOneStore {
   data: SectionOneData;
+
+  // Step tracking for progress
+  currentStep: number;
+  highestStepReached: number;
 
   // Actions
   updateField: <K extends keyof SectionOneData>(
@@ -150,6 +157,7 @@ interface SectionOneStore {
     field: keyof SectionOneData,
     value: number | null
   ) => void;
+  setCurrentStep: (step: number) => void;
   resetSection: () => void;
 
   // Selectors
@@ -162,6 +170,8 @@ export const useSectionOneStore = create<SectionOneStore>()(
   persist(
     (set, get) => ({
       data: initialData,
+      currentStep: 0,
+      highestStepReached: 0,
 
       updateField: (field, value) => {
         set((state) => ({
@@ -175,17 +185,23 @@ export const useSectionOneStore = create<SectionOneStore>()(
         }));
       },
 
+      setCurrentStep: (step) => {
+        set((state) => ({
+          currentStep: step,
+          highestStepReached: Math.max(state.highestStepReached, step),
+        }));
+      },
+
       resetSection: () => {
-        set({ data: initialData });
+        set({ data: initialData, currentStep: 0, highestStepReached: 0 });
       },
 
       getProgress: () => {
-        const data = get().data;
-        const values = Object.values(data);
-        const filled = values.filter(
-          (v) => v !== null && v !== undefined && v !== ""
-        ).length;
-        return Math.round((filled / TOTAL_FIELDS) * 100);
+        // Step-based progress: highest step reached / total steps
+        const { highestStepReached } = get();
+        if (highestStepReached === 0) return 0;
+        if (highestStepReached >= TOTAL_STEPS - 1) return 100;
+        return Math.round((highestStepReached / (TOTAL_STEPS - 1)) * 100);
       },
 
       getFilledFieldCount: () => {
