@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type {
   IncomePlanningSection,
   CalculatedMetrics,
@@ -33,8 +34,15 @@ interface BusinessPlanStore {
   updateWorkSchedule: (field: 'workDaysPerWeek' | 'weeksOff', value: number | null) => void;
   updateCommitmentText: (field: 'reachingGoalMeans' | 'failingGoalMeans', value: string) => void;
 
+  // Reset section
+  resetSection: () => void;
+
   // Recalculate all derived values
   recalculate: () => void;
+
+  // Progress tracking
+  getProgress: () => number;
+  getFilledFieldCount: () => number;
 }
 
 // Default personal expense items from the PDF
@@ -131,7 +139,15 @@ const sumAmounts = (items: { amount: number | null }[]): number => {
   return items.reduce((sum, item) => sum + (item.amount || 0), 0);
 };
 
-export const useBusinessPlanStore = create<BusinessPlanStore>((set, get) => ({
+// Total fields for progress calculation:
+// 20 personal expenses + 14 business expenses + 20 goals (4 categories × 5)
+// + tax rate + broker split + broker cap + avg price + avg commission rate
+// + work days + weeks off + 2 commitment texts = 63 fields
+const TOTAL_FIELDS = 63;
+
+export const useBusinessPlanStore = create<BusinessPlanStore>()(
+  persist(
+    (set, get) => ({
   incomePlanning: initialIncomePlanning,
   calculated: initialCalculated,
 
@@ -210,6 +226,51 @@ export const useBusinessPlanStore = create<BusinessPlanStore>((set, get) => ({
     set((state) => ({
       incomePlanning: { ...state.incomePlanning, [field]: value },
     }));
+  },
+
+  resetSection: () => {
+    set({
+      incomePlanning: initialIncomePlanning,
+      calculated: initialCalculated,
+    });
+  },
+
+  getFilledFieldCount: () => {
+    const { incomePlanning } = get();
+    let count = 0;
+
+    // Count filled personal expenses
+    count += incomePlanning.personalExpenses.filter(e => e.amount !== null).length;
+
+    // Count filled business expenses
+    count += incomePlanning.businessExpenses.filter(e => e.amount !== null).length;
+
+    // Count filled goals (both name and amount count)
+    const countFilledGoals = (goals: { name: string; amount: number | null }[]) =>
+      goals.filter(g => g.name.trim() !== '' || g.amount !== null).length;
+
+    count += countFilledGoals(incomePlanning.familyGoals);
+    count += countFilledGoals(incomePlanning.financialGoals);
+    count += countFilledGoals(incomePlanning.personalGoals);
+    count += countFilledGoals(incomePlanning.businessGoals);
+
+    // Count other fields
+    if (incomePlanning.estimatedTaxRate !== null) count++;
+    if (incomePlanning.brokerSplitPercentage !== null) count++;
+    if (incomePlanning.brokerCapAmount !== null) count++;
+    if (incomePlanning.averageSalesPrice !== null) count++;
+    if (incomePlanning.averageCommissionRate !== null) count++;
+    if (incomePlanning.workDaysPerWeek !== null) count++;
+    if (incomePlanning.weeksOff !== null) count++;
+    if (incomePlanning.reachingGoalMeans.trim() !== '') count++;
+    if (incomePlanning.failingGoalMeans.trim() !== '') count++;
+
+    return count;
+  },
+
+  getProgress: () => {
+    const filledCount = get().getFilledFieldCount();
+    return Math.round((filledCount / TOTAL_FIELDS) * 100);
   },
 
   recalculate: () => {
@@ -296,4 +357,9 @@ export const useBusinessPlanStore = create<BusinessPlanStore>((set, get) => ({
       },
     });
   },
-}));
+    }),
+    {
+      name: 'myplanforsuccess:section-three',
+    }
+  )
+);
