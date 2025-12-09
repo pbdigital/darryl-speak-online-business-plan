@@ -27,7 +27,7 @@ export function StepOpportunities() {
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
       {/* Step Header */}
       <div className="mb-12 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-blue-600">
+        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
           Step 3 of 5
         </span>
         <h2 className="mb-2 flex items-center justify-center gap-3 text-3xl font-extrabold text-slate-900">

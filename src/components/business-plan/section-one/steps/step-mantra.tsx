@@ -46,7 +46,7 @@ export function StepMantra() {
   return (
     <div className="mx-auto max-w-3xl px-4">
       <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-blue-600">
+        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
           Step 7 of 9
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">

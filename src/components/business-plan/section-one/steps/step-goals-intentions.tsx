@@ -6,7 +6,7 @@ export function StepGoalsIntentions() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
       <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-blue-600">
+        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
           Step 5 of 9
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">

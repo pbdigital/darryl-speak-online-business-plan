@@ -31,19 +31,19 @@ export function StepDailyActivities() {
         </h3>
         <div className="grid gap-4 md:grid-cols-3">
           <div className="rounded-lg bg-white p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-blue-600">5</p>
+            <p className="text-2xl font-extrabold text-[#0F172A]">5</p>
             <p className="text-xs text-slate-600">
               appointments = 1 closed transaction
             </p>
           </div>
           <div className="rounded-lg bg-white p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-blue-600">16</p>
+            <p className="text-2xl font-extrabold text-[#0F172A]">16</p>
             <p className="text-xs text-slate-600">
               conversations = 1 appointment
             </p>
           </div>
           <div className="rounded-lg bg-white p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-blue-600">12.5</p>
+            <p className="text-2xl font-extrabold text-[#0F172A]">12.5</p>
             <p className="text-xs text-slate-600">
               reach-outs = 1 conversation
             </p>

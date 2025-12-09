@@ -65,7 +65,7 @@ export function StepIncomeCommitment() {
             <p className="text-sm font-medium text-emerald-700">reach-outs</p>
           </div>
           <div className="rounded-lg bg-blue-50 p-4 text-center">
-            <p className="text-3xl font-extrabold text-blue-600">
+            <p className="text-3xl font-extrabold text-[#0F172A]">
               {calculated.dailyConversations.toFixed(0)}
             </p>
             <p className="text-sm font-medium text-blue-700">conversations</p>

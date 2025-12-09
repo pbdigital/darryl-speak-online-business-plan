@@ -40,36 +40,36 @@ export function StepOverview({ onStart }: StepOverviewProps) {
           </h3>
           <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2">
             <div className="rounded-lg bg-white p-4 shadow-sm">
-              <span className="text-xs font-bold text-blue-600">Part 3A</span>
-              <p className="text-sm text-slate-700">Your Financial Foundation</p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">Part 3A</span>
+              <p className="text-sm text-slate-600">Your Financial Foundation</p>
             </div>
             <div className="rounded-lg bg-white p-4 shadow-sm">
-              <span className="text-xs font-bold text-blue-600">Part 3B</span>
-              <p className="text-sm text-slate-700">Your Manifest List</p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">Part 3B</span>
+              <p className="text-sm text-slate-600">Your Manifest List</p>
             </div>
             <div className="rounded-lg bg-white p-4 shadow-sm">
-              <span className="text-xs font-bold text-blue-600">Part 3C</span>
-              <p className="text-sm text-slate-700">Target Take-Home Income</p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">Part 3C</span>
+              <p className="text-sm text-slate-600">Target Take-Home Income</p>
             </div>
             <div className="rounded-lg bg-white p-4 shadow-sm">
-              <span className="text-xs font-bold text-blue-600">Part 3D</span>
-              <p className="text-sm text-slate-700">Accounting for Taxes</p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">Part 3D</span>
+              <p className="text-sm text-slate-600">Accounting for Taxes</p>
             </div>
             <div className="rounded-lg bg-white p-4 shadow-sm">
-              <span className="text-xs font-bold text-blue-600">Part 3E</span>
-              <p className="text-sm text-slate-700">GCI Goal Calculation</p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">Part 3E</span>
+              <p className="text-sm text-slate-600">GCI Goal Calculation</p>
             </div>
             <div className="rounded-lg bg-white p-4 shadow-sm">
-              <span className="text-xs font-bold text-blue-600">Part 3F</span>
-              <p className="text-sm text-slate-700">Transaction Requirements</p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">Part 3F</span>
+              <p className="text-sm text-slate-600">Transaction Requirements</p>
             </div>
             <div className="rounded-lg bg-white p-4 shadow-sm">
-              <span className="text-xs font-bold text-blue-600">Part 3G</span>
-              <p className="text-sm text-slate-700">Daily Activity Goals</p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">Part 3G</span>
+              <p className="text-sm text-slate-600">Daily Activity Goals</p>
             </div>
             <div className="rounded-lg bg-white p-4 shadow-sm">
-              <span className="text-xs font-bold text-blue-600">Part 3H</span>
-              <p className="text-sm text-slate-700">Your Income Commitment</p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">Part 3H</span>
+              <p className="text-sm text-slate-600">Your Income Commitment</p>
             </div>
           </div>
           <div className="text-center">
