@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { TrendingUp, DollarSign, Target } from "lucide-react";
+import { TrendingUp, DollarSign, Target, ArrowRight } from "lucide-react";
 
 interface SummaryCardProps {
   title: string;
@@ -9,6 +9,7 @@ interface SummaryCardProps {
   format: "currency" | "number";
   variant?: "primary" | "success" | "info";
   icon?: "trending" | "dollar" | "target";
+  subtitle?: string;
   className?: string;
 }
 
@@ -39,6 +40,7 @@ export function SummaryCard({
   format,
   variant = "primary",
   icon,
+  subtitle,
   className,
 }: SummaryCardProps) {
   const Icon = icon ? IconComponent[icon] : null;
@@ -66,6 +68,17 @@ export function SummaryCard({
           <p className="text-3xl font-extrabold tracking-tight">
             {formatValue(value, format)}
           </p>
+          {subtitle && (
+            <p
+              className={cn(
+                "mt-3 flex items-center gap-1.5 text-sm",
+                variant === "info" ? "text-slate-500" : "text-white/60"
+              )}
+            >
+              <span>Next: {subtitle}</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </p>
+          )}
         </div>
         {Icon && (
           <div

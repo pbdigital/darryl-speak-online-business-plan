@@ -117,14 +117,10 @@ export function StepTaxCalculation() {
         variant="primary"
         icon="trending"
       />
-
-      <div className="mt-8 rounded-lg bg-blue-50 p-4">
-        <p className="text-sm text-blue-800">
-          <strong>What&apos;s Next:</strong> This is the amount you need before
-          taxes. Next, we&apos;ll account for your broker&apos;s commission
-          split to find your GCI goal.
-        </p>
-      </div>
+      <p className="mt-3 text-center text-sm text-slate-500">
+        Up Next: Account for your broker&apos;s commission split to find your
+        GCI goal →
+      </p>
     </div>
   );
 }

@@ -128,19 +128,34 @@ export function SectionThreeForm() {
               Back
             </button>
 
-            <button
-              onClick={activeStep === TOTAL_STEPS - 1 ? undefined : handleNext}
-              className="group flex items-center rounded-full bg-[#0F172A] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-slate-800 hover:shadow-xl"
-            >
-              {activeStep === TOTAL_STEPS - 1 ? (
-                <Link href="/plan">Complete Section</Link>
-              ) : (
-                <>
-                  Next Step
-                  <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </>
-              )}
-            </button>
+            {activeStep === TOTAL_STEPS - 1 ? (
+              // Completion page - Back to Dashboard
+              <Link
+                href="/plan"
+                className="group flex items-center rounded-full bg-[#0F172A] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-slate-800 hover:shadow-xl"
+              >
+                Back to Dashboard
+                <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            ) : activeStep === TOTAL_STEPS - 2 ? (
+              // Last content step (Part 3H) - Complete Section
+              <button
+                onClick={handleNext}
+                className="group flex items-center rounded-full bg-[#0F172A] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-slate-800 hover:shadow-xl"
+              >
+                Complete Section
+                <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </button>
+            ) : (
+              // All other steps - Next Step
+              <button
+                onClick={handleNext}
+                className="group flex items-center rounded-full bg-[#0F172A] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-slate-800 hover:shadow-xl"
+              >
+                Next Step
+                <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </button>
+            )}
           </div>
         </div>
       )}

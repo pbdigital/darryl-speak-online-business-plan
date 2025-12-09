@@ -1,19 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { CheckCircle2, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
 
 export function StepComplete() {
   const { calculated, incomePlanning } = useBusinessPlanStore();
-  const [signature, setSignature] = useState("");
-  const [date, setDate] = useState(
-    new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  );
 
   const hasCap = (incomePlanning.brokerCapAmount || 0) > 0;
   const finalGci = hasCap ? calculated.adjustedGciNeeded : calculated.gciNeeded;
@@ -21,16 +12,16 @@ export function StepComplete() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
       {/* Success Hero */}
-      <div className="mb-8 rounded-3xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-8 text-center text-white shadow-xl md:p-12">
-        <div className="mb-4 inline-flex rounded-full bg-white/20 p-4">
+      <div className="mb-8 rounded-3xl bg-[#0F172A] p-8 text-center text-white shadow-xl md:p-12">
+        <div className="mb-4 inline-flex rounded-full bg-white/10 p-4">
           <Trophy className="h-12 w-12" />
         </div>
         <h2 className="mb-2 text-3xl font-extrabold md:text-4xl">
           Section 3 Complete!
         </h2>
-        <p className="text-lg text-emerald-100">
+        <p className="text-lg text-slate-300">
           You&apos;ve mapped out your entire income plan for 2026. Now it&apos;s
-          time to commit to making it happen.
+          time to make it happen.
         </p>
       </div>
 
@@ -66,79 +57,32 @@ export function StepComplete() {
         </div>
       </div>
 
-      {/* Commitment Signature */}
-      <div className="mb-8 rounded-xl border-2 border-slate-200 bg-white p-6">
-        <h3 className="mb-6 text-center text-sm font-bold uppercase tracking-wide text-slate-700">
-          Sign Your Commitment
-        </h3>
-
-        <div className="mb-6 rounded-lg bg-slate-50 p-4 text-center">
-          <p className="text-sm italic text-slate-600">
-            &ldquo;I commit to following my income plan and taking consistent
-            daily action to achieve my 2026 goals.&rdquo;
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="group">
-            <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900">
-              Your Signature
-            </label>
-            <input
-              type="text"
-              className="w-full border-b-2 border-slate-200 bg-transparent py-3 font-serif text-xl italic text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-slate-900"
-              placeholder="Type your name"
-              value={signature}
-              onChange={(e) => setSignature(e.target.value)}
-            />
-          </div>
-          <div className="group">
-            <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900">
-              Date
-            </label>
-            <input
-              type="text"
-              className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-slate-900"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {signature && (
-          <div className="mt-6 flex items-center justify-center gap-2 text-emerald-600">
-            <CheckCircle2 className="h-5 w-5" />
-            <span className="text-sm font-medium">Commitment signed</span>
-          </div>
-        )}
-      </div>
-
       {/* Next Steps */}
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-blue-800">
+      <div className="rounded-xl border border-slate-200 bg-white p-6">
+        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">
           What&apos;s Next?
         </h3>
-        <ul className="space-y-3 text-sm text-blue-700">
+        <ul className="space-y-3 text-sm text-slate-600">
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-800">
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#0F172A] text-xs font-bold text-white">
               1
             </span>
             <span>
-              Complete <strong>Section 4: Mindset, Self-Care & Motivation</strong> to build the mental
+              Complete <strong className="text-[#0F172A]">Section 4: Mindset, Self-Care & Motivation</strong> to build the mental
               foundation for success
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-800">
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#0F172A] text-xs font-bold text-white">
               2
             </span>
             <span>
-              Complete <strong>Section 5: Accountability & Progress Tracking</strong> to create your
+              Complete <strong className="text-[#0F172A]">Section 5: Accountability & Progress Tracking</strong> to create your
               action plan
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-800">
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#0F172A] text-xs font-bold text-white">
               3
             </span>
             <span>

@@ -155,17 +155,13 @@ export function StepTransactions() {
         title="Transactions to Close in 2026"
         value={calculated.totalTransactionsNeeded}
         format="number"
-        variant="success"
+        variant="primary"
         icon="target"
       />
-
-      <div className="mt-8 rounded-lg bg-blue-50 p-4">
-        <p className="text-sm text-blue-800">
-          <strong>What&apos;s Next:</strong> Now we&apos;ll reverse engineer the
-          daily activities you need to close{" "}
-          {calculated.totalTransactionsNeeded} transactions this year.
-        </p>
-      </div>
+      <p className="mt-3 text-center text-sm text-slate-500">
+        Up Next: Reverse engineer the daily activities to close{" "}
+        {calculated.totalTransactionsNeeded} transactions →
+      </p>
     </div>
   );
 }

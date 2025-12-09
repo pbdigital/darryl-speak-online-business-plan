@@ -74,6 +74,9 @@ export function StepBusinessExpenses() {
         variant="primary"
         icon="dollar"
       />
+      <p className="mt-3 text-center text-sm text-slate-500">
+        Up Next: Create your Manifest List of goals and dreams →
+      </p>
     </div>
   );
 }

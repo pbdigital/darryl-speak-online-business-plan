@@ -1,11 +1,21 @@
 "use client";
 
+import { useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { SummaryCard } from "../ui/summary-card";
 
 export function StepIncomeCommitment() {
   const { incomePlanning, calculated, updateCommitmentText } =
     useBusinessPlanStore();
+  const [signature, setSignature] = useState("");
+  const [date, setDate] = useState(
+    new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  );
 
   const hasCap = (incomePlanning.brokerCapAmount || 0) > 0;
   const finalGci = hasCap ? calculated.adjustedGciNeeded : calculated.gciNeeded;
@@ -58,23 +68,23 @@ export function StepIncomeCommitment() {
           Every Working Day, I Commit To
         </h3>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg bg-blue-50 p-4 text-center">
-            <p className="text-3xl font-extrabold text-blue-600">
+          <div className="rounded-lg bg-[#e8f4f8] p-4 text-center">
+            <p className="text-3xl font-extrabold text-[#0F172A]">
               {calculated.dailyReachOuts.toFixed(0)}
             </p>
-            <p className="text-sm font-medium text-blue-700">reach-outs</p>
+            <p className="text-sm font-medium text-slate-600">reach-outs</p>
           </div>
-          <div className="rounded-lg bg-blue-50 p-4 text-center">
+          <div className="rounded-lg bg-[#e8f4f8] p-4 text-center">
             <p className="text-3xl font-extrabold text-[#0F172A]">
               {calculated.dailyConversations.toFixed(0)}
             </p>
-            <p className="text-sm font-medium text-blue-700">conversations</p>
+            <p className="text-sm font-medium text-slate-600">conversations</p>
           </div>
-          <div className="rounded-lg bg-purple-50 p-4 text-center">
-            <p className="text-3xl font-extrabold text-purple-600">
+          <div className="rounded-lg bg-[#e8f4f8] p-4 text-center">
+            <p className="text-3xl font-extrabold text-[#0F172A]">
               {calculated.dailyAppointments.toFixed(1)}
             </p>
-            <p className="text-sm font-medium text-purple-700">appointments</p>
+            <p className="text-sm font-medium text-slate-600">appointments</p>
           </div>
         </div>
       </div>
@@ -227,13 +237,52 @@ export function StepIncomeCommitment() {
         </div>
       </div>
 
-      <SummaryCard
-        title="Your 2026 GCI Goal"
-        value={finalGci}
-        format="currency"
-        variant="primary"
-        icon="trending"
-      />
+      {/* Commitment Signature */}
+      <div className="mt-8 rounded-xl border-2 border-slate-200 bg-white p-6">
+        <h3 className="mb-6 text-center text-sm font-bold uppercase tracking-wide text-slate-700">
+          Sign Your Commitment
+        </h3>
+
+        <div className="mb-6 rounded-lg bg-slate-50 p-4 text-center">
+          <p className="text-sm italic text-slate-600">
+            &ldquo;I commit to following my income plan and taking consistent
+            daily action to achieve my 2026 goals.&rdquo;
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="group">
+            <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900">
+              Your Signature
+            </label>
+            <input
+              type="text"
+              className="w-full border-b-2 border-slate-200 bg-transparent py-3 font-serif text-xl italic text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-slate-900"
+              placeholder="Type your name"
+              value={signature}
+              onChange={(e) => setSignature(e.target.value)}
+            />
+          </div>
+          <div className="group">
+            <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900">
+              Date
+            </label>
+            <input
+              type="text"
+              className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-slate-900"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {signature && (
+          <div className="mt-6 flex items-center justify-center gap-2 text-[#0F172A]">
+            <CheckCircle2 className="h-5 w-5" />
+            <span className="text-sm font-medium">Commitment signed</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

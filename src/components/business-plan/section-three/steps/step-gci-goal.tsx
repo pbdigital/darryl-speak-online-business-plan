@@ -139,13 +139,10 @@ export function StepGciGoal() {
         variant="primary"
         icon="trending"
       />
-
-      <div className="mt-8 rounded-lg bg-blue-50 p-4">
-        <p className="text-sm text-blue-800">
-          <strong>What&apos;s Next:</strong> Now that we know your GCI goal,
-          we&apos;ll calculate how many transactions you need to reach it.
-        </p>
-      </div>
+      <p className="mt-3 text-center text-sm text-slate-500">
+        Up Next: Calculate how many transactions you need to reach your GCI goal
+        →
+      </p>
     </div>
   );
 }

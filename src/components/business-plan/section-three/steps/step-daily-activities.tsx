@@ -176,32 +176,32 @@ export function StepDailyActivities() {
       </div>
 
       {/* Daily Activity Targets */}
-      <div className="mb-8 rounded-xl border-2 border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-blue-800">
+      <div className="mb-8 rounded-xl border border-slate-200 bg-white p-6">
+        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">
           Your Daily Activity Targets
         </h3>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl bg-white p-6 text-center shadow-sm">
+          <div className="rounded-xl bg-[#e8f4f8] p-6 text-center">
             <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
               Reach-Outs / Day
             </p>
-            <p className="text-4xl font-extrabold text-emerald-600">
+            <p className="text-4xl font-extrabold text-[#0F172A]">
               {calculated.dailyReachOuts.toFixed(1)}
             </p>
           </div>
-          <div className="rounded-xl bg-white p-6 text-center shadow-sm">
+          <div className="rounded-xl bg-[#e8f4f8] p-6 text-center">
             <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
               Conversations / Day
             </p>
-            <p className="text-4xl font-extrabold text-emerald-600">
+            <p className="text-4xl font-extrabold text-[#0F172A]">
               {calculated.dailyConversations.toFixed(1)}
             </p>
           </div>
-          <div className="rounded-xl bg-white p-6 text-center shadow-sm">
+          <div className="rounded-xl bg-[#e8f4f8] p-6 text-center">
             <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
               Appointments / Day
             </p>
-            <p className="text-4xl font-extrabold text-emerald-600">
+            <p className="text-4xl font-extrabold text-[#0F172A]">
               {calculated.dailyAppointments.toFixed(2)}
             </p>
           </div>
@@ -212,17 +212,13 @@ export function StepDailyActivities() {
         title="Daily Reach-Outs Required"
         value={calculated.dailyReachOuts}
         format="number"
-        variant="success"
+        variant="primary"
         icon="target"
       />
-
-      <div className="mt-8 rounded-lg bg-blue-50 p-4">
-        <p className="text-sm text-blue-800">
-          <strong>What&apos;s Next:</strong> Let&apos;s solidify your commitment
-          to these numbers and understand what achieving (or missing) this goal
-          means for you.
-        </p>
-      </div>
+      <p className="mt-3 text-center text-sm text-slate-500">
+        Up Next: Solidify your commitment and understand what this goal means
+        for you →
+      </p>
     </div>
   );
 }

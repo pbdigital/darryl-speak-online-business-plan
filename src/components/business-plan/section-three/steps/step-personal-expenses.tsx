@@ -44,6 +44,9 @@ export function StepPersonalExpenses() {
         variant="primary"
         icon="dollar"
       />
+      <p className="mt-3 text-center text-sm text-slate-500">
+        Up Next: Enter your monthly business expenses →
+      </p>
     </div>
   );
 }

@@ -80,6 +80,9 @@ export function StepManifestList() {
           variant="primary"
           icon="target"
         />
+        <p className="mt-3 text-center text-sm text-slate-500">
+          Up Next: Calculate your target income and account for taxes →
+        </p>
       </div>
     </div>
   );
