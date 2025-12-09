@@ -3,6 +3,7 @@
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { GoalTable } from "../ui/goal-table";
 import { SummaryCard } from "../ui/summary-card";
+import { DarrylTip } from "../ui/darryl-tip";
 
 export function StepManifestList() {
   const { incomePlanning, calculated, updateGoal } = useBusinessPlanStore();
@@ -14,13 +15,20 @@ export function StepManifestList() {
           Part 3B
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Your Manifest List
+          Your Manifest List — What Else Do You Desire?
         </h2>
         <p className="text-slate-600">
-          Beyond covering your basic expenses, what else do you desire this
-          year? Dream big and put a dollar amount on each goal.
+          Beyond covering your expenses, what do you want to accomplish in 2026?
+          Be specific and honest. If you dream of travel, paying off debt,
+          buying investment properties, or upgrading your lifestyle—write it
+          down and cost it out. This is your WHY.
         </p>
       </div>
+
+      <DarrylTip
+        tip="These are your dreams and goals—the life you want to build. Don't hold back! Now let's calculate what it takes to make them real."
+        className="mb-8"
+      />
 
       <div className="space-y-8">
         <GoalTable
@@ -30,6 +38,7 @@ export function StepManifestList() {
             updateGoal("familyGoals", index, field, value)
           }
           title="Family Goals"
+          description="What do you want to do with or for your family? Examples: Family vacation ($5,000), Weekly date nights ($5,200), New home down payment ($50,000)"
         />
 
         <GoalTable
@@ -39,6 +48,7 @@ export function StepManifestList() {
             updateGoal("financialGoals", index, field, value)
           }
           title="Financial Goals"
+          description="What financial milestones do you want to hit? Examples: Pay off $8,000 credit card debt, Build $12,000 emergency fund, Invest $1,000/month ($12,000)"
         />
 
         <GoalTable
@@ -48,6 +58,7 @@ export function StepManifestList() {
             updateGoal("personalGoals", index, field, value)
           }
           title="Personal Goals"
+          description="What do you want for yourself? Examples: Personal trainer ($6,000), New wardrobe ($3,000), Masters degree program ($15,000)"
         />
 
         <GoalTable
@@ -57,6 +68,7 @@ export function StepManifestList() {
             updateGoal("businessGoals", index, field, value)
           }
           title="Business Goals"
+          description="What investments in your business do you want to make? Examples: Hire part-time assistant ($24,000), Upgrade website ($3,000), Better CRM ($2,400)"
         />
       </div>
 
@@ -65,17 +77,9 @@ export function StepManifestList() {
           title="Total Cost of Your Manifest List"
           value={calculated.manifestGoalsTotal}
           format="currency"
-          variant="success"
+          variant="primary"
           icon="target"
         />
-      </div>
-
-      <div className="mt-8 rounded-lg bg-emerald-50 p-4">
-        <p className="text-sm text-emerald-800">
-          <strong>Remember:</strong> These goals are in addition to your basic
-          living expenses. They represent the life you want to create beyond
-          just getting by.
-        </p>
       </div>
     </div>
   );

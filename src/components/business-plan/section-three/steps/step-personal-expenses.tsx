@@ -3,6 +3,7 @@
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { ExpenseTable } from "../ui/expense-table";
 import { SummaryCard } from "../ui/summary-card";
+import { DarrylTip } from "../ui/darryl-tip";
 
 export function StepPersonalExpenses() {
   const { incomePlanning, calculated, updatePersonalExpense } =
@@ -23,6 +24,11 @@ export function StepPersonalExpenses() {
         </p>
       </div>
 
+      <DarrylTip
+        tip="Be thorough and honest with your expenses. Underestimating here will throw off all your income calculations later."
+        className="mb-8"
+      />
+
       <ExpenseTable
         expenses={incomePlanning.personalExpenses}
         onUpdate={updatePersonalExpense}
@@ -35,16 +41,9 @@ export function StepPersonalExpenses() {
         title="Your Monthly Personal Expenses"
         value={calculated.monthlyPersonalTotal}
         format="currency"
-        variant="info"
+        variant="primary"
         icon="dollar"
       />
-
-      <div className="mt-8 rounded-lg bg-amber-50 p-4">
-        <p className="text-sm text-amber-800">
-          <strong>Pro Tip:</strong> Be thorough and honest with your expenses.
-          Underestimating here will throw off all your income calculations later.
-        </p>
-      </div>
     </div>
   );
 }

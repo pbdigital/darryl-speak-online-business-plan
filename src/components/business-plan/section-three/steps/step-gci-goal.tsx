@@ -117,8 +117,8 @@ export function StepGciGoal() {
         />
 
         {hasCap && (
-          <div className="rounded-lg bg-emerald-50 p-4">
-            <p className="mb-2 text-sm text-emerald-800">
+          <div className="rounded-lg bg-blue-50 p-4">
+            <p className="mb-2 text-sm text-blue-800">
               <strong>With Cap Applied:</strong> Your adjusted GCI equals the
               broker&apos;s cap plus your taxable income needed.
             </p>

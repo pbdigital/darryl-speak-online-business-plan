@@ -48,7 +48,7 @@ export function SummaryCard({
       className={cn(
         "overflow-hidden rounded-xl p-6 transition-all",
         variant === "primary" && "bg-[#0F172A] text-white",
-        variant === "success" && "bg-emerald-600 text-white",
+        variant === "success" && "bg-[#0F172A] text-white",
         variant === "info" && "bg-[#e8f4f8] text-[#0F172A]",
         className
       )}

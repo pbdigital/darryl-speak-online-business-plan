@@ -12,6 +12,7 @@ interface GoalTableProps {
     value: string | number | null
   ) => void;
   title: string;
+  description?: string;
   className?: string;
 }
 
@@ -28,6 +29,7 @@ export function GoalTable({
   goals,
   onUpdate,
   title,
+  description,
   className,
 }: GoalTableProps) {
   const handleNameChange = (
@@ -60,9 +62,12 @@ export function GoalTable({
 
   return (
     <div className={cn("", className)}>
-      <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-700">
+      <h3 className="mb-1 text-sm font-bold uppercase tracking-wide text-slate-700">
         {title}
       </h3>
+      {description && (
+        <p className="mb-3 text-sm text-slate-600">{description}</p>
+      )}
       <div className="overflow-hidden rounded-lg border border-slate-200">
         <table className="w-full">
           <thead>

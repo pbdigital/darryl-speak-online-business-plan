@@ -4,6 +4,7 @@ import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { ExpenseTable } from "../ui/expense-table";
 import { SummaryCard } from "../ui/summary-card";
 import { CalculatedField } from "../ui/calculated-field";
+import { DarrylTip } from "../ui/darryl-tip";
 
 export function StepBusinessExpenses() {
   const { incomePlanning, calculated, updateBusinessExpense } =
@@ -24,6 +25,11 @@ export function StepBusinessExpenses() {
         </p>
       </div>
 
+      <DarrylTip
+        tip="Don't forget annual expenses like Board Dues and E&O Insurance - divide those by 12 to get your monthly amount. These add up fast!"
+        className="mb-8"
+      />
+
       <ExpenseTable
         expenses={incomePlanning.businessExpenses}
         onUpdate={updateBusinessExpense}
@@ -32,7 +38,7 @@ export function StepBusinessExpenses() {
         className="mb-8"
       />
 
-      <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50 p-6">
+      <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-6">
         <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">
           Part 3A Summary - Total Annual Expenses
         </h3>
@@ -68,13 +74,6 @@ export function StepBusinessExpenses() {
         variant="primary"
         icon="dollar"
       />
-
-      <div className="mt-8 rounded-lg bg-blue-50 p-4">
-        <p className="text-sm text-blue-800">
-          <strong>What&apos;s Next:</strong> This annual expense total will be
-          combined with your goals to determine your target take-home income.
-        </p>
-      </div>
     </div>
   );
 }

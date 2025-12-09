@@ -176,8 +176,8 @@ export function StepDailyActivities() {
       </div>
 
       {/* Daily Activity Targets */}
-      <div className="mb-8 rounded-xl border-2 border-emerald-200 bg-emerald-50 p-6">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-emerald-800">
+      <div className="mb-8 rounded-xl border-2 border-blue-200 bg-blue-50 p-6">
+        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-blue-800">
           Your Daily Activity Targets
         </h3>
         <div className="grid gap-4 md:grid-cols-3">

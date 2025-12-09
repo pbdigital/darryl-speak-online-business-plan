@@ -58,11 +58,11 @@ export function StepIncomeCommitment() {
           Every Working Day, I Commit To
         </h3>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg bg-emerald-50 p-4 text-center">
-            <p className="text-3xl font-extrabold text-emerald-600">
+          <div className="rounded-lg bg-blue-50 p-4 text-center">
+            <p className="text-3xl font-extrabold text-blue-600">
               {calculated.dailyReachOuts.toFixed(0)}
             </p>
-            <p className="text-sm font-medium text-emerald-700">reach-outs</p>
+            <p className="text-sm font-medium text-blue-700">reach-outs</p>
           </div>
           <div className="rounded-lg bg-blue-50 p-4 text-center">
             <p className="text-3xl font-extrabold text-[#0F172A]">
