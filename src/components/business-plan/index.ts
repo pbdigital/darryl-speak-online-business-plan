@@ -4,6 +4,8 @@ export { SectionCardsGrid } from "./section-cards-grid";
 export { SectionOneCardWrapper } from "./section-one-card-wrapper";
 export { SectionTwoCardWrapper } from "./section-two-card-wrapper";
 export { SectionThreeCardWrapper } from "./section-three-card-wrapper";
+export { SectionFourCardWrapper } from "./section-four-card-wrapper";
 export { SectionOneForm } from "./section-one";
 export { SectionTwoForm } from "./section-two";
 export * from "./section-three";
+export * from "./section-four";
