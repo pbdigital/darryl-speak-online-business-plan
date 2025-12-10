@@ -5,6 +5,7 @@ import { useSectionOneStore } from "@/stores/section-one-store";
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { useSectionFourStore } from "@/stores/section-four-store";
+import { useSectionFiveStore } from "@/stores/section-five-store";
 import { Users } from "lucide-react";
 
 interface SectionData {
@@ -27,6 +28,7 @@ export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
   const section2Progress = useSectionTwoStore((state) => state.getProgress());
   const section3Progress = useBusinessPlanStore((state) => state.getProgress());
   const section4Progress = useSectionFourStore((state) => state.getProgress());
+  const section5Progress = useSectionFiveStore((state) => state.getProgress());
 
   // Calculate status for each section
   const getStatus = (progress: number): SectionStatus => {
@@ -41,8 +43,7 @@ export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
     2: { status: getStatus(section2Progress), progress: section2Progress },
     3: { status: getStatus(section3Progress), progress: section3Progress },
     4: { status: getStatus(section4Progress), progress: section4Progress },
-    // Section 5 doesn't have a store yet - default to not_started
-    5: { status: "not_started", progress: 0 },
+    5: { status: getStatus(section5Progress), progress: section5Progress },
   };
 
   // Find the current active section (first non-completed section)

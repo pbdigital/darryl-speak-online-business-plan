@@ -135,17 +135,14 @@ export interface MindsetSection {
 }
 
 // Section 5: Accountability & Progress Tracking
-export interface ProjectTask {
-  task: string;
-  completed: boolean;
+
+// Project Matrix - 5 projects with 6 tasks each (simple grid)
+export interface ProjectMatrixData {
+  projectNames: string[]; // 5 project column names
+  tasks: string[][]; // 5 projects × 6 tasks = string[5][6]
 }
 
-export interface Project {
-  name: string;
-  tasks: ProjectTask[];
-}
-
-export interface IdealClient {
+export interface IdealClientProfile {
   name: string;
   whoAreThey: string;
   whatMotivatesThem: string;
@@ -155,45 +152,53 @@ export interface IdealClient {
 
 export interface ProspectingActivity {
   activity: string;
-  method: string;
-  targetAudience: string;
-  schedule: string;
+  how: string; // Method/Tool
+  who: string; // Target audience
+  when: string; // Schedule
   farmArea: string;
-  cost: string;
+  cost: number | null; // Currency
   followUpPlan: string;
 }
 
 export interface MarketingActivity {
   activity: string;
-  platform: string;
-  targetAudience: string;
-  timeline: string;
+  how: string; // Platform/Method
+  who: string; // Target audience
+  when: string; // Timeline
   farmArea: string;
-  cost: string;
+  cost: number | null; // Currency
 }
 
 export interface QuarterlyMarketing {
-  q1: string[];
-  q2: string[];
-  q3: string[];
-  q4: string[];
+  q1Strategy1: string;
+  q1Strategy2: string;
+  q2Strategy1: string;
+  q2Strategy2: string;
+  q3Strategy1: string;
+  q3Strategy2: string;
+  q4Strategy1: string;
+  q4Strategy2: string;
 }
 
-export interface AccountabilitySection {
-  projects: Project[];
-  currentResources: string[];
-  neededResources: string[];
-  idealClients: IdealClient[];
-  prospectingActivities: ProspectingActivity[];
-  marketingActivities: MarketingActivity[];
-  quarterlyMarketing: QuarterlyMarketing;
-
-  // Commitment Contract
-  commitmentName: string;
+export interface CommitmentContract {
+  agentName: string;
   transactionGoal: number | null;
   rewardIfAchieved: string;
   consequenceIfFailed: string;
-  accountabilityPartner: string;
+  accountabilityPartnerName: string;
+  agentSignatureDate: string;
+  partnerSignatureDate: string;
+}
+
+export interface AccountabilitySection {
+  projectMatrix: ProjectMatrixData;
+  currentResources: string[]; // 4 items
+  neededResources: string[]; // 4 items
+  idealClients: IdealClientProfile[]; // 2 profiles
+  prospectingActivities: ProspectingActivity[]; // 3 activities
+  marketingActivities: MarketingActivity[]; // 3 activities
+  quarterlyMarketing: QuarterlyMarketing;
+  commitmentContract: CommitmentContract;
 }
 
 // Complete Business Plan Data

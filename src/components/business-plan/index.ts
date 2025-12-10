@@ -8,4 +8,5 @@ export { SectionFourCardWrapper } from "./section-four-card-wrapper";
 export { SectionOneForm } from "./section-one";
 export { SectionTwoForm } from "./section-two";
 export * from "./section-three";
-export * from "./section-four";
+export { SectionFourForm } from "./section-four";
+export { SectionFiveForm } from "./section-five";
