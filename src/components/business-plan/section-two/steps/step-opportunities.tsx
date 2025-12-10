@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { SwotRow } from "../ui";
 
@@ -25,29 +24,28 @@ export function StepOpportunities() {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header */}
-      <div className="mb-12 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 3 of 5
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 2C
         </span>
-        <h2 className="mb-2 flex items-center justify-center gap-3 text-3xl font-extrabold text-slate-900">
-          <TrendingUp className="h-8 w-8 text-blue-500" />
+        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
           Opportunities
         </h2>
-        <p className="mx-auto max-w-xl text-slate-500">
+        <p className="text-slate-600">
           What external possibilities exist for growth? Identify chances to
-          expand and improve your business.
+          expand and improve your business in the market.
         </p>
       </div>
 
       {/* Progress Indicator */}
-      <div className="mb-8 flex items-center justify-between rounded-xl bg-blue-50 px-6 py-4">
-        <span className="text-sm font-medium text-blue-700">
+      <div className="mb-8 flex items-center justify-between rounded-xl bg-slate-50 px-6 py-4">
+        <span className="text-sm font-medium text-slate-700">
           {filledCount} of 8 opportunities identified
         </span>
-        <div className="h-2 w-32 overflow-hidden rounded-full bg-blue-200">
+        <div className="h-2 w-32 overflow-hidden rounded-full bg-slate-200">
           <div
-            className="h-full rounded-full bg-blue-500 transition-all duration-300"
+            className="h-full rounded-full bg-emerald-500 transition-all duration-300"
             style={{ width: `${(filledCount / 8) * 100}%` }}
           />
         </div>
@@ -56,7 +54,7 @@ export function StepOpportunities() {
       {/* Opportunities Rows */}
       <div className="relative mb-10 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-lg">
         {/* Decorative corner */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-bl-full bg-blue-50" />
+        <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-bl-full bg-slate-50" />
 
         <div className="relative z-10 p-6 md:p-8">
           {opportunities.map((item, index) => (
@@ -78,6 +76,13 @@ export function StepOpportunities() {
             />
           ))}
         </div>
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: Anticipate potential threats →
+        </p>
       </div>
     </div>
   );

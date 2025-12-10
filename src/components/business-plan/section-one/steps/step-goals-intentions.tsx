@@ -5,15 +5,17 @@ import { WorkbookTextarea } from "../ui";
 export function StepGoalsIntentions() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 5 of 9
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 1E
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
           Goals & Obstacles
         </h2>
-        <p className="text-slate-500">
-          What do you want, and what&apos;s in the way?
+        <p className="text-slate-600">
+          What do you want, and what&apos;s in the way? Defining your goals and
+          anticipating obstacles helps you prepare for success.
         </p>
       </div>
 
@@ -60,6 +62,13 @@ export function StepGoalsIntentions() {
           placeholder="Join an accountability group for prospecting. Work with a coach on scripts. Interview 10 candidates before hiring..."
           rows={4}
         />
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: Self-care and growth →
+        </p>
       </div>
     </div>
   );

@@ -6,14 +6,15 @@ import { WorkbookInput, WorkbookTextarea } from "../ui";
 export function StepProductionNumbers() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-12 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 1 of 9
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 1A
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
           Last Year in Review
         </h2>
-        <p className="mx-auto max-w-xl text-slate-500">
+        <p className="text-slate-600">
           Understanding the past helps you tackle the future more effectively.
           Take time to honestly assess what worked and what didn&apos;t.
         </p>
@@ -105,6 +106,13 @@ export function StepProductionNumbers() {
           placeholder="My Monday morning sphere calls. Also my client appreciation events - they generated 3 referrals..."
           rows={3}
         />
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: New Year&apos;s reflection and intention-setting →
+        </p>
       </div>
     </div>
   );

@@ -5,20 +5,18 @@ import { WorkbookTextarea } from "../ui";
 export function StepGratitude() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 3 of 9
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 1C
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
           Gratitude
         </h2>
-        <p className="text-slate-500">
-          Appreciation opens the door to abundance.
+        <p className="text-slate-600">
+          Appreciation opens the door to abundance. Reflecting on what you&apos;re
+          grateful for helps you recognize the good in your life and business.
         </p>
-      </div>
-
-      <div className="mb-8">
-        <h3 className="mb-6 text-lg font-bold text-slate-900">Gratitude</h3>
       </div>
 
       <div className="space-y-2">
@@ -40,6 +38,13 @@ export function StepGratitude() {
           placeholder="Handing the keys to the Martinez family and seeing their kids run to their new rooms..."
           rows={3}
         />
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: Self-reflection and values →
+        </p>
       </div>
     </div>
   );

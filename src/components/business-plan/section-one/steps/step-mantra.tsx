@@ -45,14 +45,18 @@ export function StepMantra() {
 
   return (
     <div className="mx-auto max-w-3xl px-4">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 7 of 9
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 1G
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
           Mantra & Accountability
         </h2>
-        <p className="text-slate-500">One word to guide your year.</p>
+        <p className="text-slate-600">
+          Choose one powerful word to guide your year. This mantra will serve as
+          your north star when challenges arise.
+        </p>
       </div>
 
       {/* Mantra Card - Ambient gradient background */}
@@ -169,6 +173,13 @@ export function StepMantra() {
           placeholder="I'll use my CRM for pipeline tracking, a spreadsheet for GCI, and the Power Agent weekly planning sheet..."
           rows={3}
         />
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: Celebration and reflection →
+        </p>
       </div>
     </div>
   );

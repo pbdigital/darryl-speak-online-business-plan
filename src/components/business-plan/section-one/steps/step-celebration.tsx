@@ -5,20 +5,18 @@ import { WorkbookTextarea } from "../ui";
 export function StepCelebration() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 8 of 9
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 1H
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
           Celebration & Reflection
         </h2>
-        <p className="text-slate-500">
+        <p className="text-slate-600">
           Acknowledge your progress and stay aligned with what matters most.
+          Planning how you&apos;ll celebrate keeps you motivated throughout the year.
         </p>
-      </div>
-
-      <div className="mb-8">
-        <h3 className="mb-6 text-lg font-bold text-slate-900">Celebration and Reflection</h3>
       </div>
 
       <div className="space-y-2">
@@ -46,6 +44,13 @@ export function StepCelebration() {
           placeholder="Being present for my kids while building a business that supports our dreams. Finding balance..."
           rows={4}
         />
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: Review and complete Section 1 →
+        </p>
       </div>
     </div>
   );

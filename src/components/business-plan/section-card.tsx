@@ -85,7 +85,8 @@ export function SectionCard({
         "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 transition-all duration-300",
         "hover:border-slate-900/10 hover:shadow-2xl",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2",
-        dimmed && "opacity-60 hover:opacity-100",
+        // dimmed prop kept for future use but visual effect disabled
+        // dimmed && "opacity-60 hover:opacity-100",
         className
       )}
     >

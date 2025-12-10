@@ -5,15 +5,17 @@ import { WorkbookTextarea } from "../ui";
 export function StepWellness() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 6 of 9
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 1F
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
           Self-Care & Growth
         </h2>
-        <p className="text-slate-500">
-          You are the most valuable asset in your business.
+        <p className="text-slate-600">
+          You are the most valuable asset in your business. Investing in yourself
+          is investing in your success.
         </p>
       </div>
 
@@ -78,6 +80,13 @@ export function StepWellness() {
             rows={3}
           />
         </div>
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: Your mantra and accountability →
+        </p>
       </div>
     </div>
   );

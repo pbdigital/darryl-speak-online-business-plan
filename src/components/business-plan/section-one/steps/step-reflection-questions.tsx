@@ -5,22 +5,25 @@ import { WorkbookTextarea } from "../ui";
 export function StepReflectionQuestions() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 2 of 9
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 1B
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          New Year&apos;s Reflection &amp; Intention-Setting
+          New Year&apos;s Reflection & Intention-Setting
         </h2>
-      </div>
-
-      {/* Intro Card */}
-      <div className="mb-10 rounded-2xl border border-blue-100 bg-blue-50/50 p-6 md:p-8">
-        <p className="mb-4 leading-relaxed text-slate-700">
-          This is a wonderful way to set meaningful goals and align your aspirations with your values. Take your time and fill this out, leading with the heart. Stay centered and grounded in that heart space, with your true self, while answering these questions.
+        <p className="text-slate-600">
+          This is a wonderful way to set meaningful goals and align your
+          aspirations with your values. Take your time and fill this out,
+          leading with the heart. Stay centered and grounded in that heart
+          space, with your true self, while answering these questions.
         </p>
-        <p className="text-sm font-medium text-slate-600">
-          Remember that the key to a successful reflection and intention-setting process is <strong>honesty</strong>, <strong>self-compassion</strong>, and the <strong>willingness to adapt</strong> as circumstances change throughout the year.
+        <p className="mt-2 text-sm text-slate-500">
+          Remember that the key to a successful reflection and intention-setting
+          process is <strong>honesty</strong>, <strong>self-compassion</strong>,
+          and the <strong>willingness to adapt</strong> as circumstances change
+          throughout the year.
         </p>
       </div>
 
@@ -51,6 +54,13 @@ export function StepReflectionQuestions() {
           placeholder="I learned that I work best in the mornings and should schedule my prospecting calls before 11am. I also discovered..."
           rows={4}
         />
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: Gratitude reflection →
+        </p>
       </div>
     </div>
   );

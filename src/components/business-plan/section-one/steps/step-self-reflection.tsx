@@ -5,15 +5,17 @@ import { WorkbookTextarea } from "../ui";
 export function StepSelfReflection() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0F172A]">
-          Step 4 of 9
+      {/* Step Header - Left aligned with Part badge */}
+      <div className="mb-8">
+        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          Part 1D
         </span>
         <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Self-Reflection &amp; Values
+          Self-Reflection & Values
         </h2>
-        <p className="text-slate-500">
-          Know yourself to grow yourself.
+        <p className="text-slate-600">
+          Know yourself to grow yourself. Understanding your fulfillment and
+          values helps you make aligned decisions.
         </p>
       </div>
 
@@ -59,6 +61,13 @@ export function StepSelfReflection() {
             rows={3}
           />
         </div>
+      </div>
+
+      {/* Up Next */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-500">
+          Up Next: Goals and obstacles →
+        </p>
       </div>
     </div>
   );
