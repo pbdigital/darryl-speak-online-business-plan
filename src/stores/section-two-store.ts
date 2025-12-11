@@ -64,6 +64,10 @@ interface SectionTwoStore {
   currentStep: number;
   highestStepReached: number;
 
+  // Save state tracking
+  isDirty: boolean;
+  lastSavedAt: number | null;
+
   // Actions
   updateStrength: (
     index: number,
@@ -84,6 +88,7 @@ interface SectionTwoStore {
   resetWeaknesses: () => void;
   resetOpportunities: () => void;
   resetThreats: () => void;
+  markSaved: () => void;
 
   // Selectors
   getProgress: () => number;
@@ -100,12 +105,14 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
       data: initialData,
       currentStep: 0,
       highestStepReached: 0,
+      isDirty: false,
+      lastSavedAt: null,
 
       updateStrength: (index, field, value) => {
         set((state) => {
           const newStrengths = [...state.data.strengths];
           newStrengths[index] = { ...newStrengths[index], [field]: value };
-          return { data: { ...state.data, strengths: newStrengths } };
+          return { data: { ...state.data, strengths: newStrengths }, isDirty: true };
         });
       },
 
@@ -113,7 +120,7 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
         set((state) => {
           const newWeaknesses = [...state.data.weaknesses];
           newWeaknesses[index] = { ...newWeaknesses[index], weakness: value };
-          return { data: { ...state.data, weaknesses: newWeaknesses } };
+          return { data: { ...state.data, weaknesses: newWeaknesses }, isDirty: true };
         });
       },
 
@@ -121,7 +128,7 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
         set((state) => {
           const newWeaknesses = [...state.data.weaknesses];
           newWeaknesses[index] = { ...newWeaknesses[index], action };
-          return { data: { ...state.data, weaknesses: newWeaknesses } };
+          return { data: { ...state.data, weaknesses: newWeaknesses }, isDirty: true };
         });
       },
 
@@ -132,7 +139,7 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
             ...newOpportunities[index],
             [field]: value,
           };
-          return { data: { ...state.data, opportunities: newOpportunities } };
+          return { data: { ...state.data, opportunities: newOpportunities }, isDirty: true };
         });
       },
 
@@ -140,7 +147,7 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
         set((state) => {
           const newThreats = [...state.data.threats];
           newThreats[index] = { ...newThreats[index], [field]: value };
-          return { data: { ...state.data, threats: newThreats } };
+          return { data: { ...state.data, threats: newThreats }, isDirty: true };
         });
       },
 
@@ -152,7 +159,7 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
       },
 
       resetSection: () => {
-        set({ data: initialData, currentStep: 0, highestStepReached: 0 });
+        set({ data: initialData, currentStep: 0, highestStepReached: 0, isDirty: false, lastSavedAt: null });
       },
 
       resetStrengths: () => {
@@ -177,6 +184,10 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
         set((state) => ({
           data: { ...state.data, threats: createEmptyThreats() },
         }));
+      },
+
+      markSaved: () => {
+        set({ isDirty: false, lastSavedAt: Date.now() });
       },
 
       getProgress: () => {

@@ -40,7 +40,7 @@ const STEP_LABELS = [
 ];
 
 export function SectionFiveForm() {
-  const { currentStep, setCurrentStep, resetSection } = useSectionFiveStore();
+  const { currentStep, setCurrentStep, resetSection, isDirty, markSaved, highestStepReached } = useSectionFiveStore();
 
   // Local state for UI - initialized from store
   const [activeStep, setActiveStep] = useState(currentStep);
@@ -71,21 +71,34 @@ export function SectionFiveForm() {
     }
   }, [resetSection]);
 
-  // Simulated auto-save indicator with animated checkmark
+  // Change-based auto-save indicator (triggers when data changes, not on a timer)
   useEffect(() => {
-    if (activeStep === 0) return; // Don't show saving on overview
+    if (!isDirty || activeStep === 0) return;
 
-    const timer = setInterval(() => {
+    const saveTimer = setTimeout(() => {
       setIsSaving(true);
       setTimeout(() => {
         setIsSaving(false);
         setShowSaved(true);
+        markSaved();
         setTimeout(() => setShowSaved(false), 1500);
-      }, 800);
-    }, 10000);
+      }, 400);
+    }, 1000); // 1-second debounce after last change
 
-    return () => clearInterval(timer);
-  }, [activeStep]);
+    return () => clearTimeout(saveTimer);
+  }, [isDirty, activeStep, markSaved]);
+
+  // Handler for clicking on progress stepper dots
+  const handleStepNavigation = useCallback((step: number) => {
+    if (step <= highestStepReached && step !== activeStep) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setActiveStep(step);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => setIsTransitioning(false), 50);
+      }, 200);
+    }
+  }, [highestStepReached, activeStep]);
 
   const handleNext = () => {
     if (activeStep < TOTAL_STEPS - 1) {
@@ -151,6 +164,9 @@ export function SectionFiveForm() {
           currentStep={activeStep}
           totalSteps={TOTAL_STEPS}
           stepLabels={STEP_LABELS}
+          highestStepReached={highestStepReached}
+          onStepClick={handleStepNavigation}
+          showPercentage={activeStep > 0}
           className="mx-6 flex-1"
         />
 

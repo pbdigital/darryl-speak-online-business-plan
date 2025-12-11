@@ -25,6 +25,10 @@ interface BusinessPlanStore {
   currentStep: number;
   highestStepReached: number;
 
+  // Save state tracking
+  isDirty: boolean;
+  lastSavedAt: number | null;
+
   // Actions
   updatePersonalExpense: (index: number, amount: number | null) => void;
   updateBusinessExpense: (index: number, amount: number | null) => void;
@@ -46,6 +50,7 @@ interface BusinessPlanStore {
 
   // Reset section
   resetSection: () => void;
+  markSaved: () => void;
 
   // Recalculate all derived values
   recalculate: () => void;
@@ -162,6 +167,8 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   calculated: initialCalculated,
   currentStep: 0,
   highestStepReached: 0,
+  isDirty: false,
+  lastSavedAt: null,
 
   updatePersonalExpense: (index, amount) => {
     set((state) => {
@@ -169,6 +176,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
       newExpenses[index] = { ...newExpenses[index], amount };
       return {
         incomePlanning: { ...state.incomePlanning, personalExpenses: newExpenses },
+        isDirty: true,
       };
     });
     get().recalculate();
@@ -180,6 +188,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
       newExpenses[index] = { ...newExpenses[index], amount };
       return {
         incomePlanning: { ...state.incomePlanning, businessExpenses: newExpenses },
+        isDirty: true,
       };
     });
     get().recalculate();
@@ -194,6 +203,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
       };
       return {
         incomePlanning: { ...state.incomePlanning, [category]: newGoals },
+        isDirty: true,
       };
     });
     get().recalculate();
@@ -202,6 +212,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   updateTaxRate: (rate) => {
     set((state) => ({
       incomePlanning: { ...state.incomePlanning, estimatedTaxRate: rate },
+      isDirty: true,
     }));
     get().recalculate();
   },
@@ -209,6 +220,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   updateBrokerSplit: (split) => {
     set((state) => ({
       incomePlanning: { ...state.incomePlanning, brokerSplitPercentage: split },
+      isDirty: true,
     }));
     get().recalculate();
   },
@@ -216,6 +228,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   updateBrokerCap: (cap) => {
     set((state) => ({
       incomePlanning: { ...state.incomePlanning, brokerCapAmount: cap },
+      isDirty: true,
     }));
     get().recalculate();
   },
@@ -223,6 +236,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   updateMarketData: (field, value) => {
     set((state) => ({
       incomePlanning: { ...state.incomePlanning, [field]: value },
+      isDirty: true,
     }));
     get().recalculate();
   },
@@ -230,6 +244,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   updateWorkSchedule: (field, value) => {
     set((state) => ({
       incomePlanning: { ...state.incomePlanning, [field]: value },
+      isDirty: true,
     }));
     get().recalculate();
   },
@@ -237,6 +252,7 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   updateCommitmentText: (field, value) => {
     set((state) => ({
       incomePlanning: { ...state.incomePlanning, [field]: value },
+      isDirty: true,
     }));
   },
 
@@ -254,7 +270,13 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
       calculated: initialCalculated,
       currentStep: 0,
       highestStepReached: 0,
+      isDirty: false,
+      lastSavedAt: null,
     });
+  },
+
+  markSaved: () => {
+    set({ isDirty: false, lastSavedAt: Date.now() });
   },
 
   getFilledFieldCount: () => {

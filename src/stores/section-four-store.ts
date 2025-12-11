@@ -33,6 +33,10 @@ interface SectionFourStore {
   currentStep: number;
   highestStepReached: number;
 
+  // Save state tracking
+  isDirty: boolean;
+  lastSavedAt: number | null;
+
   // Actions for affirmations
   updateAffirmation: (index: number, value: string) => void;
 
@@ -67,6 +71,7 @@ interface SectionFourStore {
   resetMotivation: () => void;
   resetSupport: () => void;
   resetBecoming: () => void;
+  markSaved: () => void;
 
   // Selectors
   getProgress: () => number;
@@ -83,13 +88,15 @@ export const useSectionFourStore = create<SectionFourStore>()(
       data: initialData,
       currentStep: 0,
       highestStepReached: 0,
+      isDirty: false,
+      lastSavedAt: null,
 
       // Affirmations
       updateAffirmation: (index, value) => {
         set((state) => {
           const newAffirmations = [...state.data.affirmations];
           newAffirmations[index] = value;
-          return { data: { ...state.data, affirmations: newAffirmations } };
+          return { data: { ...state.data, affirmations: newAffirmations }, isDirty: true };
         });
       },
 
@@ -97,12 +104,14 @@ export const useSectionFourStore = create<SectionFourStore>()(
       updateMorningRoutine: (value) => {
         set((state) => ({
           data: { ...state.data, morningRoutine: value },
+          isDirty: true,
         }));
       },
 
       updateEveningRoutine: (value) => {
         set((state) => ({
           data: { ...state.data, eveningRoutine: value },
+          isDirty: true,
         }));
       },
 
@@ -111,7 +120,7 @@ export const useSectionFourStore = create<SectionFourStore>()(
         set((state) => {
           const newBoundaries = [...state.data.boundaries];
           newBoundaries[index] = value;
-          return { data: { ...state.data, boundaries: newBoundaries } };
+          return { data: { ...state.data, boundaries: newBoundaries }, isDirty: true };
         });
       },
 
@@ -120,7 +129,7 @@ export const useSectionFourStore = create<SectionFourStore>()(
         set((state) => {
           const newSelfCare = [...state.data.selfCareCommitments];
           newSelfCare[index] = value;
-          return { data: { ...state.data, selfCareCommitments: newSelfCare } };
+          return { data: { ...state.data, selfCareCommitments: newSelfCare }, isDirty: true };
         });
       },
 
@@ -128,6 +137,7 @@ export const useSectionFourStore = create<SectionFourStore>()(
       updateWhatMotivatesMe: (value) => {
         set((state) => ({
           data: { ...state.data, whatMotivatesMe: value },
+          isDirty: true,
         }));
       },
 
@@ -136,7 +146,7 @@ export const useSectionFourStore = create<SectionFourStore>()(
         set((state) => {
           const newSupport = [...state.data.supportSystem];
           newSupport[index] = value;
-          return { data: { ...state.data, supportSystem: newSupport } };
+          return { data: { ...state.data, supportSystem: newSupport }, isDirty: true };
         });
       },
 
@@ -144,6 +154,7 @@ export const useSectionFourStore = create<SectionFourStore>()(
       updateWhoINeedToBecome: (value) => {
         set((state) => ({
           data: { ...state.data, whoINeedToBecome: value },
+          isDirty: true,
         }));
       },
 
@@ -157,7 +168,7 @@ export const useSectionFourStore = create<SectionFourStore>()(
 
       // Reset all
       resetSection: () => {
-        set({ data: initialData, currentStep: 0, highestStepReached: 0 });
+        set({ data: initialData, currentStep: 0, highestStepReached: 0, isDirty: false, lastSavedAt: null });
       },
 
       // Reset individual steps
@@ -201,6 +212,10 @@ export const useSectionFourStore = create<SectionFourStore>()(
         set((state) => ({
           data: { ...state.data, whoINeedToBecome: "" },
         }));
+      },
+
+      markSaved: () => {
+        set({ isDirty: false, lastSavedAt: Date.now() });
       },
 
       // Progress calculation (step-based)

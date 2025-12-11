@@ -1,6 +1,6 @@
 "use client";
 
-import { Target } from "lucide-react";
+import { Target, Clock } from "lucide-react";
 import { SectionCover, DefinitionBox } from "@/components/business-plan/section-one/ui";
 
 interface StepOverviewProps {
@@ -69,6 +69,12 @@ export function StepOverview({ onStart }: StepOverviewProps) {
             </div>
           </div>
           <div className="text-center">
+            {/* Time estimate */}
+            <div className="mb-6 flex items-center justify-center gap-2 text-sm text-slate-500">
+              <Clock className="h-4 w-4" />
+              <span>Estimated time: 20-30 minutes</span>
+            </div>
+
             <button
               onClick={onStart}
               className="transform rounded-full bg-[#0F172A] px-10 py-4 font-bold text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-slate-800 hover:shadow-xl"

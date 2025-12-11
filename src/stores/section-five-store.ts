@@ -95,6 +95,10 @@ interface SectionFiveStore {
   currentStep: number;
   highestStepReached: number;
 
+  // Save state tracking
+  isDirty: boolean;
+  lastSavedAt: number | null;
+
   // Project Matrix actions
   updateProjectName: (index: number, value: string) => void;
   updateProjectTask: (projectIndex: number, taskIndex: number, value: string) => void;
@@ -145,6 +149,7 @@ interface SectionFiveStore {
   resetMarketingActivities: () => void;
   resetQuarterlyMarketing: () => void;
   resetCommitmentContract: () => void;
+  markSaved: () => void;
 
   // Selectors
   getProgress: () => number;
@@ -159,6 +164,8 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
       data: initialData,
       currentStep: 0,
       highestStepReached: 0,
+      isDirty: false,
+      lastSavedAt: null,
 
       // Project Matrix actions
       updateProjectName: (index, value) => {
@@ -173,6 +180,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
                 projectNames: newProjectNames,
               },
             },
+            isDirty: true,
           };
         });
       },
@@ -192,6 +200,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
                 tasks: newTasks,
               },
             },
+            isDirty: true,
           };
         });
       },
@@ -203,6 +212,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
           newResources[index] = value;
           return {
             data: { ...state.data, currentResources: newResources },
+            isDirty: true,
           };
         });
       },
@@ -213,6 +223,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
           newResources[index] = value;
           return {
             data: { ...state.data, neededResources: newResources },
+            isDirty: true,
           };
         });
       },
@@ -225,6 +236,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
           );
           return {
             data: { ...state.data, idealClients: newClients },
+            isDirty: true,
           };
         });
       },
@@ -237,6 +249,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
           );
           return {
             data: { ...state.data, prospectingActivities: newActivities },
+            isDirty: true,
           };
         });
       },
@@ -249,6 +262,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
           );
           return {
             data: { ...state.data, marketingActivities: newActivities },
+            isDirty: true,
           };
         });
       },
@@ -263,6 +277,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
               [field]: value,
             },
           },
+          isDirty: true,
         }));
       },
 
@@ -276,6 +291,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
               [field]: value,
             },
           },
+          isDirty: true,
         }));
       },
 
@@ -289,7 +305,7 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
 
       // Reset all
       resetSection: () => {
-        set({ data: initialData, currentStep: 0, highestStepReached: 0 });
+        set({ data: initialData, currentStep: 0, highestStepReached: 0, isDirty: false, lastSavedAt: null });
       },
 
       // Reset individual steps
@@ -360,6 +376,10 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
             commitmentContract: createEmptyCommitmentContract(),
           },
         }));
+      },
+
+      markSaved: () => {
+        set({ isDirty: false, lastSavedAt: Date.now() });
       },
 
       // Progress calculation (step-based)

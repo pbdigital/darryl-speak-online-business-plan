@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid2X2 } from "lucide-react";
+import { Grid2X2, Clock } from "lucide-react";
 import {
   SectionCover,
   DefinitionBox,
@@ -74,6 +74,12 @@ export function StepOverview({ onStart }: StepOverviewProps) {
         </div>
 
         <div className="text-center">
+          {/* Time estimate */}
+          <div className="mb-6 flex items-center justify-center gap-2 text-sm text-slate-500">
+            <Clock className="h-4 w-4" />
+            <span>Estimated time: 15-20 minutes</span>
+          </div>
+
           <button
             onClick={onStart}
             className="transform rounded-full bg-[#1E293B] px-10 py-4 font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
