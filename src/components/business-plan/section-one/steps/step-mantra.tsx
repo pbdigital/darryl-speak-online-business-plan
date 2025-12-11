@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Star, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
-import { WorkbookTextarea } from "../ui";
+import { WorkbookTextarea, MantraWallpaper } from "../ui";
 import { useSectionOneStore } from "@/stores/section-one-store";
 
 const MANTRA_SUGGESTIONS = [
@@ -133,22 +133,8 @@ export function StepMantra() {
         )}
       </div>
 
-      {/* Mantra Preview Card */}
-      {mantra && (
-        <div className="mb-12 overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm">
-          <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-            Your 2026 Mantra
-          </div>
-          <div className="flex aspect-[3/1] items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 p-8">
-            <span className="text-3xl font-black uppercase tracking-wider text-white md:text-4xl">
-              {mantra}
-            </span>
-          </div>
-          <p className="mt-3 text-center text-xs text-slate-400">
-            Screenshot this as your phone wallpaper reminder
-          </p>
-        </div>
-      )}
+      {/* Mantra Wallpaper Preview & Download */}
+      {mantra && <MantraWallpaper mantra={mantra} />}
 
       {/* Accountability Questions */}
       <h3 className="mb-8 text-lg font-bold text-slate-900">

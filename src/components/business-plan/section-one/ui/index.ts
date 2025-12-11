@@ -5,3 +5,4 @@ export { DefinitionBox } from "./definition-box";
 export { ProgressStepper } from "./progress-stepper";
 export { EncouragementToast } from "./encouragement-toast";
 export { AnimatedCheckmark } from "./animated-checkmark";
+export { MantraWallpaper } from "./mantra-wallpaper";
