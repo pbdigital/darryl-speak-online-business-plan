@@ -25,31 +25,37 @@ export function StepProductionNumbers() {
         <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-bl-full bg-slate-50" />
 
         <div className="relative z-10">
-          <div className="mb-8 flex items-center gap-3 border-b border-slate-100 pb-4">
+          <div className="mb-4 flex items-center gap-3 border-b border-slate-100 pb-4">
             <LineChart className="text-slate-900" size={24} />
             <h3 className="text-sm font-extrabold uppercase tracking-widest text-slate-900">
               Production Numbers
             </h3>
           </div>
 
+          {/* New agent support message */}
+          <p className="mb-6 text-sm text-slate-500">
+            <strong className="text-slate-700">New to real estate?</strong> It&apos;s okay to enter zeros—this is your starting point!
+            Focus on the reflection questions below to build awareness for the year ahead.
+          </p>
+
           <div className="grid grid-cols-1 gap-x-12 gap-y-4 md:grid-cols-2">
-            <WorkbookInput label="Listings Taken" fieldName="listingsTaken" placeholder="#" type="number" />
+            <WorkbookInput label="Listings Taken" fieldName="listingsTaken" placeholder="0" type="number" />
             <WorkbookInput
               label="Seller Sides Closed"
               fieldName="sellerSidesClosed"
-              placeholder="#"
+              placeholder="0"
               type="number"
             />
             <WorkbookInput
               label="Buyer Sides Closed"
               fieldName="buyerSidesClosed"
-              placeholder="#"
+              placeholder="0"
               type="number"
             />
             <WorkbookInput
               label="Renter Transactions"
               fieldName="renterTransactions"
-              placeholder="#"
+              placeholder="0"
               type="number"
             />
           </div>

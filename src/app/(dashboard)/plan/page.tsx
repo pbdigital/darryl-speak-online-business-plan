@@ -68,18 +68,12 @@ export default async function PlanPage() {
     ? `${profile.first_name} ${profile.last_name || ''}`.trim()
     : user.email?.split('@')[0] || 'there';
 
-  // TODO: Calculate completedSections from client-side stores
-  // For now, this is a placeholder - the actual count comes from the SectionCardsGrid component
-  const completedSections = 0;
-
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Hero Section */}
       <PlanHero
         year={2026}
         userName={displayName}
-        completedSections={completedSections}
-        totalSections={5}
       />
 
       {/* Main Content - overlaps the hero */}

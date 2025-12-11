@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, ChevronRight, MoreHorizontal, Trash2, FileX } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, MoreHorizontal, Trash2, FileX } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,7 +50,7 @@ const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
 };
 
 export function SectionOneForm() {
-  const { currentStep, setCurrentStep, updateField, resetSection } = useSectionOneStore();
+  const { currentStep, setCurrentStep, updateField, resetSection, isDirty, markSaved, highestStepReached } = useSectionOneStore();
 
   // Local state for UI - initialized from store
   const [activeStep, setActiveStep] = useState(currentStep);
@@ -98,26 +98,39 @@ export function SectionOneForm() {
     }
   }, [resetSection]);
 
-  // Simulated auto-save indicator with animated checkmark
+  // Change-based auto-save indicator (triggers when data changes, not on a timer)
   useEffect(() => {
-    if (activeStep === 0) return;
+    if (!isDirty || activeStep === 0) return;
 
-    const timer = setInterval(() => {
+    const saveTimer = setTimeout(() => {
       setIsSaving(true);
       setTimeout(() => {
         setIsSaving(false);
         setShowSaved(true);
+        markSaved();
         setTimeout(() => setShowSaved(false), 1500);
-      }, 800);
-    }, 10000);
+      }, 400);
+    }, 1000); // 1-second debounce after last change
 
-    return () => clearInterval(timer);
-  }, [activeStep]);
+    return () => clearTimeout(saveTimer);
+  }, [isDirty, activeStep, markSaved]);
 
   const handleHideToast = useCallback(() => {
     setShowToast(false);
     setToastMessage("");
   }, []);
+
+  // Handler for clicking on progress stepper dots
+  const handleStepNavigation = useCallback((step: number) => {
+    if (step <= highestStepReached && step !== activeStep) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setActiveStep(step);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => setIsTransitioning(false), 50);
+      }, 200);
+    }
+  }, [highestStepReached, activeStep]);
 
   const handleNext = () => {
     if (activeStep < TOTAL_STEPS - 1) {
@@ -141,7 +154,7 @@ export function SectionOneForm() {
 
         // End transition
         setTimeout(() => setIsTransitioning(false), 50);
-      }, 300);
+      }, 200);
     }
   };
 
@@ -152,7 +165,7 @@ export function SectionOneForm() {
         setActiveStep(activeStep - 1);
         window.scrollTo({ top: 0, behavior: "smooth" });
         setTimeout(() => setIsTransitioning(false), 50);
-      }, 300);
+      }, 200);
     }
   };
 
@@ -201,6 +214,9 @@ export function SectionOneForm() {
         <ProgressStepper
           currentStep={activeStep}
           totalSteps={TOTAL_STEPS}
+          highestStepReached={highestStepReached}
+          onStepClick={handleStepNavigation}
+          showPercentage={activeStep > 0}
           className="mx-6 flex-1"
         />
 
@@ -278,10 +294,11 @@ export function SectionOneForm() {
 
             {activeStep === TOTAL_STEPS - 1 ? (
               <Link
-                href="/plan"
-                className="group flex items-center rounded-full bg-[#1E293B] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
+                href="/plan/section-2"
+                className="group flex items-center rounded-full bg-emerald-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-emerald-700 hover:shadow-xl active:scale-[0.98]"
               >
-                Complete Section
+                Continue to Section 2
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             ) : (
               <button

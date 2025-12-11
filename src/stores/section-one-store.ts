@@ -148,6 +148,10 @@ interface SectionOneStore {
   currentStep: number;
   highestStepReached: number;
 
+  // Save state tracking
+  isDirty: boolean;
+  lastSavedAt: number | null;
+
   // Actions
   updateField: <K extends keyof SectionOneData>(
     field: K,
@@ -159,6 +163,7 @@ interface SectionOneStore {
   ) => void;
   setCurrentStep: (step: number) => void;
   resetSection: () => void;
+  markSaved: () => void;
 
   // Selectors
   getProgress: () => number;
@@ -172,16 +177,20 @@ export const useSectionOneStore = create<SectionOneStore>()(
       data: initialData,
       currentStep: 0,
       highestStepReached: 0,
+      isDirty: false,
+      lastSavedAt: null,
 
       updateField: (field, value) => {
         set((state) => ({
           data: { ...state.data, [field]: value },
+          isDirty: true,
         }));
       },
 
       updateNumericField: (field, value) => {
         set((state) => ({
           data: { ...state.data, [field]: value },
+          isDirty: true,
         }));
       },
 
@@ -193,7 +202,17 @@ export const useSectionOneStore = create<SectionOneStore>()(
       },
 
       resetSection: () => {
-        set({ data: initialData, currentStep: 0, highestStepReached: 0 });
+        set({
+          data: initialData,
+          currentStep: 0,
+          highestStepReached: 0,
+          isDirty: false,
+          lastSavedAt: null,
+        });
+      },
+
+      markSaved: () => {
+        set({ isDirty: false, lastSavedAt: Date.now() });
       },
 
       getProgress: () => {

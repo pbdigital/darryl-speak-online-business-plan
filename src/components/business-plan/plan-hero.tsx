@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useSectionProgress } from "@/hooks/use-section-progress";
 
 interface PlanHeroProps {
   year?: number;
   userName?: string;
-  completedSections?: number;
-  totalSections?: number;
   className?: string;
 }
 
@@ -21,11 +20,9 @@ const DARRYL_QUOTES = [
 export function PlanHero({
   year = 2026,
   userName,
-  completedSections = 0,
-  totalSections = 5,
   className,
 }: PlanHeroProps) {
-  const progressPercentage = Math.round((completedSections / totalSections) * 100);
+  const { completedSections, totalSections, progressPercentage } = useSectionProgress();
 
   // Get a consistent quote based on the day of year (changes daily)
   const dayOfYear = Math.floor(

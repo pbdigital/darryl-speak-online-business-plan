@@ -6,3 +6,4 @@ export { ProgressStepper } from "./progress-stepper";
 export { EncouragementToast } from "./encouragement-toast";
 export { AnimatedCheckmark } from "./animated-checkmark";
 export { MantraWallpaper } from "./mantra-wallpaper";
+export { AnswerSummary } from "./answer-summary";

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle2, Clock, FileText, Sparkles, Star } from "lucide-react";
-import { WorkbookTextarea, WorkbookInput, AnimatedCheckmark } from "../ui";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, Clock, FileText, Sparkles, Star } from "lucide-react";
+import { WorkbookTextarea, WorkbookInput, AnimatedCheckmark, AnswerSummary } from "../ui";
 import { useSectionOneStore } from "@/stores/section-one-store";
 
 interface StepCompleteProps {
@@ -152,6 +153,9 @@ export function StepComplete({ startTime }: StepCompleteProps) {
         )}
       </div>
 
+      {/* Answer Summary - Collapsible review */}
+      <AnswerSummary />
+
       {/* Celebration Questions - Subtle styling */}
       <div className="mb-10 rounded-2xl border border-slate-100 bg-slate-50/50 p-8">
         <h3 className="mb-8 text-sm font-bold uppercase tracking-wider text-slate-700">
@@ -175,18 +179,39 @@ export function StepComplete({ startTime }: StepCompleteProps) {
 
       {/* Signature Section - Refined */}
       <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-900">
+        <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-slate-900">
           Your Commitment
         </h3>
-        <p className="mb-8 text-sm leading-relaxed text-slate-500">
+        <p className="mb-4 text-sm leading-relaxed text-slate-500">
           By signing below, I commit to honoring these reflections and working
           toward the intentions I&apos;ve set for 2026. This is a living
           document—revisit it throughout the year.
         </p>
+        <p className="mb-8 text-xs italic text-slate-400">
+          Your signature here is symbolic—a personal promise to yourself.
+          Simply type your name to acknowledge your commitment.
+        </p>
         <div className="grid gap-8 md:grid-cols-2">
-          <WorkbookInput label="Signature" fieldName="signature" placeholder="Your name" />
-          <WorkbookInput label="Date" fieldName="completionDate" placeholder="MM/DD/YYYY" type="text" />
+          <WorkbookInput label="Signature" fieldName="signature" placeholder="Type your full name" />
+          <WorkbookInput label="Date" fieldName="completionDate" placeholder="Today's date (e.g., Dec 12, 2025)" type="text" />
         </div>
+      </div>
+
+      {/* Continue to Section 2 CTA */}
+      <div className="mt-12 text-center">
+        <Link
+          href="/plan/section-2"
+          className="group inline-flex items-center gap-2 rounded-full bg-emerald-600 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:bg-emerald-700 hover:shadow-xl"
+        >
+          Continue to Section 2: SWOT Analysis
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Link>
+        <p className="mt-3 text-sm text-slate-400">
+          Or return to the{" "}
+          <Link href="/plan" className="text-slate-600 underline hover:text-slate-800">
+            dashboard
+          </Link>
+        </p>
       </div>
     </div>
   );

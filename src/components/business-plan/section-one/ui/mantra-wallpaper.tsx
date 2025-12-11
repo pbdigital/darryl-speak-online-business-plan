@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Download, Check } from "lucide-react";
+import { Download, Check, Sparkles } from "lucide-react";
 import html2canvas from "html2canvas";
 
 const WALLPAPER_OPTIONS = [
@@ -61,6 +61,13 @@ export function MantraWallpaper({ mantra }: MantraWallpaperProps) {
 
   return (
     <div className="mb-12 overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm">
+      {/* Bonus badge */}
+      <div className="mb-4">
+        <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-amber-700">
+          <Sparkles className="h-3 w-3" /> Bonus
+        </span>
+      </div>
+
       <h4 className="mb-1 text-lg font-bold text-slate-900">Take it with you</h4>
       <p className="mb-5 text-sm text-slate-500">
         Download your mantra as a phone wallpaper to keep it front and center all year.
