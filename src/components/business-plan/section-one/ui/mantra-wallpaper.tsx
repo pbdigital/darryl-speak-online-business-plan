@@ -61,9 +61,10 @@ export function MantraWallpaper({ mantra }: MantraWallpaperProps) {
 
   return (
     <div className="mb-12 overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm">
-      <div className="mb-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-        Your 2026 Mantra
-      </div>
+      <h4 className="mb-1 text-lg font-bold text-slate-900">Take it with you</h4>
+      <p className="mb-5 text-sm text-slate-500">
+        Download your mantra as a phone wallpaper to keep it front and center all year.
+      </p>
 
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         {/* Phone Preview */}
