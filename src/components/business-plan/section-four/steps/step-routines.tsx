@@ -2,7 +2,7 @@
 
 import { useSectionFourStore } from "@/stores/section-four-store";
 import { WorkbookTextarea } from "@/components/business-plan/section-one/ui";
-import { DarrylTip } from "@/components/business-plan/section-three/ui/darryl-tip";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepRoutines() {
   const morningRoutine = useSectionFourStore((state) => state.data.morningRoutine);

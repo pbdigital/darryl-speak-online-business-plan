@@ -2,6 +2,7 @@
 
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { WeaknessActionSelector } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 import { cn } from "@/lib/utils";
 
 const weaknessPlaceholders = [
@@ -39,6 +40,12 @@ export function StepWeaknesses() {
           or work on them. Honest self-assessment is key to growth.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="Admitting weakness takes courage, but it's where real growth begins. You don't have to fix everything—sometimes the smartest move is to delegate or accept and work around it."
+        className="mb-8"
+      />
 
       {/* Progress Indicator */}
       <div className="mb-8 flex items-center justify-between rounded-xl bg-slate-50 px-6 py-4">

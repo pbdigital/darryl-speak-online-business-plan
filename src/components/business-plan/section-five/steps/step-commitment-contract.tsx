@@ -2,7 +2,7 @@
 
 import { useSectionFiveStore } from "@/stores/section-five-store";
 import { WorkbookInput, WorkbookTextarea } from "@/components/business-plan/section-one/ui";
-import { DarrylTip } from "@/components/business-plan/section-three/ui/darryl-tip";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 import { SignatureField } from "../ui/signature-field";
 import { FileSignature } from "lucide-react";
 

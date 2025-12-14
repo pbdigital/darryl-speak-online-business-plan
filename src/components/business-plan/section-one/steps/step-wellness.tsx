@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkbookTextarea } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepWellness() {
   return (
@@ -18,6 +19,12 @@ export function StepWellness() {
           is investing in your success.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="You are your business's most valuable asset. When you invest in your health, education, and well-being, you're investing in your clients' experience too."
+        className="mb-8"
+      />
 
       {/* Self-Care and Well-Being Section */}
       <div className="mb-12">

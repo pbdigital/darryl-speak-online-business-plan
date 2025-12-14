@@ -2,6 +2,7 @@
 
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { SwotRow } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 const strengthPlaceholders = [
   { left: "Strong negotiation skills", right: "Use in listing presentations and buyer negotiations" },
@@ -35,6 +36,12 @@ export function StepStrengths() {
           leverage them for success in your real estate business.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="Know your superpowers and use them intentionally. The best agents don't try to be good at everything—they become exceptional at what they naturally do well."
+        className="mb-8"
+      />
 
       {/* Progress Indicator */}
       <div className="mb-8 flex items-center justify-between rounded-xl bg-slate-50 px-6 py-4">

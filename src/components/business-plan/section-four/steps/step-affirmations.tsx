@@ -2,7 +2,7 @@
 
 import { useSectionFourStore } from "@/stores/section-four-store";
 import { WorkbookInput } from "@/components/business-plan/section-one/ui";
-import { DarrylTip } from "@/components/business-plan/section-three/ui/darryl-tip";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepAffirmations() {
   const affirmations = useSectionFourStore((state) => state.data.affirmations);

@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkbookTextarea } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepCelebration() {
   return (
@@ -18,6 +19,12 @@ export function StepCelebration() {
           Planning how you&apos;ll celebrate keeps you motivated throughout the year.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="Celebrate your wins, big and small. The agents who burn out are the ones who never pause to acknowledge progress. Joy is fuel for the journey ahead."
+        className="mb-8"
+      />
 
       <div className="space-y-2">
         <WorkbookTextarea

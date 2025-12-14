@@ -34,12 +34,6 @@ export function StepOverview({ onStart }: StepOverviewProps) {
           />
         </div>
 
-        {/* Optional questions note */}
-        <div className="mb-8 rounded-xl border border-amber-100 bg-amber-50/50 px-6 py-4 text-center">
-          <p className="text-sm text-amber-800">
-            <strong>Note:</strong> All questions in this section are optional. Answer what feels meaningful to you.
-          </p>
-        </div>
 
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center">
           <p className="mb-6 text-slate-600">

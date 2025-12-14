@@ -1,7 +1,7 @@
 "use client";
 
 import { useSectionFiveStore } from "@/stores/section-five-store";
-import { DarrylTip } from "@/components/business-plan/section-three/ui/darryl-tip";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 import { ActivityCard } from "../ui/activity-card";
 import type { ProspectingActivity } from "@/types/business-plan";
 

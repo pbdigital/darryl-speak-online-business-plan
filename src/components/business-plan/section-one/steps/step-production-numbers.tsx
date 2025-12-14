@@ -2,6 +2,7 @@
 
 import { LineChart } from "lucide-react";
 import { WorkbookInput, WorkbookTextarea } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepProductionNumbers() {
   return (
@@ -19,6 +20,12 @@ export function StepProductionNumbers() {
           Take time to honestly assess what worked and what didn&apos;t.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="Numbers don't lie, but they don't tell the whole story either. Use these figures as a compass, not a verdict. Every top producer started somewhere."
+        className="mb-8"
+      />
 
       {/* Production Numbers Card */}
       <div className="relative mb-10 overflow-hidden rounded-3xl border border-slate-100 bg-white p-8 shadow-lg md:p-12">

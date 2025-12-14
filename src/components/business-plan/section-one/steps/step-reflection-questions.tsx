@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkbookTextarea } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepReflectionQuestions() {
   return (
@@ -26,6 +27,12 @@ export function StepReflectionQuestions() {
           throughout the year.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="The most successful agents I know treat reflection like a business meeting—scheduled, intentional, and honest. Your past holds the blueprint for your future success."
+        className="mb-8"
+      />
 
       {/* Looking Back Section */}
       <div className="mb-8">

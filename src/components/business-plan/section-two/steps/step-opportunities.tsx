@@ -2,6 +2,7 @@
 
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { SwotRow } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 const opportunityPlaceholders = [
   { left: "Growing first-time buyer market", right: "Create targeted content, partner with lenders for seminars" },
@@ -37,6 +38,12 @@ export function StepOpportunities() {
           expand and improve your business in the market.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="Opportunities are everywhere, but they favor the prepared. Keep your eyes open, your skills sharp, and be ready to act when the right one appears."
+        className="mb-8"
+      />
 
       {/* Progress Indicator */}
       <div className="mb-8 flex items-center justify-between rounded-xl bg-slate-50 px-6 py-4">

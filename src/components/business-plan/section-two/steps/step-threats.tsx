@@ -2,6 +2,7 @@
 
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { SwotRow } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 const threatPlaceholders = [
   { left: "Rising interest rates", right: "Educate buyers on rate locks, focus on pre-approvals" },
@@ -35,6 +36,12 @@ export function StepThreats() {
           response to stay ahead of potential obstacles.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="The agents who thrive in any market are the ones who saw challenges coming and had a plan. Don't fear threats—prepare for them."
+        className="mb-8"
+      />
 
       {/* Progress Indicator */}
       <div className="mb-8 flex items-center justify-between rounded-xl bg-slate-50 px-6 py-4">

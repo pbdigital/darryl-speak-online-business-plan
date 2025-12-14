@@ -170,7 +170,6 @@ export function PlanHero({
                 </p>
               </div>
               {/* Live indicator dot */}
-              <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)]" />
             </div>
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-700/50">
               <div

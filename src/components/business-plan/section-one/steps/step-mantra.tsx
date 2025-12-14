@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Star, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { WorkbookTextarea, MantraWallpaper } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 import { useSectionOneStore } from "@/stores/section-one-store";
 
 const MANTRA_SUGGESTIONS = [
@@ -58,6 +59,12 @@ export function StepMantra() {
           your north star when challenges arise.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="Your mantra isn't just a word—it's a decision you make every morning. When doubt creeps in, let your word remind you who you chose to become."
+        className="mb-8"
+      />
 
       {/* Mantra Card - Ambient gradient background */}
       <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#1E293B] to-[#0F172A] p-10 text-center text-white shadow-2xl">

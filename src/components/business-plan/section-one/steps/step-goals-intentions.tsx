@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkbookTextarea } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepGoalsIntentions() {
   return (
@@ -18,6 +19,12 @@ export function StepGoalsIntentions() {
           anticipating obstacles helps you prepare for success.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="A goal without a plan is just a wish. Write down what could go wrong before it does, and you'll be ready when challenges appear. Anticipation beats reaction every time."
+        className="mb-8"
+      />
 
       {/* Goals and Intentions Section */}
       <div className="mb-12 space-y-4">

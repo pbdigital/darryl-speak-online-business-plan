@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkbookTextarea } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepSelfReflection() {
   return (
@@ -18,6 +19,12 @@ export function StepSelfReflection() {
           values helps you make aligned decisions.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="Your values are your compass in tough decisions. When you know what matters most, saying 'no' to the wrong opportunities becomes easy—and saying 'yes' to the right ones becomes powerful."
+        className="mb-8"
+      />
 
       {/* Self-Reflection Section */}
       <div className="mb-12">

@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkbookTextarea } from "../ui";
+import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 
 export function StepGratitude() {
   return (
@@ -18,6 +19,12 @@ export function StepGratitude() {
           grateful for helps you recognize the good in your life and business.
         </p>
       </div>
+
+      {/* DarrylTip */}
+      <DarrylTip
+        tip="Gratitude is the secret weapon of top performers. When you appreciate what you have, you attract more of what you want. Start every morning by naming three things you're grateful for."
+        className="mb-8"
+      />
 
       <div className="space-y-2">
         <WorkbookTextarea
