@@ -47,8 +47,8 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // If logged in and trying to access login page, redirect to plan
-  if (user && request.nextUrl.pathname === '/login') {
+  // If logged in and trying to access auth pages, redirect to plan
+  if (user && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register')) {
     const url = request.nextUrl.clone();
     url.pathname = '/plan';
     return NextResponse.redirect(url);
