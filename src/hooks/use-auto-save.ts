@@ -48,7 +48,7 @@ export function useAutoSave<T extends object>(
   options: UseAutoSaveOptions = {}
 ): UseAutoSaveReturn {
   const { debounceMs = 2000, onSaveStart, onSaveSuccess, onSaveError } = options;
-  const { plan } = useBusinessPlan();
+  const { plan, updateSectionCache } = useBusinessPlan();
 
   const [state, setState] = useState<AutoSaveState>({
     status: 'idle',
@@ -88,6 +88,11 @@ export function useAutoSave<T extends object>(
         throw new Error(result.errors?.[0]?.message || 'Save failed');
       }
 
+      // Update the provider's cached section data to prevent stale data on navigation
+      if (result.data) {
+        updateSectionCache(sectionKey, result.data);
+      }
+
       setState({
         status: 'saved',
         lastSavedAt: new Date(),
@@ -114,7 +119,7 @@ export function useAutoSave<T extends object>(
         save();
       }
     }
-  }, [plan?.id, sectionKey, markSaved, onSaveStart, onSaveSuccess, onSaveError]);
+  }, [plan?.id, sectionKey, markSaved, updateSectionCache, onSaveStart, onSaveSuccess, onSaveError]);
 
   // Save immediately (for navigation)
   const saveNow = useCallback(async () => {

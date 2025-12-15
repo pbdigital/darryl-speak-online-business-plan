@@ -51,32 +51,18 @@ export function ProgressStepper({
 
   return (
     <div className={cn("flex flex-col items-center", className)}>
-      {/* Mobile view: Simple text indicator */}
-      <div className="flex items-center gap-2 md:hidden">
+      {/* Mobile view: Text with progress bar */}
+      <div className="flex flex-col items-center gap-1.5 md:hidden">
         <span className="text-xs font-medium text-slate-500">
           Step {currentStep} of {totalSteps - 1}
           {showPercentage && ` (${progressPercentage}%)`}
         </span>
-        <div className="flex gap-1">
-          {Array.from({ length: totalSteps }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => handleStepClick(i)}
-              disabled={!canNavigateTo(i)}
-              className={cn(
-                "h-1.5 w-1.5 rounded-full transition-all duration-300",
-                i < currentStep
-                  ? "bg-emerald-400"
-                  : i === currentStep
-                    ? "bg-slate-900"
-                    : canNavigateTo(i)
-                      ? "bg-slate-200 hover:bg-slate-300"
-                      : "bg-slate-200 opacity-50",
-                canNavigateTo(i) && i !== currentStep && "cursor-pointer"
-              )}
-              aria-label={`${canNavigateTo(i) ? "Go to " : ""}Step ${i + 1}: ${stepLabels[i] || `Step ${i + 1}`}`}
-            />
-          ))}
+        {/* Progress bar */}
+        <div className="h-1 w-24 overflow-hidden rounded-full bg-slate-200">
+          <div
+            className="h-full rounded-full bg-emerald-400 transition-all duration-500"
+            style={{ width: `${progressPercentage}%` }}
+          />
         </div>
       </div>
 

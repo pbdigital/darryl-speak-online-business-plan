@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
+  ChevronLeft,
   ChevronRight,
   MoreHorizontal,
   Trash2,
@@ -285,9 +286,9 @@ export function SectionTwoForm() {
           <div className="mx-auto flex max-w-3xl items-center justify-between">
             <button
               onClick={handleBack}
-              className="group flex items-center px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-slate-600"
+              className="group flex cursor-pointer items-center py-4 pr-6 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-slate-600"
             >
-              <ArrowLeft className="mr-2 h-3 w-3 opacity-0 transition-all group-hover:-translate-x-1 group-hover:opacity-100" />
+              <ChevronLeft className="mr-1 h-4 w-4 transition-transform group-hover:-translate-x-1" />
               Back
             </button>
 
@@ -303,7 +304,7 @@ export function SectionTwoForm() {
             ) : (
               <button
                 onClick={handleNext}
-                className="group flex items-center rounded-full bg-[#1E293B] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
+                className="group flex cursor-pointer items-center rounded-full bg-[#1E293B] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
               >
                 Next Step
                 <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

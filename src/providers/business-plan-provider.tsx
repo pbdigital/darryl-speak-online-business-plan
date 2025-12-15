@@ -27,6 +27,8 @@ interface BusinessPlanContextType {
   error: string | null;
   /** Refetch plan and sections from server */
   refetchPlan: () => Promise<void>;
+  /** Update a section's cached data after successful save */
+  updateSectionCache: (sectionKey: SectionKey, section: PlanSection) => void;
 }
 
 const BusinessPlanContext = createContext<BusinessPlanContextType | null>(null);
@@ -104,6 +106,18 @@ export function BusinessPlanProvider({
     loadPlan();
   }, [loadPlan]);
 
+  // Update a section's cached data after successful save
+  // This prevents stale data from overwriting user changes on navigation
+  const updateSectionCache = useCallback(
+    (sectionKey: SectionKey, section: PlanSection) => {
+      setSections((prev) => ({
+        ...prev,
+        [sectionKey]: section,
+      }));
+    },
+    []
+  );
+
   return (
     <BusinessPlanContext.Provider
       value={{
@@ -112,6 +126,7 @@ export function BusinessPlanProvider({
         isLoading,
         error,
         refetchPlan: loadPlan,
+        updateSectionCache,
       }}
     >
       {children}

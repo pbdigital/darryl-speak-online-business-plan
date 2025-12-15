@@ -10,11 +10,7 @@ export function StepIncomeCommitment() {
     useBusinessPlanStore();
   const [signature, setSignature] = useState("");
   const [date, setDate] = useState(
-    new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
+    new Date().toISOString().split("T")[0] // YYYY-MM-DD format for date input
   );
 
   const hasCap = (incomePlanning.brokerCapAmount || 0) > 0;
@@ -268,8 +264,8 @@ export function StepIncomeCommitment() {
               Date
             </label>
             <input
-              type="text"
-              className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-slate-900"
+              type="date"
+              className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg text-slate-800 outline-none transition-all focus:border-slate-900"
               value={date}
               onChange={(e) => setDate(e.target.value)}
             />

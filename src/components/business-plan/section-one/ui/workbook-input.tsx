@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import {
   useSectionOneStore,
@@ -11,10 +12,11 @@ interface WorkbookInputProps {
   fieldName?: keyof SectionOneData;
   placeholder?: string;
   prefix?: string;
-  type?: "text" | "number";
+  type?: "text" | "number" | "date";
   className?: string;
   value?: string | number | null;
   onChange?: (value: string | number | null) => void;
+  defaultToToday?: boolean;
 }
 
 export function WorkbookInput({
@@ -26,6 +28,7 @@ export function WorkbookInput({
   className,
   value: controlledValue,
   onChange,
+  defaultToToday = false,
 }: WorkbookInputProps) {
   // Get store value if fieldName is provided
   const storeValue = useSectionOneStore((state) =>
@@ -35,6 +38,14 @@ export function WorkbookInput({
 
   // Use store value if fieldName provided, otherwise use controlled value
   const value = fieldName ? storeValue : controlledValue;
+
+  // Prefill with today's date if defaultToToday is true and value is empty
+  useEffect(() => {
+    if (defaultToToday && type === "date" && !value && fieldName) {
+      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+      updateField(fieldName, today as SectionOneData[typeof fieldName]);
+    }
+  }, [defaultToToday, type, value, fieldName, updateField]);
   const displayValue = value === null || value === undefined ? "" : String(value);
   const hasContent = displayValue.length > 0;
 

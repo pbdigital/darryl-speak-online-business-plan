@@ -193,7 +193,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
         </p>
         <div className="grid gap-8 md:grid-cols-2">
           <WorkbookInput label="Signature" fieldName="signature" placeholder="Type your full name" />
-          <WorkbookInput label="Date" fieldName="completionDate" placeholder="Today's date (e.g., Dec 12, 2025)" type="text" />
+          <WorkbookInput label="Date" fieldName="completionDate" type="date" defaultToToday />
         </div>
       </div>
 

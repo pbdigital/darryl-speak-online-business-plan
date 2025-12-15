@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { CheckCircle2 } from "lucide-react";
 
@@ -11,6 +11,7 @@ interface SignatureFieldProps {
   onSignatureChange: (value: string) => void;
   onDateChange: (value: string) => void;
   className?: string;
+  defaultToToday?: boolean;
 }
 
 export function SignatureField({
@@ -20,11 +21,20 @@ export function SignatureField({
   onSignatureChange,
   onDateChange,
   className,
+  defaultToToday = true,
 }: SignatureFieldProps) {
   const [isFocused, setIsFocused] = useState(false);
   const hasSignature = signatureValue.trim().length > 0;
   const hasDate = dateValue.trim().length > 0;
   const isComplete = hasSignature && hasDate;
+
+  // Prefill with today's date if empty
+  useEffect(() => {
+    if (defaultToToday && !dateValue) {
+      const today = new Date().toISOString().split("T")[0];
+      onDateChange(today);
+    }
+  }, [defaultToToday, dateValue, onDateChange]);
 
   return (
     <div
