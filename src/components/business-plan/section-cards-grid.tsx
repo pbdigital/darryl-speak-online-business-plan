@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { SectionCard } from "@/components/business-plan";
 import { useSectionOneStore } from "@/stores/section-one-store";
 import { useSectionTwoStore } from "@/stores/section-two-store";
@@ -23,6 +24,14 @@ interface SectionCardsGridProps {
 type SectionStatus = "not_started" | "in_progress" | "completed";
 
 export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
+  // Track if component has mounted to avoid hydration mismatch
+  // Server and client both start with mounted=false, render same initial values
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Get progress from all section stores
   const section1Progress = useSectionOneStore((state) => state.getProgress());
   const section2Progress = useSectionTwoStore((state) => state.getProgress());
@@ -37,13 +46,20 @@ export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
     return "in_progress";
   };
 
+  // Use default values until mounted to ensure consistent server/client rendering
+  const effectiveSection1Progress = mounted ? section1Progress : 0;
+  const effectiveSection2Progress = mounted ? section2Progress : 0;
+  const effectiveSection3Progress = mounted ? section3Progress : 0;
+  const effectiveSection4Progress = mounted ? section4Progress : 0;
+  const effectiveSection5Progress = mounted ? section5Progress : 0;
+
   // Build progress map for all sections
   const sectionProgressMap: Record<number, { status: SectionStatus; progress: number }> = {
-    1: { status: getStatus(section1Progress), progress: section1Progress },
-    2: { status: getStatus(section2Progress), progress: section2Progress },
-    3: { status: getStatus(section3Progress), progress: section3Progress },
-    4: { status: getStatus(section4Progress), progress: section4Progress },
-    5: { status: getStatus(section5Progress), progress: section5Progress },
+    1: { status: getStatus(effectiveSection1Progress), progress: effectiveSection1Progress },
+    2: { status: getStatus(effectiveSection2Progress), progress: effectiveSection2Progress },
+    3: { status: getStatus(effectiveSection3Progress), progress: effectiveSection3Progress },
+    4: { status: getStatus(effectiveSection4Progress), progress: effectiveSection4Progress },
+    5: { status: getStatus(effectiveSection5Progress), progress: effectiveSection5Progress },
   };
 
   // Find the current active section (first non-completed section)

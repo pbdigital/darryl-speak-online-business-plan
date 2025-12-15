@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { SectionCard } from "@/components/business-plan";
 import { useSectionFourStore } from "@/stores/section-four-store";
 
@@ -20,7 +21,17 @@ export function SectionFourCardWrapper({
   href,
   dimmed,
 }: SectionFourCardWrapperProps) {
-  const progress = useSectionFourStore((state) => state.getProgress());
+  // Track if component has mounted to avoid hydration mismatch
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const storeProgress = useSectionFourStore((state) => state.getProgress());
+
+  // Use default values until mounted to ensure consistent server/client rendering
+  const progress = mounted ? storeProgress : 0;
 
   const status =
     progress === 0

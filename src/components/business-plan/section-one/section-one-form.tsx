@@ -74,16 +74,13 @@ export function SectionOneForm() {
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
 
-  // Show skeleton while hydrating
-  if (isHydrating) {
-    return <SectionSkeleton />;
-  }
-
   // Sync local state with store on mount (in case store has persisted step)
+  // NOTE: All hooks must be called before any early returns to follow Rules of Hooks
   useEffect(() => {
     if (currentStep > 0 && currentStep !== activeStep) {
       setActiveStep(currentStep);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only on mount
 
   // Update store whenever local step changes
@@ -91,6 +88,7 @@ export function SectionOneForm() {
     setCurrentStep(activeStep);
   }, [activeStep, setCurrentStep]);
 
+  // All useCallback hooks must be defined before any early returns
   const handleClearPage = useCallback(() => {
     const fields = STEP_FIELDS[activeStep];
     if (!fields) return;
@@ -139,6 +137,11 @@ export function SectionOneForm() {
       }, 200);
     }
   }, [highestStepReached, activeStep]);
+
+  // Show skeleton while hydrating - must be after all hooks
+  if (isHydrating) {
+    return <SectionSkeleton />;
+  }
 
   const handleNext = () => {
     if (activeStep < TOTAL_STEPS - 1) {
