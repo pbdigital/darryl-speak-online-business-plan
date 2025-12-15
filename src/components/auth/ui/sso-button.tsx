@@ -21,13 +21,17 @@ const providerConfig = {
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle cx="12" cy="12" r="10" fill="#1a2744" />
-        <path
-          d="M8 12l3 3 5-6"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <text
+          x="12"
+          y="16"
+          textAnchor="middle"
+          fill="white"
+          fontSize="11"
+          fontWeight="bold"
+          fontFamily="system-ui, sans-serif"
+        >
+          PA
+        </text>
       </svg>
     ),
     disabledTooltip: 'Coming soon',
@@ -79,8 +83,11 @@ export function SsoButton({
     <Button
       type="button"
       variant="outline"
+      size="xl"
       className={cn(
-        'w-full justify-start gap-3 h-11',
+        'w-full justify-center gap-3 border-gray-200 bg-white font-medium text-gray-700',
+        'hover:bg-gray-50 hover:border-gray-300',
+        'transition-all duration-200',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
@@ -89,10 +96,7 @@ export function SsoButton({
       title={disabled ? config.disabledTooltip : undefined}
     >
       {config.icon}
-      <span className="flex-1 text-left">{config.label}</span>
-      {disabled && (
-        <span className="text-xs text-muted-foreground">Coming soon</span>
-      )}
+      <span>{config.label}</span>
     </Button>
   );
 }

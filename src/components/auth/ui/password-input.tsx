@@ -27,7 +27,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           type="button"
           variant="ghost"
           size="sm"
-          className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground hover:bg-transparent hover:text-foreground"
+          className="absolute right-0 top-0 h-full px-3 py-2 text-gray-400 hover:bg-transparent hover:text-gray-600 transition-colors"
           onClick={() => setShowPassword(!showPassword)}
           tabIndex={-1}
         >

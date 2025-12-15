@@ -88,7 +88,7 @@ export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <AuthHeader
         title="Welcome back"
         subtitle={`Log in using ${email}`}
@@ -97,15 +97,15 @@ export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
       />
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-100">
               {error}
             </div>
           )}
 
           {resetEmailSent && (
-            <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+            <div className="rounded-lg bg-green-50 p-4 text-sm text-green-700 border border-green-100">
               Check your email for a password reset link.
             </div>
           )}
@@ -115,11 +115,12 @@ export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="text-gray-700 font-medium">Password</FormLabel>
                 <FormControl>
                   <PasswordInput
                     placeholder="Enter your password"
                     autoComplete="current-password"
+                    className="h-12 text-base"
                     {...field}
                   />
                 </FormControl>
@@ -133,7 +134,7 @@ export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
               type="button"
               onClick={handleForgotPassword}
               disabled={isLoading}
-              className="text-sm text-primary hover:underline disabled:opacity-50"
+              className="text-sm text-gray-600 hover:text-gray-900 hover:underline disabled:opacity-50 transition-colors"
             >
               Forgotten your password?
             </button>
@@ -150,14 +151,14 @@ export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <FormLabel className="text-sm font-normal cursor-pointer">
+                <FormLabel className="text-sm font-normal cursor-pointer text-gray-600">
                   Remember me
                 </FormLabel>
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" size="xl" className="w-full" disabled={isLoading}>
             {isLoading ? 'Logging in...' : 'Log in'}
           </Button>
         </form>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -28,15 +28,26 @@ interface InitialScreenProps {
   onLoginRoute: (email: string) => void;
   onSignupRoute: (email: string) => void;
   onPowerAgentSso?: () => void;
+  externalError?: string | null;
+  onClearError?: () => void;
 }
 
 export function InitialScreen({
   onLoginRoute,
   onSignupRoute,
   onPowerAgentSso,
+  externalError,
+  onClearError,
 }: InitialScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Sync external error with local state
+  useEffect(() => {
+    if (externalError) {
+      setError(externalError);
+    }
+  }, [externalError]);
 
   const form = useForm<EmailFormValues>({
     resolver: zodResolver(emailSchema),
@@ -45,9 +56,14 @@ export function InitialScreen({
     },
   });
 
+  const clearError = () => {
+    setError(null);
+    onClearError?.();
+  };
+
   async function onSubmit(data: EmailFormValues) {
     setIsLoading(true);
-    setError(null);
+    clearError();
 
     try {
       const response = await fetch('/api/auth/check-email', {
@@ -75,8 +91,15 @@ export function InitialScreen({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <AuthHeader title="Log in or sign up" />
+
+      {/* Error Message */}
+      {error && (
+        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-100">
+          {error}
+        </div>
+      )}
 
       {/* SSO Buttons */}
       <div className="space-y-3">
@@ -91,25 +114,24 @@ export function InitialScreen({
 
       {/* Email Form */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
-
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-gray-700 font-medium">Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
                     placeholder="you@example.com"
                     autoComplete="email"
+                    className="h-12 text-base"
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      clearError();
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -117,13 +139,13 @@ export function InitialScreen({
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" size="xl" className="w-full" disabled={isLoading}>
             {isLoading ? 'Checking...' : 'Continue'}
           </Button>
         </form>
       </Form>
 
-      <AuthFooter className="pt-4" />
+      <AuthFooter className="pt-6" />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -21,14 +21,28 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabase = await createClient();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    // Check if user exists in profiles table
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email', parsed.data.email)
-      .maybeSingle();
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json(
+        {
+          success: false,
+          errors: [{ message: 'Server configuration error' }],
+        },
+        { status: 500 }
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+
+    // Check if user exists in auth.users via admin API
+    const { data: usersData, error } = await supabase.auth.admin.listUsers();
 
     if (error) {
       console.error('Error checking email:', error);
@@ -41,9 +55,13 @@ export async function POST(request: Request) {
       );
     }
 
+    const exists = usersData.users.some(
+      (user) => user.email?.toLowerCase() === parsed.data.email.toLowerCase()
+    );
+
     return NextResponse.json({
       success: true,
-      data: { exists: !!data },
+      data: { exists },
     });
   } catch {
     return NextResponse.json(

@@ -830,4 +830,4 @@ Per global CLAUDE.md rules:
 - Can integrate with Infusionsoft for future subscription management
 - **SSO bridge requires WordPress plugin on darrylspeaks.com**
 - Must handle account linking for users who sign up before SSO is available
-- Main Linear Project is called `MyPlanForSuccess - Interactive Business Plan` found in the `Darryl Speaks` team in Linear
+- The Linear Team that contains the relevant projects and tickets is `My Plan For Success` 

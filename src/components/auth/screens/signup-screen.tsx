@@ -78,13 +78,13 @@ export function SignupScreen({ email, onBack, onSuccess }: SignupScreenProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <AuthHeader title="Sign up for free" showBackButton onBack={onBack} />
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-100">
               {error}
             </div>
           )}
@@ -94,12 +94,12 @@ export function SignupScreen({ email, onBack, onSuccess }: SignupScreenProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-gray-700 font-medium">Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
                     readOnly
-                    className="bg-muted"
+                    className="h-12 text-base bg-gray-50 text-gray-500"
                     {...field}
                   />
                 </FormControl>
@@ -108,54 +108,55 @@ export function SignupScreen({ email, onBack, onSuccess }: SignupScreenProps) {
             )}
           />
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="John"
-                      autoComplete="given-name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium">First name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="John"
+                    autoComplete="given-name"
+                    className="h-12 text-base"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Doe"
-                      autoComplete="family-name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium">Last name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Doe"
+                    autoComplete="family-name"
+                    className="h-12 text-base"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="text-gray-700 font-medium">Password</FormLabel>
                 <FormControl>
                   <PasswordInput
                     placeholder="Create a password (min 6 characters)"
                     autoComplete="new-password"
+                    className="h-12 text-base"
                     {...field}
                   />
                 </FormControl>
@@ -168,16 +169,16 @@ export function SignupScreen({ email, onBack, onSuccess }: SignupScreenProps) {
             control={form.control}
             name="agreeToTerms"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel className="text-sm font-normal cursor-pointer">
-                    By selecting &apos;Agree and sign up&apos;, I agree to the{' '}
+                <div>
+                  <FormLabel className="text-sm font-normal cursor-pointer text-gray-600">
+                    I agree to the{' '}
                     <Link
                       href="/terms"
                       className="text-primary hover:underline"
@@ -193,7 +194,6 @@ export function SignupScreen({ email, onBack, onSuccess }: SignupScreenProps) {
                     >
                       Privacy Policy
                     </Link>
-                    .
                   </FormLabel>
                   <FormMessage />
                 </div>
@@ -201,7 +201,7 @@ export function SignupScreen({ email, onBack, onSuccess }: SignupScreenProps) {
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" size="xl" className="w-full" disabled={isLoading}>
             {isLoading ? 'Creating account...' : 'Agree and sign up'}
           </Button>
         </form>
