@@ -90,6 +90,10 @@ interface SectionTwoStore {
   resetThreats: () => void;
   markSaved: () => void;
 
+  // Persistence actions
+  hydrate: (serverData: Partial<SectionTwoData>) => void;
+  getData: () => SectionTwoData;
+
   // Selectors
   getProgress: () => number;
   getFilledFieldCount: () => number;
@@ -188,6 +192,23 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
 
       markSaved: () => {
         set({ isDirty: false, lastSavedAt: Date.now() });
+      },
+
+      hydrate: (serverData) => {
+        set((state) => ({
+          data: {
+            strengths: serverData.strengths || state.data.strengths,
+            weaknesses: serverData.weaknesses || state.data.weaknesses,
+            opportunities: serverData.opportunities || state.data.opportunities,
+            threats: serverData.threats || state.data.threats,
+          },
+          isDirty: false,
+          lastSavedAt: Date.now(),
+        }));
+      },
+
+      getData: () => {
+        return get().data;
       },
 
       getProgress: () => {

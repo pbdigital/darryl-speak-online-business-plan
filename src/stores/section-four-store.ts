@@ -73,6 +73,10 @@ interface SectionFourStore {
   resetBecoming: () => void;
   markSaved: () => void;
 
+  // Persistence actions
+  hydrate: (serverData: Partial<MindsetSection>) => void;
+  getData: () => MindsetSection;
+
   // Selectors
   getProgress: () => number;
   getFilledFieldCount: () => number;
@@ -216,6 +220,18 @@ export const useSectionFourStore = create<SectionFourStore>()(
 
       markSaved: () => {
         set({ isDirty: false, lastSavedAt: Date.now() });
+      },
+
+      hydrate: (serverData) => {
+        set((state) => ({
+          data: { ...state.data, ...serverData },
+          isDirty: false,
+          lastSavedAt: Date.now(),
+        }));
+      },
+
+      getData: () => {
+        return get().data;
       },
 
       // Progress calculation (step-based)

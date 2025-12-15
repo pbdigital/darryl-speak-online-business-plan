@@ -2,19 +2,20 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ChevronRight, MoreHorizontal, Trash2, FileX } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  ProgressStepper,
-  AnimatedCheckmark,
-} from "@/components/business-plan/section-one/ui";
+import { ProgressStepper } from "@/components/business-plan/section-one/ui";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
+import { useAutoSave } from "@/hooks/use-auto-save";
+import { useHydrateSection } from "@/hooks/use-hydrate-section";
+import { SectionSkeleton } from "../ui/section-skeleton";
+import { SaveIndicator } from "../ui/save-indicator";
+import type { IncomePlanningSection } from "@/types/business-plan";
 
 import { StepOverview } from "./steps/step-overview";
 import { StepPersonalExpenses } from "./steps/step-personal-expenses";
@@ -43,13 +44,29 @@ const STEP_LABELS = [
 ];
 
 export function SectionThreeForm() {
-  const { currentStep, setCurrentStep, resetSection, isDirty, markSaved, highestStepReached } = useBusinessPlanStore();
+  const { currentStep, setCurrentStep, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData, recalculate } = useBusinessPlanStore();
+
+  // Hydrate store with server data on mount (and trigger recalculations)
+  const { isHydrating } = useHydrateSection<IncomePlanningSection>("income-planning", (data) => {
+    hydrate(data);
+  });
+
+  // Auto-save to server when dirty
+  const { status: saveStatus, lastSavedAt, saveNow } = useAutoSave(
+    "income-planning",
+    getData,
+    isDirty,
+    markSaved
+  );
 
   // Local state for UI - initialized from store
   const [activeStep, setActiveStep] = useState(currentStep);
-  const [isSaving, setIsSaving] = useState(false);
-  const [showSaved, setShowSaved] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Show skeleton while hydrating
+  if (isHydrating) {
+    return <SectionSkeleton />;
+  }
 
   // Sync local state with store on mount (in case store has persisted step)
   useEffect(() => {
@@ -70,22 +87,12 @@ export function SectionThreeForm() {
     }
   }, [resetSection]);
 
-  // Change-based auto-save indicator (triggers when data changes, not on a timer)
-  useEffect(() => {
-    if (!isDirty || activeStep === 0) return;
-
-    const saveTimer = setTimeout(() => {
-      setIsSaving(true);
-      setTimeout(() => {
-        setIsSaving(false);
-        setShowSaved(true);
-        markSaved();
-        setTimeout(() => setShowSaved(false), 1500);
-      }, 400);
-    }, 1000); // 1-second debounce after last change
-
-    return () => clearTimeout(saveTimer);
-  }, [isDirty, activeStep, markSaved]);
+  // Save immediately when navigating away
+  const handleNavigationSave = useCallback(async () => {
+    if (isDirty) {
+      await saveNow();
+    }
+  }, [isDirty, saveNow]);
 
   // Handler for clicking on progress stepper dots
   const handleStepNavigation = useCallback((step: number) => {
@@ -172,21 +179,8 @@ export function SectionThreeForm() {
         />
 
         <div className="flex items-center gap-2">
-          {/* Animated Save Indicator - fixed width to prevent layout shift */}
-          <div
-            className={`flex w-16 items-center justify-end gap-1.5 text-xs font-bold uppercase transition-all duration-300 ${
-              isSaving || showSaved ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {isSaving ? (
-              <span className="text-slate-400">Saving...</span>
-            ) : showSaved ? (
-              <>
-                <AnimatedCheckmark size={14} className="text-emerald-600" />
-                <span className="text-emerald-600">Saved</span>
-              </>
-            ) : null}
-          </div>
+          {/* Save Status Indicator */}
+          <SaveIndicator status={saveStatus} lastSavedAt={lastSavedAt} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="text-slate-400 transition-colors hover:text-slate-900">
@@ -231,6 +225,7 @@ export function SectionThreeForm() {
               // Completion page - Continue to Section 4
               <Link
                 href="/plan/section-4"
+                onClick={handleNavigationSave}
                 className="group flex items-center rounded-full bg-emerald-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-emerald-700 hover:shadow-xl active:scale-[0.98]"
               >
                 Continue to Section 4

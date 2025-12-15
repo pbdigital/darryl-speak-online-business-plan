@@ -165,6 +165,10 @@ interface SectionOneStore {
   resetSection: () => void;
   markSaved: () => void;
 
+  // Persistence actions
+  hydrate: (serverData: Partial<SectionOneData>) => void;
+  getData: () => SectionOneData;
+
   // Selectors
   getProgress: () => number;
   getFilledFieldCount: () => number;
@@ -213,6 +217,18 @@ export const useSectionOneStore = create<SectionOneStore>()(
 
       markSaved: () => {
         set({ isDirty: false, lastSavedAt: Date.now() });
+      },
+
+      hydrate: (serverData) => {
+        set((state) => ({
+          data: { ...state.data, ...serverData },
+          isDirty: false,
+          lastSavedAt: Date.now(),
+        }));
+      },
+
+      getData: () => {
+        return get().data;
       },
 
       getProgress: () => {

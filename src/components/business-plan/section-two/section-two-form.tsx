@@ -17,11 +17,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSectionTwoStore } from "@/stores/section-two-store";
+import { useSectionTwoStore, SectionTwoData } from "@/stores/section-two-store";
+import { useAutoSave } from "@/hooks/use-auto-save";
+import { useHydrateSection } from "@/hooks/use-hydrate-section";
+import { SectionSkeleton } from "../ui/section-skeleton";
+import { SaveIndicator } from "../ui/save-indicator";
 import {
   ProgressStepper,
   EncouragementToast,
-  AnimatedCheckmark,
 } from "@/components/business-plan/section-one/ui";
 
 import { StepOverview } from "./steps/step-overview";
@@ -50,16 +53,32 @@ export function SectionTwoForm() {
     isDirty,
     markSaved,
     highestStepReached,
+    hydrate,
+    getData,
   } = useSectionTwoStore();
+
+  // Hydrate store with server data on mount
+  const { isHydrating } = useHydrateSection<SectionTwoData>("swot", hydrate);
+
+  // Auto-save to server when dirty
+  const { status: saveStatus, lastSavedAt, saveNow } = useAutoSave(
+    "swot",
+    getData,
+    isDirty,
+    markSaved
+  );
 
   // Local state for UI - initialized from store
   const [activeStep, setActiveStep] = useState(currentStep);
-  const [isSaving, setIsSaving] = useState(false);
-  const [showSaved, setShowSaved] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
+
+  // Show skeleton while hydrating
+  if (isHydrating) {
+    return <SectionSkeleton />;
+  }
 
   // Sync local state with store on mount (in case store has persisted step)
   useEffect(() => {
@@ -109,22 +128,12 @@ export function SectionTwoForm() {
     }
   }, [resetSection]);
 
-  // Change-based auto-save indicator (triggers when data changes, not on a timer)
-  useEffect(() => {
-    if (!isDirty || activeStep === 0) return;
-
-    const saveTimer = setTimeout(() => {
-      setIsSaving(true);
-      setTimeout(() => {
-        setIsSaving(false);
-        setShowSaved(true);
-        markSaved();
-        setTimeout(() => setShowSaved(false), 1500);
-      }, 400);
-    }, 1000); // 1-second debounce after last change
-
-    return () => clearTimeout(saveTimer);
-  }, [isDirty, activeStep, markSaved]);
+  // Save immediately when navigating away
+  const handleNavigationSave = useCallback(async () => {
+    if (isDirty) {
+      await saveNow();
+    }
+  }, [isDirty, saveNow]);
 
   // Handler for clicking on progress stepper dots
   const handleStepNavigation = useCallback((step: number) => {
@@ -222,21 +231,8 @@ export function SectionTwoForm() {
         />
 
         <div className="flex items-center gap-2">
-          {/* Animated Save Indicator - fixed width to prevent layout shift */}
-          <div
-            className={`flex w-16 items-center justify-end gap-1.5 text-xs font-bold uppercase transition-all duration-300 ${
-              isSaving || showSaved ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {isSaving ? (
-              <span className="text-slate-400">Saving...</span>
-            ) : showSaved ? (
-              <>
-                <AnimatedCheckmark size={14} className="text-emerald-600" />
-                <span className="text-emerald-600">Saved</span>
-              </>
-            ) : null}
-          </div>
+          {/* Save Status Indicator */}
+          <SaveIndicator status={saveStatus} lastSavedAt={lastSavedAt} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="text-slate-400 transition-colors hover:text-slate-900">
@@ -298,6 +294,7 @@ export function SectionTwoForm() {
             {activeStep === TOTAL_STEPS - 1 ? (
               <Link
                 href="/plan/section-3"
+                onClick={handleNavigationSave}
                 className="group flex items-center rounded-full bg-emerald-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-emerald-700 hover:shadow-xl active:scale-[0.98]"
               >
                 Continue to Section 3

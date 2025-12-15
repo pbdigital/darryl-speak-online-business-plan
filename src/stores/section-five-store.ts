@@ -151,6 +151,10 @@ interface SectionFiveStore {
   resetCommitmentContract: () => void;
   markSaved: () => void;
 
+  // Persistence actions
+  hydrate: (serverData: Partial<AccountabilitySection>) => void;
+  getData: () => AccountabilitySection;
+
   // Selectors
   getProgress: () => number;
   getFilledFieldCount: () => number;
@@ -380,6 +384,18 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
 
       markSaved: () => {
         set({ isDirty: false, lastSavedAt: Date.now() });
+      },
+
+      hydrate: (serverData) => {
+        set((state) => ({
+          data: { ...state.data, ...serverData },
+          isDirty: false,
+          lastSavedAt: Date.now(),
+        }));
+      },
+
+      getData: () => {
+        return get().data;
       },
 
       // Progress calculation (step-based)

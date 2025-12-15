@@ -11,6 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSectionOneStore, SectionOneData } from "@/stores/section-one-store";
+import { useAutoSave } from "@/hooks/use-auto-save";
+import { useHydrateSection } from "@/hooks/use-hydrate-section";
+import { SectionSkeleton } from "../ui/section-skeleton";
+import { SaveIndicator } from "../ui/save-indicator";
 
 import { StepOverview } from "./steps/step-overview";
 import { StepProductionNumbers } from "./steps/step-production-numbers";
@@ -22,7 +26,7 @@ import { StepWellness } from "./steps/step-wellness";
 import { StepMantra } from "./steps/step-mantra";
 import { StepCelebration } from "./steps/step-celebration";
 import { StepComplete } from "./steps/step-complete";
-import { ProgressStepper, EncouragementToast, AnimatedCheckmark } from "./ui";
+import { ProgressStepper, EncouragementToast } from "./ui";
 
 const TOTAL_STEPS = 10; // 0-9 (Overview + 8 content steps + Complete)
 
@@ -50,16 +54,30 @@ const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
 };
 
 export function SectionOneForm() {
-  const { currentStep, setCurrentStep, updateField, resetSection, isDirty, markSaved, highestStepReached } = useSectionOneStore();
+  const { currentStep, setCurrentStep, updateField, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData } = useSectionOneStore();
+
+  // Hydrate store with server data on mount
+  const { isHydrating } = useHydrateSection<SectionOneData>("reflection", hydrate);
+
+  // Auto-save to server when dirty
+  const { status: saveStatus, lastSavedAt, saveNow } = useAutoSave(
+    "reflection",
+    getData,
+    isDirty,
+    markSaved
+  );
 
   // Local state for UI - initialized from store
   const [activeStep, setActiveStep] = useState(currentStep);
-  const [isSaving, setIsSaving] = useState(false);
-  const [showSaved, setShowSaved] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
+
+  // Show skeleton while hydrating
+  if (isHydrating) {
+    return <SectionSkeleton />;
+  }
 
   // Sync local state with store on mount (in case store has persisted step)
   useEffect(() => {
@@ -98,22 +116,12 @@ export function SectionOneForm() {
     }
   }, [resetSection]);
 
-  // Change-based auto-save indicator (triggers when data changes, not on a timer)
-  useEffect(() => {
-    if (!isDirty || activeStep === 0) return;
-
-    const saveTimer = setTimeout(() => {
-      setIsSaving(true);
-      setTimeout(() => {
-        setIsSaving(false);
-        setShowSaved(true);
-        markSaved();
-        setTimeout(() => setShowSaved(false), 1500);
-      }, 400);
-    }, 1000); // 1-second debounce after last change
-
-    return () => clearTimeout(saveTimer);
-  }, [isDirty, activeStep, markSaved]);
+  // Save immediately when navigating away
+  const handleNavigationSave = useCallback(async () => {
+    if (isDirty) {
+      await saveNow();
+    }
+  }, [isDirty, saveNow]);
 
   const handleHideToast = useCallback(() => {
     setShowToast(false);
@@ -221,21 +229,8 @@ export function SectionOneForm() {
         />
 
         <div className="flex items-center gap-2">
-          {/* Animated Save Indicator - fixed width to prevent layout shift */}
-          <div
-            className={`flex w-16 items-center justify-end gap-1.5 text-xs font-bold uppercase transition-all duration-300 ${
-              isSaving || showSaved ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {isSaving ? (
-              <span className="text-slate-400">Saving...</span>
-            ) : showSaved ? (
-              <>
-                <AnimatedCheckmark size={14} className="text-emerald-600" />
-                <span className="text-emerald-600">Saved</span>
-              </>
-            ) : null}
-          </div>
+          {/* Save Status Indicator */}
+          <SaveIndicator status={saveStatus} lastSavedAt={lastSavedAt} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="text-slate-400 transition-colors hover:text-slate-900">
@@ -295,6 +290,7 @@ export function SectionOneForm() {
             {activeStep === TOTAL_STEPS - 1 ? (
               <Link
                 href="/plan/section-2"
+                onClick={handleNavigationSave}
                 className="group flex items-center rounded-full bg-emerald-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-emerald-700 hover:shadow-xl active:scale-[0.98]"
               >
                 Continue to Section 2

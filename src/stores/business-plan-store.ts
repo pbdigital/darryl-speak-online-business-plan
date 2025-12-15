@@ -52,6 +52,10 @@ interface BusinessPlanStore {
   resetSection: () => void;
   markSaved: () => void;
 
+  // Persistence actions
+  hydrate: (serverData: Partial<IncomePlanningSection>) => void;
+  getData: () => IncomePlanningSection;
+
   // Recalculate all derived values
   recalculate: () => void;
 
@@ -277,6 +281,20 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
 
   markSaved: () => {
     set({ isDirty: false, lastSavedAt: Date.now() });
+  },
+
+  hydrate: (serverData) => {
+    set((state) => ({
+      incomePlanning: { ...state.incomePlanning, ...serverData },
+      isDirty: false,
+      lastSavedAt: Date.now(),
+    }));
+    // Recalculate all derived values after hydration
+    get().recalculate();
+  },
+
+  getData: () => {
+    return get().incomePlanning;
   },
 
   getFilledFieldCount: () => {
