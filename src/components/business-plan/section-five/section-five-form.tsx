@@ -59,11 +59,6 @@ export function SectionFiveForm() {
   const [activeStep, setActiveStep] = useState(currentStep);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Show skeleton while hydrating
-  if (isHydrating) {
-    return <SectionSkeleton />;
-  }
-
   // Sync local state with store on mount (in case store has persisted step)
   useEffect(() => {
     if (currentStep > 0 && currentStep !== activeStep) {
@@ -105,6 +100,11 @@ export function SectionFiveForm() {
       }, 200);
     }
   }, [highestStepReached, activeStep]);
+
+  // Show skeleton while hydrating - must be after all hooks
+  if (isHydrating) {
+    return <SectionSkeleton />;
+  }
 
   const handleNext = () => {
     if (activeStep < TOTAL_STEPS - 1) {

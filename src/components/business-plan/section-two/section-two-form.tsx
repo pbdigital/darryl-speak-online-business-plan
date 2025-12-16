@@ -76,11 +76,6 @@ export function SectionTwoForm() {
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
 
-  // Show skeleton while hydrating
-  if (isHydrating) {
-    return <SectionSkeleton />;
-  }
-
   // Sync local state with store on mount (in case store has persisted step)
   useEffect(() => {
     if (currentStep > 0 && currentStep !== activeStep) {
@@ -152,6 +147,11 @@ export function SectionTwoForm() {
     setShowToast(false);
     setToastMessage("");
   }, []);
+
+  // Show skeleton while hydrating - must be after all hooks
+  if (isHydrating) {
+    return <SectionSkeleton />;
+  }
 
   const handleNext = () => {
     if (activeStep < TOTAL_STEPS - 1) {
