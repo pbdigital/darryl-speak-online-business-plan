@@ -86,7 +86,7 @@ export function SsoButton({
       size="xl"
       className={cn(
         'w-full justify-center gap-3 border-gray-200 bg-white font-medium text-gray-700',
-        'hover:bg-gray-50 hover:border-gray-300',
+        'hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700',
         'transition-all duration-200',
         disabled && 'opacity-50 cursor-not-allowed',
         className

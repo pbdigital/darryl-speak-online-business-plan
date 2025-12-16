@@ -21,11 +21,13 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const token = searchParams.get('token');
   const errorParam = searchParams.get('error');
+  const errorDescription = searchParams.get('error_description');
 
-  // Handle errors from WordPress
+  // Handle errors from WordPress (e.g., user is not a Power Agent member)
   if (errorParam) {
-    console.error('SSO error from WordPress:', errorParam);
-    return redirectWithError(request, 'Authentication failed. Please try again.');
+    console.error('SSO error from WordPress:', errorParam, errorDescription);
+    const message = errorDescription || 'Authentication failed. Please try again.';
+    return redirectWithError(request, message);
   }
 
   // Validate token presence

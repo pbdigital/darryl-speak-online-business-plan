@@ -55,13 +55,27 @@ export async function POST(request: Request) {
       );
     }
 
-    const exists = usersData.users.some(
-      (user) => user.email?.toLowerCase() === parsed.data.email.toLowerCase()
+    const user = usersData.users.find(
+      (u) => u.email?.toLowerCase() === parsed.data.email.toLowerCase()
     );
+
+    const exists = !!user;
+    let isPowerAgentLinked = false;
+
+    // If user exists, check if they have a linked Power Agent account
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('wordpress_user_id')
+        .eq('id', user.id)
+        .single();
+
+      isPowerAgentLinked = !!profile?.wordpress_user_id;
+    }
 
     return NextResponse.json({
       success: true,
-      data: { exists },
+      data: { exists, isPowerAgentLinked },
     });
   } catch {
     return NextResponse.json(
