@@ -1,131 +1,369 @@
 "use client";
 
-import { LineChart } from "lucide-react";
-import { WorkbookInput, WorkbookTextarea } from "../ui";
-import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
+import { useState } from "react";
+import Image from "next/image";
+import { TrendingUp, CheckCircle2, ClipboardList } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  useSectionOneStore,
+  type SectionOneData,
+} from "@/stores/section-one-store";
+import { useAutoResize } from "@/hooks/use-auto-resize";
 
-export function StepProductionNumbers() {
+// ============================================================================
+// Premium Number Input Component
+// ============================================================================
+interface PremiumNumberInputProps {
+  label: string;
+  fieldName: keyof SectionOneData;
+  prefix?: string;
+  placeholder?: string;
+}
+
+function PremiumNumberInput({
+  label,
+  fieldName,
+  prefix,
+  placeholder = "0",
+}: PremiumNumberInputProps) {
+  const [isFocused, setIsFocused] = useState(false);
+  const value = useSectionOneStore((state) => state.data[fieldName]);
+  const updateField = useSectionOneStore((state) => state.updateField);
+
+  const displayValue = value === null || value === undefined ? "" : String(value);
+  const hasValue = displayValue.length > 0 && displayValue !== "0";
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numValue = e.target.value === "" ? null : parseFloat(e.target.value);
+    updateField(fieldName, numValue as SectionOneData[typeof fieldName]);
+  };
+
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header - Left aligned with Part badge */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 1A
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Last Year in Review
-        </h2>
-        <p className="text-slate-600">
-          Understanding the past helps you tackle the future more effectively.
-          Take time to honestly assess what worked and what didn&apos;t.
-        </p>
+    <div className="group">
+      <label
+        className={cn(
+          "mb-2 block text-xs font-semibold uppercase tracking-wider transition-colors duration-200",
+          hasValue ? "text-emerald-600" : "text-slate-500"
+        )}
+      >
+        {label}
+      </label>
+      <div
+        className={cn(
+          "relative overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300",
+          isFocused
+            ? "border-[#1a2744] shadow-lg shadow-[#1a2744]/10"
+            : hasValue
+              ? "border-emerald-200 bg-emerald-50/30"
+              : "border-slate-100 hover:border-slate-200"
+        )}
+      >
+        <div className="flex items-center px-4 py-4">
+          {prefix && (
+            <span className="mr-1 text-2xl font-light text-slate-400">
+              {prefix}
+            </span>
+          )}
+          <input
+            type="number"
+            className="w-full bg-transparent text-2xl font-semibold text-slate-800 outline-none placeholder:text-slate-300"
+            placeholder={placeholder}
+            value={displayValue}
+            onChange={handleChange}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+          {hasValue && (
+            <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-500" />
+          )}
+        </div>
+        {/* Bottom accent line */}
+        <div
+          className={cn(
+            "h-1 w-full transition-all duration-300",
+            isFocused
+              ? "bg-[#1a2744]"
+              : hasValue
+                ? "bg-emerald-400"
+                : "bg-transparent"
+          )}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// Premium Reflection Textarea Component
+// ============================================================================
+interface PremiumReflectionProps {
+  number: number;
+  question: string;
+  fieldName: keyof SectionOneData;
+  placeholder: string;
+}
+
+function PremiumReflection({
+  number,
+  question,
+  fieldName,
+  placeholder,
+}: PremiumReflectionProps) {
+  const [isFocused, setIsFocused] = useState(false);
+  const { ref } = useAutoResize({ minHeight: 120, maxHeight: 300 });
+
+  const value = useSectionOneStore((state) => state.data[fieldName] as string) || "";
+  const updateField = useSectionOneStore((state) => state.updateField);
+
+  const hasContent = value.trim().length > 0;
+  const wordCount = hasContent ? value.trim().split(/\s+/).filter(Boolean).length : 0;
+
+  return (
+    <div
+      className={cn(
+        "group relative rounded-3xl border-2 bg-white p-6 transition-all duration-300",
+        isFocused
+          ? "border-[#1a2744] shadow-xl shadow-[#1a2744]/5"
+          : hasContent
+            ? "border-emerald-200 bg-gradient-to-br from-emerald-50/50 to-white"
+            : "border-slate-100 hover:border-slate-200 hover:shadow-md"
+      )}
+    >
+      {/* Question number badge */}
+      <div
+        className={cn(
+          "absolute -left-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors duration-300",
+          hasContent
+            ? "bg-emerald-500 text-white"
+            : isFocused
+              ? "bg-[#1a2744] text-white"
+              : "bg-slate-200 text-slate-600"
+        )}
+      >
+        {hasContent ? (
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          number
+        )}
       </div>
 
-      {/* DarrylTip */}
-      <DarrylTip
-        tip="Numbers don't lie, but they don't tell the whole story either. Use these figures as a compass, not a verdict. Every top producer started somewhere."
-        className="mb-8"
+      {/* Question */}
+      <label
+        className={cn(
+          "mb-4 block text-lg font-semibold leading-snug transition-colors duration-200",
+          hasContent ? "text-emerald-700" : "text-slate-800"
+        )}
+      >
+        {question}
+      </label>
+
+      {/* Textarea */}
+      <textarea
+        ref={ref}
+        className="w-full resize-none bg-transparent text-base leading-relaxed text-slate-700 outline-none placeholder:text-slate-400"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => updateField(fieldName, e.target.value as SectionOneData[typeof fieldName])}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
 
-      {/* Production Numbers Card */}
-      <div className="relative mb-10 overflow-hidden rounded-3xl border border-slate-100 bg-white p-8 shadow-lg md:p-12">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-bl-full bg-slate-50" />
+      {/* Word count */}
+      <div
+        className={cn(
+          "mt-2 text-xs transition-all duration-300",
+          hasContent ? "text-slate-400" : "text-transparent"
+        )}
+      >
+        {wordCount} {wordCount === 1 ? "word" : "words"}
+      </div>
+    </div>
+  );
+}
 
-        <div className="relative z-10">
-          <div className="mb-4 flex items-center gap-3 border-b border-slate-100 pb-4">
-            <LineChart className="text-slate-900" size={24} />
-            <h3 className="text-sm font-extrabold uppercase tracking-widest text-slate-900">
-              Production Numbers
-            </h3>
+// ============================================================================
+// Main Component
+// ============================================================================
+export function StepProductionNumbers() {
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-4 min-h-screen bg-gradient-to-b from-[#e8f4f8]/30 via-white to-white duration-500">
+      <div className="mx-auto max-w-2xl px-4 py-8 md:px-6 md:py-12">
+
+        {/* ================================================================ */}
+        {/* Hero Header */}
+        {/* ================================================================ */}
+        <header className="relative mb-10">
+          {/* Decorative illustration - clipboard icon matching PDF style */}
+          <div className="absolute -right-4 top-0 opacity-10 md:right-0">
+            <ClipboardList className="h-32 w-32 text-[#1a2744]" strokeWidth={1} />
           </div>
 
-          {/* New agent support message */}
-          <p className="mb-6 text-sm text-slate-500">
-            <strong className="text-slate-700">New to real estate?</strong> It&apos;s okay to enter zeros—this is your starting point!
-            Focus on the reflection questions below to build awareness for the year ahead.
+          {/* Part badge */}
+          <div className="relative z-10 mb-4">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#1a2744] px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white">
+              Part 1A
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1 className="relative z-10 mb-3 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
+            Last Year in{" "}
+            <span className="relative">
+              <span className="relative z-10">Review</span>
+              <span className="absolute bottom-1 left-0 -z-0 h-3 w-full bg-[#e8f4f8]" />
+            </span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="relative z-10 max-w-lg text-lg text-slate-600">
+            Understanding the past helps you tackle the future more effectively.
+            Take time to honestly assess what worked and what didn&apos;t.
           </p>
+        </header>
 
-          <div className="grid grid-cols-1 gap-x-12 gap-y-4 md:grid-cols-2">
-            <WorkbookInput label="Listings Taken" fieldName="listingsTaken" placeholder="0" type="number" />
-            <WorkbookInput
-              label="Seller Sides Closed"
-              fieldName="sellerSidesClosed"
-              placeholder="0"
-              type="number"
-            />
-            <WorkbookInput
-              label="Buyer Sides Closed"
-              fieldName="buyerSidesClosed"
-              placeholder="0"
-              type="number"
-            />
-            <WorkbookInput
-              label="Renter Transactions"
-              fieldName="renterTransactions"
-              placeholder="0"
-              type="number"
-            />
-          </div>
-          <div className="mt-4 border-t border-slate-50 pt-4">
-            <WorkbookInput
-              label="Gross Closed Commissions"
-              fieldName="grossClosedCommissions"
-              placeholder="0.00"
-              prefix="$"
-              type="number"
-            />
+        {/* ================================================================ */}
+        {/* Darryl's Pro Tip - Integrated elegantly */}
+        {/* ================================================================ */}
+        <div className="relative mb-10 overflow-hidden rounded-2xl bg-[#1a2744] p-5">
+          {/* Decorative gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#2d3e5f]/50 to-transparent" />
+
+          <div className="relative flex gap-4">
+            {/* Darryl's photo */}
+            <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border-2 border-white/20">
+              <Image
+                src="/darryl.png"
+                alt="Darryl Davis"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Tip content */}
+            <div className="flex-1">
+              <p className="mb-1 text-sm font-medium text-white/60">Pro Tip</p>
+              <p className="text-[15px] leading-relaxed text-white/90">
+                Numbers don&apos;t lie, but they don&apos;t tell the whole story either.
+                Use these figures as a compass, not a verdict. Every top producer started somewhere.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Reflection Questions */}
-      <div className="mb-6">
-        <h3 className="mb-2 text-lg font-bold text-slate-900">
-          Reflection Questions
-        </h3>
-        <p className="mb-8 text-sm text-slate-500">
-          Take a moment to reflect honestly on your performance last year.
-        </p>
-      </div>
+        {/* ================================================================ */}
+        {/* Production Numbers Section */}
+        {/* ================================================================ */}
+        <section className="mb-12">
+          {/* Section header */}
+          <div className="mb-6 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f4f8]">
+              <TrendingUp className="h-5 w-5 text-[#1a2744]" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Production Numbers</h2>
+              <p className="text-sm text-slate-500">Your performance by the numbers</p>
+            </div>
+          </div>
 
-      <div className="space-y-2">
-        <WorkbookTextarea
-          label="Did you achieve your goals last year? Why or why not?"
-          fieldName="didAchieveGoals"
-          placeholder="I hit 80% of my transaction goal. I fell short because I didn't prospect consistently in Q2..."
-          rows={3}
-        />
-        <WorkbookTextarea
-          label="What were your biggest struggles?"
-          fieldName="biggestStruggles"
-          placeholder="Inventory was tight all spring. I also struggled with time management and let admin tasks pile up..."
-          rows={3}
-        />
-        <WorkbookTextarea
-          label="What was your biggest accomplishment?"
-          fieldName="biggestAccomplishment"
-          placeholder="I closed my first million-dollar listing! Also built a referral system that brought in 5 new clients..."
-          rows={3}
-        />
-        <WorkbookTextarea
-          label="How did you prospect last year?"
-          fieldName="prospectingMethods"
-          placeholder="Mostly sphere calls and open houses. I tried door knocking in Q3 but wasn't consistent..."
-          rows={3}
-        />
-        <WorkbookTextarea
-          label="What went well that you want to continue?"
-          fieldName="wantToContinue"
-          placeholder="My Monday morning sphere calls. Also my client appreciation events - they generated 3 referrals..."
-          rows={3}
-        />
-      </div>
+          {/* Helpful note for new agents */}
+          <div className="mb-6 rounded-xl bg-amber-50 p-4">
+            <p className="text-sm text-amber-800">
+              <strong>New to real estate?</strong> It&apos;s okay to enter zeros—this is your starting point!
+              Focus on the reflection questions below.
+            </p>
+          </div>
 
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: New Year&apos;s reflection and intention-setting →
-        </p>
+          {/* Number inputs grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <PremiumNumberInput
+              label="Listings Taken"
+              fieldName="listingsTaken"
+            />
+            <PremiumNumberInput
+              label="Seller Sides Closed"
+              fieldName="sellerSidesClosed"
+            />
+            <PremiumNumberInput
+              label="Buyer Sides Closed"
+              fieldName="buyerSidesClosed"
+            />
+            <PremiumNumberInput
+              label="Renter Transactions"
+              fieldName="renterTransactions"
+            />
+          </div>
+
+          {/* GCI - Full width, highlighted */}
+          <div className="mt-6">
+            <PremiumNumberInput
+              label="Gross Closed Commissions"
+              fieldName="grossClosedCommissions"
+              prefix="$"
+              placeholder="0.00"
+            />
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* Reflection Questions Section */}
+        {/* ================================================================ */}
+        <section>
+          {/* Section header */}
+          <div className="mb-8">
+            <h2 className="mb-2 text-2xl font-bold text-slate-900">
+              Reflection Questions
+            </h2>
+            <p className="text-slate-600">
+              Take a moment to reflect honestly on your performance last year.
+            </p>
+          </div>
+
+          {/* Questions */}
+          <div className="space-y-6">
+            <PremiumReflection
+              number={1}
+              question="Did you achieve your goals last year? Why or why not?"
+              fieldName="didAchieveGoals"
+              placeholder="I hit 80% of my transaction goal. I fell short because I didn't prospect consistently in Q2..."
+            />
+            <PremiumReflection
+              number={2}
+              question="What were your biggest struggles?"
+              fieldName="biggestStruggles"
+              placeholder="Inventory was tight all spring. I also struggled with time management and let admin tasks pile up..."
+            />
+            <PremiumReflection
+              number={3}
+              question="What was your biggest accomplishment?"
+              fieldName="biggestAccomplishment"
+              placeholder="I closed my first million-dollar listing! Also built a referral system that brought in 5 new clients..."
+            />
+            <PremiumReflection
+              number={4}
+              question="How did you prospect last year?"
+              fieldName="prospectingMethods"
+              placeholder="Mostly sphere calls and open houses. I tried door knocking in Q3 but wasn't consistent..."
+            />
+            <PremiumReflection
+              number={5}
+              question="What went well that you want to continue?"
+              fieldName="wantToContinue"
+              placeholder="My Monday morning sphere calls. Also my client appreciation events - they generated 3 referrals..."
+            />
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* Up Next Teaser */}
+        {/* ================================================================ */}
+        <footer className="mt-12 rounded-2xl bg-gradient-to-r from-[#e8f4f8] to-white p-6 text-center">
+          <p className="text-sm font-medium text-slate-500">Up Next</p>
+          <p className="text-lg font-semibold text-[#1a2744]">
+            New Year&apos;s Reflection & Intention Setting →
+          </p>
+        </footer>
       </div>
     </div>
   );
