@@ -102,6 +102,8 @@ interface SectionFiveStore {
   // Project Matrix actions
   updateProjectName: (index: number, value: string) => void;
   updateProjectTask: (projectIndex: number, taskIndex: number, value: string) => void;
+  clearProject: (index: number) => { name: string; tasks: string[] };
+  restoreProject: (index: number, name: string, tasks: string[]) => void;
 
   // Resources actions
   updateCurrentResource: (index: number, value: string) => void;
@@ -201,6 +203,56 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
               ...state.data,
               projectMatrix: {
                 ...state.data.projectMatrix,
+                tasks: newTasks,
+              },
+            },
+            isDirty: true,
+          };
+        });
+      },
+
+      clearProject: (index) => {
+        const state = get();
+        const clearedName = state.data.projectMatrix.projectNames[index];
+        const clearedTasks = [...state.data.projectMatrix.tasks[index]];
+
+        set((state) => {
+          const newProjectNames = [...state.data.projectMatrix.projectNames];
+          newProjectNames[index] = "";
+
+          const newTasks = state.data.projectMatrix.tasks.map((project, pIdx) =>
+            pIdx === index ? Array.from({ length: 6 }, () => "") : project
+          );
+
+          return {
+            data: {
+              ...state.data,
+              projectMatrix: {
+                projectNames: newProjectNames,
+                tasks: newTasks,
+              },
+            },
+            isDirty: true,
+          };
+        });
+
+        return { name: clearedName, tasks: clearedTasks };
+      },
+
+      restoreProject: (index, name, tasks) => {
+        set((state) => {
+          const newProjectNames = [...state.data.projectMatrix.projectNames];
+          newProjectNames[index] = name;
+
+          const newTasks = state.data.projectMatrix.tasks.map((project, pIdx) =>
+            pIdx === index ? tasks : project
+          );
+
+          return {
+            data: {
+              ...state.data,
+              projectMatrix: {
+                projectNames: newProjectNames,
                 tasks: newTasks,
               },
             },

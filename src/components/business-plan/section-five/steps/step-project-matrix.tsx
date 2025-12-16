@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { useSectionFiveStore } from "@/stores/section-five-store";
 import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 import { ProjectMatrixGrid } from "../ui/project-matrix-grid";
@@ -8,6 +9,21 @@ export function StepProjectMatrix() {
   const projectMatrix = useSectionFiveStore((state) => state.data.projectMatrix);
   const updateProjectName = useSectionFiveStore((state) => state.updateProjectName);
   const updateProjectTask = useSectionFiveStore((state) => state.updateProjectTask);
+  const clearProject = useSectionFiveStore((state) => state.clearProject);
+  const restoreProject = useSectionFiveStore((state) => state.restoreProject);
+
+  const handleClearProject = (index: number) => {
+    const { name, tasks } = clearProject(index);
+    const projectLabel = name.trim() || `Project ${index + 1}`;
+
+    toast(`"${projectLabel}" cleared`, {
+      action: {
+        label: "Undo",
+        onClick: () => restoreProject(index, name, tasks),
+      },
+      duration: 5000,
+    });
+  };
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-4xl px-4 duration-700">
@@ -94,6 +110,7 @@ export function StepProjectMatrix() {
           tasks={projectMatrix.tasks}
           onProjectNameChange={updateProjectName}
           onTaskChange={updateProjectTask}
+          onClearProject={handleClearProject}
         />
       </div>
 
