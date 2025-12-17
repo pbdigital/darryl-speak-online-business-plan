@@ -1,7 +1,13 @@
 "use client";
 
+import { Megaphone } from "lucide-react";
 import { useSectionFiveStore } from "@/stores/section-five-store";
-import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
+import {
+  StepContainer,
+  StepHeader,
+  UpNextFooter,
+  DarrylTip,
+} from "@/components/business-plan/ui";
 import { ActivityCard } from "../ui/activity-card";
 import type { MarketingActivity } from "@/types/business-plan";
 
@@ -14,30 +20,22 @@ export function StepMarketingMix() {
   );
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 5E
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Your Marketing Mix
-        </h2>
-        <p className="text-slate-600">
-          Marketing is about attraction—they come to you. Define 3 marketing
-          activities you&apos;ll implement this year to build visibility, credibility,
-          and lead flow.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 5E"
+        title="Your Marketing Mix"
+        highlightWord="Marketing"
+        subtitle="Marketing is about attraction—they come to you. Define 3 marketing activities to build visibility, credibility, and lead flow."
+        icon={Megaphone}
+      />
 
-      {/* DarrylTip */}
       <DarrylTip
         tip="Marketing builds long-term equity. While prospecting creates immediate conversations, marketing creates a pipeline of people who already trust you before they reach out. The best agents do both."
         className="mb-8"
       />
 
       {/* Marketing Ideas */}
-      <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50 p-6">
+      <div className="mb-8 rounded-2xl border-2 border-slate-100 bg-[#e8f4f8]/30 p-6">
         <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-900">
           Marketing Ideas
         </h3>
@@ -93,12 +91,7 @@ export function StepMarketingMix() {
         ))}
       </div>
 
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: Plan your quarterly marketing calendar →
-        </p>
-      </div>
-    </div>
+      <UpNextFooter text="Plan your quarterly marketing calendar" />
+    </StepContainer>
   );
 }

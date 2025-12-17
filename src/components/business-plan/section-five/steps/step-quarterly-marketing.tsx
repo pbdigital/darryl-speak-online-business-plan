@@ -1,8 +1,14 @@
 "use client";
 
+import { Calendar } from "lucide-react";
 import { useSectionFiveStore } from "@/stores/section-five-store";
-import { WorkbookTextarea } from "@/components/business-plan/section-one/ui";
-import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
+import {
+  StepContainer,
+  StepHeader,
+  UpNextFooter,
+  PremiumTextarea,
+  DarrylTip,
+} from "@/components/business-plan/ui";
 import type { QuarterlyMarketing } from "@/types/business-plan";
 
 export function StepQuarterlyMarketing() {
@@ -53,23 +59,15 @@ export function StepQuarterlyMarketing() {
   ];
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 5F
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Quarterly Marketing Overview
-        </h2>
-        <p className="text-slate-600">
-          Plan 2 marketing strategies for each quarter. This creates a year-long
-          calendar of touchpoints that keeps you visible, relevant, and top-of-mind
-          with your sphere and target audience.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 5F"
+        title="Quarterly Marketing Overview"
+        highlightWord="Quarterly"
+        subtitle="Plan 2 marketing strategies for each quarter to create a year-long calendar of touchpoints that keeps you visible and top-of-mind."
+        icon={Calendar}
+      />
 
-      {/* DarrylTip */}
       <DarrylTip
         tip="Align your marketing with seasons, holidays, and local events. A summer BBQ invite feels natural in Q3, just like a pie giveaway fits Q4. Relevance increases response rates."
         className="mb-8"
@@ -77,18 +75,21 @@ export function StepQuarterlyMarketing() {
 
       {/* Quarterly Cards */}
       <div className="mb-8 space-y-6">
-        {quarters.map((quarter) => (
+        {quarters.map((quarter, qIndex) => (
           <div
             key={quarter.label}
-            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            className="rounded-3xl border-2 border-slate-100 bg-white p-6 shadow-sm"
           >
             {/* Quarter Header */}
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2744] text-sm font-bold text-white">
+                Q{qIndex + 1}
+              </span>
               <h4 className="text-lg font-bold text-slate-900">{quarter.label}</h4>
             </div>
 
             {/* Example Ideas */}
-            <div className="mb-4 rounded-lg bg-slate-50 p-3">
+            <div className="mb-4 rounded-2xl bg-[#e8f4f8]/30 p-3">
               <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
                 Example Ideas:
               </p>
@@ -104,35 +105,34 @@ export function StepQuarterlyMarketing() {
 
             {/* Strategy Inputs */}
             <div className="space-y-4">
-              <WorkbookTextarea
+              <PremiumTextarea
+                number={1}
                 label="Strategy 1"
                 placeholder="Describe your first marketing strategy for this quarter..."
-                rows={2}
                 value={quarterlyMarketing[quarter.strategy1Key]}
                 onChange={(val) =>
-                  updateQuarterlyMarketing(quarter.strategy1Key, String(val || ""))
+                  updateQuarterlyMarketing(quarter.strategy1Key, val)
                 }
+                minHeight={80}
+                maxHeight={200}
               />
-              <WorkbookTextarea
+              <PremiumTextarea
+                number={2}
                 label="Strategy 2"
                 placeholder="Describe your second marketing strategy for this quarter..."
-                rows={2}
                 value={quarterlyMarketing[quarter.strategy2Key]}
                 onChange={(val) =>
-                  updateQuarterlyMarketing(quarter.strategy2Key, String(val || ""))
+                  updateQuarterlyMarketing(quarter.strategy2Key, val)
                 }
+                minHeight={80}
+                maxHeight={200}
               />
             </div>
           </div>
         ))}
       </div>
 
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: Sign your commitment contract →
-        </p>
-      </div>
-    </div>
+      <UpNextFooter text="Sign your commitment contract" />
+    </StepContainer>
   );
 }

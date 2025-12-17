@@ -23,18 +23,18 @@ export function ProjectMatrixGrid({
   return (
     <div className={cn("w-full", className)}>
       {/* Desktop view - horizontal scroll for table */}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded-2xl border-2 border-slate-100 bg-white">
         <table className="w-full min-w-[700px] border-collapse">
           {/* Project Names Header Row */}
           <thead>
-            <tr className="bg-slate-50">
-              <th className="w-12 border-b border-r border-slate-200 p-3 text-center text-xs font-bold uppercase tracking-wider text-slate-500">
+            <tr className="bg-[#1a2744]">
+              <th className="w-12 border-b border-r border-slate-600 p-3 text-center text-xs font-bold uppercase tracking-wider text-white">
                 Task
               </th>
               {projectNames.map((name, index) => (
                 <th
                   key={`header-${index}`}
-                  className="border-b border-r border-slate-200 p-0 last:border-r-0"
+                  className="border-b border-r border-slate-600 p-0 last:border-r-0"
                 >
                   <input
                     type="text"
@@ -44,9 +44,9 @@ export function ProjectMatrixGrid({
                     onBlur={() => setFocusedCell(null)}
                     placeholder={`Project ${index + 1}`}
                     className={cn(
-                      "w-full bg-transparent p-3 text-center text-sm font-bold text-slate-900 outline-none transition-all placeholder:font-normal placeholder:text-slate-300",
-                      focusedCell === `header-${index}` && "bg-blue-50",
-                      name.trim() && "text-emerald-700"
+                      "w-full bg-transparent p-3 text-center text-sm font-bold text-white outline-none transition-all placeholder:font-normal placeholder:text-slate-400",
+                      focusedCell === `header-${index}` && "bg-white/10",
+                      name.trim() && "text-white"
                     )}
                   />
                 </th>
@@ -59,7 +59,7 @@ export function ProjectMatrixGrid({
             {Array.from({ length: 6 }, (_, taskIndex) => (
               <tr
                 key={`row-${taskIndex}`}
-                className={taskIndex % 2 === 0 ? "bg-white" : "bg-slate-50/50"}
+                className={taskIndex % 2 === 0 ? "bg-white" : "bg-[#e8f4f8]/30"}
               >
                 <td className="border-b border-r border-slate-200 p-3 text-center text-xs font-medium text-slate-400">
                   {taskIndex + 1}
@@ -83,8 +83,8 @@ export function ProjectMatrixGrid({
                         placeholder="Enter task..."
                         className={cn(
                           "w-full bg-transparent p-3 text-sm text-slate-700 outline-none transition-all placeholder:text-slate-300",
-                          focusedCell === cellId && "bg-blue-50",
-                          taskValue.trim() && "border-l-2 border-l-emerald-400"
+                          focusedCell === cellId && "bg-[#e8f4f8]/50",
+                          taskValue.trim() && "border-l-2 border-l-slate-400"
                         )}
                       />
                     </td>
