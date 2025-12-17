@@ -62,16 +62,16 @@ export function GoalTable({
 
   return (
     <div className={cn("", className)}>
-      <h3 className="mb-1 text-sm font-bold uppercase tracking-wide text-slate-700">
+      <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-[#1a2744]">
         {title}
       </h3>
       {description && (
         <p className="mb-3 text-sm text-slate-600">{description}</p>
       )}
-      <div className="overflow-hidden rounded-lg border border-slate-200">
+      <div className="overflow-hidden rounded-2xl border-2 border-slate-100">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#0F172A] text-white">
+            <tr className="bg-[#1a2744] text-white">
               <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">
                 Goal
               </th>
@@ -92,7 +92,7 @@ export function GoalTable({
                 <td className="px-4 py-2">
                   <input
                     type="text"
-                    className="w-full rounded border border-transparent bg-transparent px-2 py-1.5 text-sm font-medium text-slate-800 outline-none transition-all hover:border-slate-200 focus:border-slate-400 focus:bg-white"
+                    className="w-full rounded-lg border border-transparent bg-transparent px-2 py-1.5 text-sm font-medium text-slate-800 outline-none transition-all hover:border-slate-200 focus:border-[#1a2744] focus:bg-white"
                     placeholder={`Goal ${index + 1}`}
                     value={goal.name}
                     onChange={(e) => handleNameChange(index, e)}
@@ -104,7 +104,7 @@ export function GoalTable({
                     <input
                       type="text"
                       inputMode="numeric"
-                      className="w-20 rounded border border-transparent bg-transparent px-2 py-1.5 text-right text-sm font-medium text-slate-800 outline-none transition-all hover:border-slate-200 focus:border-slate-400 focus:bg-white"
+                      className="w-20 rounded-lg border border-transparent bg-transparent px-2 py-1.5 text-right text-sm font-medium text-slate-800 outline-none transition-all hover:border-slate-200 focus:border-[#1a2744] focus:bg-white"
                       placeholder="0"
                       value={goal.amount !== null ? goal.amount : ""}
                       onChange={(e) => handleAmountChange(index, e)}
@@ -119,7 +119,7 @@ export function GoalTable({
               <td className="px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-600">
                 Subtotal
               </td>
-              <td className="px-4 py-3 text-right text-sm font-bold text-[#0F172A]">
+              <td className="px-4 py-3 text-right text-sm font-bold text-[#1a2744]">
                 {formatCurrency(subtotal)}
               </td>
             </tr>

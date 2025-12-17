@@ -1,28 +1,24 @@
 "use client";
 
+import { Wallet } from "lucide-react";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
+import { StepContainer, StepHeader, DarrylTip, UpNextFooter } from "@/components/business-plan/ui";
 import { ExpenseTable } from "../ui/expense-table";
 import { SummaryCard } from "../ui/summary-card";
-import { DarrylTip } from "../ui/darryl-tip";
 
 export function StepPersonalExpenses() {
   const { incomePlanning, calculated, updatePersonalExpense } =
     useBusinessPlanStore();
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 3A - Step 1 of 2
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Monthly Personal Expenses
-        </h2>
-        <p className="text-slate-600">
-          Enter your monthly personal expenses. For annual items (like insurance
-          premiums), divide by 12 to get the monthly amount.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 3A - Step 1 of 2"
+        title="Monthly Personal Expenses"
+        highlightWord="Personal"
+        subtitle="Enter your monthly personal expenses. For annual items (like insurance premiums), divide by 12 to get the monthly amount."
+        icon={Wallet}
+      />
 
       <DarrylTip
         tip="Be thorough and honest with your expenses. Underestimating here will throw off all your income calculations later."
@@ -44,9 +40,8 @@ export function StepPersonalExpenses() {
         variant="primary"
         icon="dollar"
       />
-      <p className="mt-3 text-center text-sm text-slate-500">
-        Up Next: Enter your monthly business expenses →
-      </p>
-    </div>
+
+      <UpNextFooter text="Enter your monthly business expenses" />
+    </StepContainer>
   );
 }

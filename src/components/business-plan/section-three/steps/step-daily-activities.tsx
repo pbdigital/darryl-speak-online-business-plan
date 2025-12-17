@@ -1,49 +1,47 @@
 "use client";
 
+import { Activity } from "lucide-react";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
+import { StepContainer, StepHeader, UpNextFooter } from "@/components/business-plan/ui";
 import { CalculatedField } from "../ui/calculated-field";
 import { SummaryCard } from "../ui/summary-card";
-import { cn } from "@/lib/utils";
 
 export function StepDailyActivities() {
   const { incomePlanning, calculated, updateWorkSchedule } =
     useBusinessPlanStore();
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 3G
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Reverse Engineering Your Daily Activities
-        </h2>
-        <p className="text-slate-600">
-          Using proven conversion ratios, let&apos;s calculate the daily
-          activities needed to hit your transaction goal.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 3G"
+        title="Reverse Engineering Your Daily Activities"
+        highlightWord="Daily"
+        subtitle="Using proven conversion ratios, let's calculate the daily activities needed to hit your transaction goal."
+        icon={Activity}
+      />
 
       {/* Conversion Ratios Info */}
-      <div className="mb-8 rounded-xl border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-blue-800">
-          Industry Conversion Ratios
-        </h3>
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg bg-white p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-[#0F172A]">5</p>
+      <div className="mb-8 overflow-hidden rounded-3xl border-2 border-slate-100 bg-white">
+        <div className="border-b border-slate-100 bg-[#e8f4f8]/30 px-6 py-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#1a2744]">
+            Industry Conversion Ratios
+          </h3>
+        </div>
+        <div className="grid gap-4 p-6 md:grid-cols-3">
+          <div className="rounded-2xl bg-[#e8f4f8] p-4 text-center">
+            <p className="text-2xl font-extrabold text-[#1a2744]">5</p>
             <p className="text-xs text-slate-600">
               appointments = 1 closed transaction
             </p>
           </div>
-          <div className="rounded-lg bg-white p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-[#0F172A]">16</p>
+          <div className="rounded-2xl bg-[#e8f4f8] p-4 text-center">
+            <p className="text-2xl font-extrabold text-[#1a2744]">16</p>
             <p className="text-xs text-slate-600">
               conversations = 1 appointment
             </p>
           </div>
-          <div className="rounded-lg bg-white p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-[#0F172A]">12.5</p>
+          <div className="rounded-2xl bg-[#e8f4f8] p-4 text-center">
+            <p className="text-2xl font-extrabold text-[#1a2744]">12.5</p>
             <p className="text-xs text-slate-600">
               reach-outs = 1 conversation
             </p>
@@ -52,156 +50,166 @@ export function StepDailyActivities() {
       </div>
 
       {/* Annual Activity Goals */}
-      <div className="mb-8 rounded-xl border border-slate-200 bg-white p-6">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">
-          Step 1: Annual Activity Goals
-        </h3>
-        <div className="overflow-hidden rounded-lg border border-slate-200">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-[#0F172A] text-white">
-                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">
-                  Activity
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">
-                  Calculation
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider">
-                  Annual Total
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-slate-100 bg-white">
-                <td className="px-4 py-3 text-sm font-medium text-slate-700">
-                  Closed Transactions
-                </td>
-                <td className="px-4 py-3 text-sm text-slate-500">
-                  From Part 3F
-                </td>
-                <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
-                  {calculated.totalTransactionsNeeded}
-                </td>
-              </tr>
-              <tr className="border-b border-slate-100 bg-slate-50/50">
-                <td className="px-4 py-3 text-sm font-medium text-slate-700">
-                  Appointments Needed
-                </td>
-                <td className="px-4 py-3 text-sm text-slate-500">
-                  {calculated.totalTransactionsNeeded} × 5
-                </td>
-                <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
-                  {Math.round(calculated.appointmentsNeeded)}
-                </td>
-              </tr>
-              <tr className="border-b border-slate-100 bg-white">
-                <td className="px-4 py-3 text-sm font-medium text-slate-700">
-                  Conversations Needed
-                </td>
-                <td className="px-4 py-3 text-sm text-slate-500">
-                  {Math.round(calculated.appointmentsNeeded)} × 16
-                </td>
-                <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
-                  {Math.round(calculated.conversationsNeeded).toLocaleString()}
-                </td>
-              </tr>
-              <tr className="bg-slate-50/50">
-                <td className="px-4 py-3 text-sm font-medium text-slate-700">
-                  Reach-Outs Needed
-                </td>
-                <td className="px-4 py-3 text-sm text-slate-500">
-                  {Math.round(calculated.conversationsNeeded).toLocaleString()} × 12.5
-                </td>
-                <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
-                  {Math.round(calculated.reachOutsNeeded).toLocaleString()}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div className="mb-8 overflow-hidden rounded-3xl border-2 border-slate-100 bg-white">
+        <div className="border-b border-slate-100 bg-[#e8f4f8]/30 px-6 py-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#1a2744]">
+            Step 1: Annual Activity Goals
+          </h3>
+        </div>
+        <div className="p-6">
+          <div className="overflow-hidden rounded-2xl border border-slate-200">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-[#1a2744] text-white">
+                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">
+                    Activity
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">
+                    Calculation
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider">
+                    Annual Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-slate-100 bg-white">
+                  <td className="px-4 py-3 text-sm font-medium text-slate-700">
+                    Closed Transactions
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-500">
+                    From Part 3F
+                  </td>
+                  <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
+                    {calculated.totalTransactionsNeeded}
+                  </td>
+                </tr>
+                <tr className="border-b border-slate-100 bg-slate-50/50">
+                  <td className="px-4 py-3 text-sm font-medium text-slate-700">
+                    Appointments Needed
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-500">
+                    {calculated.totalTransactionsNeeded} × 5
+                  </td>
+                  <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
+                    {Math.round(calculated.appointmentsNeeded)}
+                  </td>
+                </tr>
+                <tr className="border-b border-slate-100 bg-white">
+                  <td className="px-4 py-3 text-sm font-medium text-slate-700">
+                    Conversations Needed
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-500">
+                    {Math.round(calculated.appointmentsNeeded)} × 16
+                  </td>
+                  <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
+                    {Math.round(calculated.conversationsNeeded).toLocaleString()}
+                  </td>
+                </tr>
+                <tr className="bg-slate-50/50">
+                  <td className="px-4 py-3 text-sm font-medium text-slate-700">
+                    Reach-Outs Needed
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-500">
+                    {Math.round(calculated.conversationsNeeded).toLocaleString()} × 12.5
+                  </td>
+                  <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
+                    {Math.round(calculated.reachOutsNeeded).toLocaleString()}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* Work Schedule */}
-      <div className="mb-8 rounded-xl border border-slate-200 bg-white p-6">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">
-          Step 2: Your Work Schedule
-        </h3>
-        <div className="mb-6 grid gap-6 md:grid-cols-2">
-          <div className="group">
-            <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900">
-              Days Per Week You&apos;ll Work
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="7"
-              className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg font-medium text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-slate-900"
-              placeholder="5"
-              value={incomePlanning.workDaysPerWeek || ""}
-              onChange={(e) =>
-                updateWorkSchedule(
-                  "workDaysPerWeek",
-                  e.target.value ? parseInt(e.target.value, 10) : null
-                )
-              }
-            />
-          </div>
-          <div className="group">
-            <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900">
-              Weeks Off (Vacation)
-            </label>
-            <input
-              type="number"
-              min="0"
-              max="52"
-              className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg font-medium text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-slate-900"
-              placeholder="2"
-              value={incomePlanning.weeksOff || ""}
-              onChange={(e) =>
-                updateWorkSchedule(
-                  "weeksOff",
-                  e.target.value ? parseInt(e.target.value, 10) : null
-                )
-              }
-            />
-          </div>
+      <div className="mb-8 overflow-hidden rounded-3xl border-2 border-slate-100 bg-white">
+        <div className="border-b border-slate-100 bg-[#e8f4f8]/30 px-6 py-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#1a2744]">
+            Step 2: Your Work Schedule
+          </h3>
         </div>
+        <div className="p-6">
+          <div className="mb-6 grid gap-6 md:grid-cols-2">
+            <div className="group">
+              <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900">
+                Days Per Week You&apos;ll Work
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="7"
+                className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg font-medium text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-[#1a2744]"
+                placeholder="5"
+                value={incomePlanning.workDaysPerWeek || ""}
+                onChange={(e) =>
+                  updateWorkSchedule(
+                    "workDaysPerWeek",
+                    e.target.value ? parseInt(e.target.value, 10) : null
+                  )
+                }
+              />
+            </div>
+            <div className="group">
+              <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900">
+                Weeks Off (Vacation)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="52"
+                className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg font-medium text-slate-800 outline-none transition-all placeholder:text-slate-300 focus:border-[#1a2744]"
+                placeholder="2"
+                value={incomePlanning.weeksOff || ""}
+                onChange={(e) =>
+                  updateWorkSchedule(
+                    "weeksOff",
+                    e.target.value ? parseInt(e.target.value, 10) : null
+                  )
+                }
+              />
+            </div>
+          </div>
 
-        <CalculatedField
-          label="Total Working Days in 2026"
-          value={calculated.workingDays}
-          format="number"
-          helpText={`(${incomePlanning.workDaysPerWeek || 5} days × 52 weeks) - (${incomePlanning.workDaysPerWeek || 5} days × ${incomePlanning.weeksOff || 0} weeks off)`}
-        />
+          <CalculatedField
+            label="Total Working Days in 2026"
+            value={calculated.workingDays}
+            format="number"
+            helpText={`(${incomePlanning.workDaysPerWeek || 5} days × 52 weeks) - (${incomePlanning.workDaysPerWeek || 5} days × ${incomePlanning.weeksOff || 0} weeks off)`}
+          />
+        </div>
       </div>
 
       {/* Daily Activity Targets */}
-      <div className="mb-8 rounded-xl border border-slate-200 bg-white p-6">
-        <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">
-          Your Daily Activity Targets
-        </h3>
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl bg-[#e8f4f8] p-6 text-center">
+      <div className="mb-8 overflow-hidden rounded-3xl border-2 border-slate-100 bg-white">
+        <div className="border-b border-slate-100 bg-[#e8f4f8]/30 px-6 py-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#1a2744]">
+            Your Daily Activity Targets
+          </h3>
+        </div>
+        <div className="grid gap-4 p-6 md:grid-cols-3">
+          <div className="rounded-2xl bg-[#e8f4f8] p-6 text-center">
             <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
               Reach-Outs / Day
             </p>
-            <p className="text-4xl font-extrabold text-[#0F172A]">
+            <p className="text-4xl font-extrabold text-[#1a2744]">
               {calculated.dailyReachOuts.toFixed(1)}
             </p>
           </div>
-          <div className="rounded-xl bg-[#e8f4f8] p-6 text-center">
+          <div className="rounded-2xl bg-[#e8f4f8] p-6 text-center">
             <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
               Conversations / Day
             </p>
-            <p className="text-4xl font-extrabold text-[#0F172A]">
+            <p className="text-4xl font-extrabold text-[#1a2744]">
               {calculated.dailyConversations.toFixed(1)}
             </p>
           </div>
-          <div className="rounded-xl bg-[#e8f4f8] p-6 text-center">
+          <div className="rounded-2xl bg-[#e8f4f8] p-6 text-center">
             <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
               Appointments / Day
             </p>
-            <p className="text-4xl font-extrabold text-[#0F172A]">
+            <p className="text-4xl font-extrabold text-[#1a2744]">
               {calculated.dailyAppointments.toFixed(2)}
             </p>
           </div>
@@ -215,10 +223,8 @@ export function StepDailyActivities() {
         variant="primary"
         icon="target"
       />
-      <p className="mt-3 text-center text-sm text-slate-500">
-        Up Next: Solidify your commitment and understand what this goal means
-        for you →
-      </p>
-    </div>
+
+      <UpNextFooter text="Solidify your commitment and understand what this goal means for you" />
+    </StepContainer>
   );
 }

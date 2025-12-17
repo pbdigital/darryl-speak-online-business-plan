@@ -45,10 +45,10 @@ export function ExpenseTable({
 
   return (
     <div className={cn("", className)}>
-      <div className="overflow-hidden rounded-lg border border-slate-200">
+      <div className="overflow-hidden rounded-2xl border-2 border-slate-100">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#0F172A] text-white">
+            <tr className="bg-[#1a2744] text-white">
               <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">
                 Expense
               </th>
@@ -75,7 +75,7 @@ export function ExpenseTable({
                     <input
                       type="text"
                       inputMode="numeric"
-                      className="w-24 rounded border border-transparent bg-transparent px-2 py-1.5 text-right text-sm font-medium text-slate-800 outline-none transition-all hover:border-slate-200 focus:border-slate-400 focus:bg-white"
+                      className="w-24 rounded-lg border border-transparent bg-transparent px-2 py-1.5 text-right text-sm font-medium text-slate-800 outline-none transition-all hover:border-slate-200 focus:border-[#1a2744] focus:bg-white"
                       placeholder="0"
                       value={expense.amount !== null ? expense.amount : ""}
                       onChange={(e) => handleChange(index, e)}
@@ -87,10 +87,10 @@ export function ExpenseTable({
           </tbody>
           <tfoot>
             <tr className="bg-[#e8f4f8]">
-              <td className="px-4 py-4 text-sm font-bold uppercase tracking-wide text-[#0F172A]">
+              <td className="px-4 py-4 text-sm font-bold uppercase tracking-wide text-[#1a2744]">
                 {totalLabel}
               </td>
-              <td className="px-4 py-4 text-right text-lg font-bold text-[#0F172A]">
+              <td className="px-4 py-4 text-right text-lg font-bold text-[#1a2744]">
                 {formatCurrency(total)}
               </td>
             </tr>

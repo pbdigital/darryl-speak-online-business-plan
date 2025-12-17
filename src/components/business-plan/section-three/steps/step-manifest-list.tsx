@@ -1,29 +1,23 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
+import { StepContainer, StepHeader, DarrylTip, UpNextFooter } from "@/components/business-plan/ui";
 import { GoalTable } from "../ui/goal-table";
 import { SummaryCard } from "../ui/summary-card";
-import { DarrylTip } from "../ui/darryl-tip";
 
 export function StepManifestList() {
   const { incomePlanning, calculated, updateGoal } = useBusinessPlanStore();
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 3B
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Your Manifest List — What Else Do You Desire?
-        </h2>
-        <p className="text-slate-600">
-          Beyond covering your expenses, what do you want to accomplish in 2026?
-          Be specific and honest. If you dream of travel, paying off debt,
-          buying investment properties, or upgrading your lifestyle—write it
-          down and cost it out. This is your WHY.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 3B"
+        title="Your Manifest List"
+        highlightWord="Manifest"
+        subtitle="Beyond covering your expenses, what do you want to accomplish in 2026? Be specific and honest. This is your WHY."
+        icon={Sparkles}
+      />
 
       <DarrylTip
         tip="These are your dreams and goals—the life you want to build. Don't hold back! Now let's calculate what it takes to make them real."
@@ -80,10 +74,9 @@ export function StepManifestList() {
           variant="primary"
           icon="target"
         />
-        <p className="mt-3 text-center text-sm text-slate-500">
-          Up Next: Calculate your target income and account for taxes →
-        </p>
+
+        <UpNextFooter text="Calculate your target income and account for taxes" />
       </div>
-    </div>
+    </StepContainer>
   );
 }
