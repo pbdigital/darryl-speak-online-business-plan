@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useCallback } from "react";
 import { Download, Check, Sparkles } from "lucide-react";
-import html2canvas from "html2canvas";
 
 const WALLPAPER_OPTIONS = [
   { id: 1, src: "/images/wallpapers/wallpaper-1.png", alt: "Dark navy with star outline" },
@@ -17,37 +16,96 @@ interface MantraWallpaperProps {
   mantra: string;
 }
 
+// Phone wallpaper dimensions (iPhone 14 Pro Max ratio)
+const WALLPAPER_WIDTH = 1170;
+const WALLPAPER_HEIGHT = 2532;
+
 export function MantraWallpaper({ mantra }: MantraWallpaperProps) {
   const [selectedWallpaper, setSelectedWallpaper] = useState(1);
   const [isDownloading, setIsDownloading] = useState(false);
-  const wallpaperRef = useRef<HTMLDivElement>(null);
+
+  const drawWallpaper = useCallback(
+    async (canvas: HTMLCanvasElement): Promise<void> => {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Could not get canvas context");
+
+      canvas.width = WALLPAPER_WIDTH;
+      canvas.height = WALLPAPER_HEIGHT;
+
+      const selectedOption = WALLPAPER_OPTIONS.find((w) => w.id === selectedWallpaper);
+      if (!selectedOption) throw new Error("No wallpaper selected");
+
+      // Load and draw background image
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => {
+          // Draw image covering the entire canvas
+          ctx.drawImage(img, 0, 0, WALLPAPER_WIDTH, WALLPAPER_HEIGHT);
+          resolve();
+        };
+        img.onerror = () => reject(new Error("Failed to load wallpaper image"));
+        img.src = selectedOption.src;
+      });
+
+      // Draw mantra text
+      if (mantra) {
+        const fontSize = 72;
+        const lineHeight = fontSize * 1.2;
+        const maxWidth = WALLPAPER_WIDTH - 100; // Padding on sides
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = `900 italic ${fontSize}px system-ui, -apple-system, sans-serif`;
+
+        // Add text shadow
+        ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 4;
+
+        // Word wrap for long mantras
+        const words = mantra.toUpperCase().split(" ");
+        const lines: string[] = [];
+        let currentLine = "";
+
+        for (const word of words) {
+          const testLine = currentLine ? `${currentLine} ${word}` : word;
+          const metrics = ctx.measureText(testLine);
+          if (metrics.width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = testLine;
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+
+        // Center text vertically
+        const totalHeight = lines.length * lineHeight;
+        const startY = (WALLPAPER_HEIGHT - totalHeight) / 2 + lineHeight / 2;
+
+        lines.forEach((line, index) => {
+          ctx.fillText(line, WALLPAPER_WIDTH / 2, startY + index * lineHeight);
+        });
+      }
+    },
+    [selectedWallpaper, mantra]
+  );
 
   const handleDownload = async () => {
-    if (!wallpaperRef.current || isDownloading) return;
+    if (isDownloading) return;
 
     setIsDownloading(true);
     try {
-      const canvas = await html2canvas(wallpaperRef.current, {
-        scale: 3, // High resolution for phone wallpaper
-        useCORS: true,
-        backgroundColor: null,
-        ignoreElements: (element) => {
-          // Ignore elements that might have unsupported CSS
-          return element.tagName === 'STYLE';
-        },
-        onclone: (clonedDoc) => {
-          // Remove any stylesheets that might cause issues
-          const styles = clonedDoc.querySelectorAll('style');
-          styles.forEach((style) => {
-            if (style.textContent?.includes('lab(')) {
-              style.remove();
-            }
-          });
-        },
-      });
+      // Create an offscreen canvas for rendering
+      const canvas = document.createElement("canvas");
+      await drawWallpaper(canvas);
 
       const link = document.createElement("a");
-      link.download = `my-2026-mantra-${mantra.toLowerCase().replace(/\s+/g, "-")}.png`;
+      link.download = `my-2026-mantra-${mantra.toLowerCase().replace(/\s+/g, "-") || "wallpaper"}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (error) {
@@ -77,7 +135,6 @@ export function MantraWallpaper({ mantra }: MantraWallpaperProps) {
         {/* Phone Preview */}
         <div className="flex-shrink-0">
           <div
-            ref={wallpaperRef}
             className="relative mx-auto w-[200px] overflow-hidden rounded-[24px] shadow-xl md:w-[220px]"
             style={{ aspectRatio: "9/19.5" }}
           >
