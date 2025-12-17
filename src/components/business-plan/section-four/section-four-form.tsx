@@ -196,7 +196,7 @@ export function SectionFourForm() {
 
       {/* Main Content with Transitions */}
       <div
-        className={`pt-12 transition-all duration-300 ${
+        className={`transition-all duration-300 ${
           isTransitioning ? "animate-fade-out-up opacity-0" : "animate-fade-in-up"
         }`}
       >

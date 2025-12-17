@@ -9,7 +9,7 @@ interface StepOverviewProps {
 
 export function StepOverview({ onStart }: StepOverviewProps) {
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-6xl px-5 duration-700">
+    <div className="mt-12 animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-6xl px-5 duration-700">
       <SectionCover
         number="1"
         title="Annual Reflection & Intention Setting"

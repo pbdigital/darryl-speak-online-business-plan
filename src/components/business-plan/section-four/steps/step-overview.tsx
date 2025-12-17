@@ -9,7 +9,7 @@ interface StepOverviewProps {
 
 export function StepOverview({ onStart }: StepOverviewProps) {
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 min-h-screen bg-gradient-to-b from-[#e8f4f8]/30 via-white to-white pb-8 duration-700">
+    <div className="mt-12 animate-in fade-in slide-in-from-bottom-8 min-h-screen bg-gradient-to-b from-[#e8f4f8]/30 via-white to-white pb-8 duration-700">
       <div className="mx-auto max-w-6xl px-5">
         <SectionCover
           number="4"

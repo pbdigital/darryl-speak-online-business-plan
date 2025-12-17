@@ -45,7 +45,7 @@ export function WeaknessActionSelector({
         Action
         {value && (
           <svg
-            className="ml-1.5 inline h-3 w-3 text-emerald-500"
+            className="ml-1.5 inline h-3 w-3 text-slate-500"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

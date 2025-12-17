@@ -42,9 +42,9 @@ export function SwotRow({
           className={cn(
             "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors",
             isComplete
-              ? "bg-emerald-100 text-emerald-700"
+              ? "bg-slate-700 text-white"
               : hasLeftContent
-                ? "bg-blue-100 text-blue-700"
+                ? "bg-slate-300 text-slate-700"
                 : "bg-slate-100 text-slate-500"
           )}
         >
@@ -74,13 +74,13 @@ export function SwotRow({
             <label
               className={cn(
                 "mb-2 block text-xs font-bold uppercase tracking-wide transition-colors",
-                hasLeftContent ? "text-emerald-700" : "text-slate-500"
+                hasLeftContent ? "text-slate-700" : "text-slate-500"
               )}
             >
               {leftLabel}
               {hasLeftContent && (
                 <svg
-                  className="ml-1.5 inline h-3 w-3 text-emerald-500"
+                  className="ml-1.5 inline h-3 w-3 text-slate-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -102,8 +102,8 @@ export function SwotRow({
               className={cn(
                 "w-full border-b-2 bg-transparent py-2 text-base font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-300",
                 hasLeftContent
-                  ? "border-emerald-400"
-                  : "border-slate-200 focus:border-slate-900"
+                  ? "border-slate-400"
+                  : "border-slate-200 focus:border-[#1a2744]"
               )}
             />
           </div>
@@ -113,13 +113,13 @@ export function SwotRow({
             <label
               className={cn(
                 "mb-2 block text-xs font-bold uppercase tracking-wide transition-colors",
-                hasRightContent ? "text-emerald-700" : "text-slate-500"
+                hasRightContent ? "text-slate-700" : "text-slate-500"
               )}
             >
               {rightLabel}
               {hasRightContent && (
                 <svg
-                  className="ml-1.5 inline h-3 w-3 text-emerald-500"
+                  className="ml-1.5 inline h-3 w-3 text-slate-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -139,12 +139,12 @@ export function SwotRow({
               placeholder={rightPlaceholder}
               rows={2}
               className={cn(
-                "w-full resize-none rounded-lg border bg-slate-50/50 p-3 text-sm leading-relaxed text-slate-700 outline-none transition-all duration-300",
-                "hover:bg-slate-50",
-                "focus:bg-white focus:ring-2 focus:ring-blue-100",
+                "w-full resize-none rounded-xl border-2 bg-white p-3 text-sm leading-relaxed text-slate-700 outline-none transition-all duration-300",
+                "hover:border-slate-300",
+                "focus:border-[#1a2744] focus:shadow-lg focus:shadow-[#1a2744]/5",
                 hasRightContent
-                  ? "border-emerald-300 shadow-sm"
-                  : "border-slate-200 focus:border-slate-300"
+                  ? "border-slate-300"
+                  : "border-slate-100"
               )}
             />
           </div>

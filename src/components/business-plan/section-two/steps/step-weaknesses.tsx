@@ -1,8 +1,14 @@
 "use client";
 
+import { AlertTriangle } from "lucide-react";
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { WeaknessActionSelector } from "../ui";
-import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
+import {
+  StepContainer,
+  StepHeader,
+  UpNextFooter,
+  DarrylTip,
+} from "@/components/business-plan/ui";
 import { cn } from "@/lib/utils";
 
 const weaknessPlaceholders = [
@@ -26,22 +32,15 @@ export function StepWeaknesses() {
   const filledCount = weaknesses.filter((w) => w.weakness.trim()).length;
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header - Left aligned with Part badge */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 2B
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Weaknesses
-        </h2>
-        <p className="text-slate-600">
-          Identify areas for improvement and decide whether to accept, delegate,
-          or work on them. Honest self-assessment is key to growth.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 2B"
+        title="Your Weaknesses"
+        highlightWord="Weaknesses"
+        subtitle="Identify areas for improvement and decide whether to accept, delegate, or work on them. Honest self-assessment is key to growth."
+        icon={AlertTriangle}
+      />
 
-      {/* DarrylTip */}
       <DarrylTip
         tip="Admitting weakness takes courage, but it's where real growth begins. You don't have to fix everything—sometimes the smartest move is to delegate or accept and work around it."
         className="mb-8"
@@ -54,18 +53,15 @@ export function StepWeaknesses() {
         </span>
         <div className="h-2 w-32 overflow-hidden rounded-full bg-slate-200">
           <div
-            className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+            className="h-full rounded-full bg-[#1a2744] transition-all duration-300"
             style={{ width: `${(filledCount / 8) * 100}%` }}
           />
         </div>
       </div>
 
       {/* Weaknesses Rows */}
-      <div className="relative mb-10 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-lg">
-        {/* Decorative corner */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-bl-full bg-slate-50" />
-
-        <div className="relative z-10 p-6 md:p-8">
+      <div className="relative mb-10 overflow-hidden rounded-3xl border-2 border-slate-100 bg-white shadow-lg">
+        <div className="p-6 md:p-8">
           {weaknesses.map((item, index) => {
             const hasContent = item.weakness.trim().length > 0;
             const isComplete = hasContent && item.action !== null;
@@ -84,9 +80,9 @@ export function StepWeaknesses() {
                     className={cn(
                       "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors",
                       isComplete
-                        ? "bg-emerald-100 text-emerald-700"
+                        ? "bg-slate-700 text-white"
                         : hasContent
-                          ? "bg-blue-100 text-blue-700"
+                          ? "bg-slate-300 text-slate-700"
                           : "bg-slate-100 text-slate-500"
                     )}
                   >
@@ -116,13 +112,13 @@ export function StepWeaknesses() {
                       <label
                         className={cn(
                           "mb-2 block text-xs font-bold uppercase tracking-wide transition-colors",
-                          hasContent ? "text-emerald-700" : "text-slate-500"
+                          hasContent ? "text-slate-700" : "text-slate-500"
                         )}
                       >
                         Weakness
                         {hasContent && (
                           <svg
-                            className="ml-1.5 inline h-3 w-3 text-emerald-500"
+                            className="ml-1.5 inline h-3 w-3 text-slate-500"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -144,8 +140,8 @@ export function StepWeaknesses() {
                         className={cn(
                           "w-full border-b-2 bg-transparent py-2 text-base font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-300",
                           hasContent
-                            ? "border-emerald-400"
-                            : "border-slate-200 focus:border-slate-900"
+                            ? "border-slate-400"
+                            : "border-slate-200 focus:border-[#1a2744]"
                         )}
                       />
                     </div>
@@ -168,7 +164,7 @@ export function StepWeaknesses() {
       </div>
 
       {/* Legend */}
-      <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
+      <div className="rounded-xl border-2 border-slate-100 bg-slate-50 p-6">
         <h4 className="mb-4 text-xs font-bold uppercase tracking-wide text-slate-700">
           Action Guide
         </h4>
@@ -196,12 +192,7 @@ export function StepWeaknesses() {
         </div>
       </div>
 
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: Discover your opportunities →
-        </p>
-      </div>
-    </div>
+      <UpNextFooter text="Discover your opportunities" />
+    </StepContainer>
   );
 }

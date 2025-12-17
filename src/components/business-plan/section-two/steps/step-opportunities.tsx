@@ -1,8 +1,14 @@
 "use client";
 
+import { Lightbulb } from "lucide-react";
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { SwotRow } from "../ui";
-import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
+import {
+  StepContainer,
+  StepHeader,
+  UpNextFooter,
+  DarrylTip,
+} from "@/components/business-plan/ui";
 
 const opportunityPlaceholders = [
   { left: "Growing first-time buyer market", right: "Create targeted content, partner with lenders for seminars" },
@@ -24,22 +30,15 @@ export function StepOpportunities() {
   const filledCount = opportunities.filter((o) => o.possibility.trim()).length;
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header - Left aligned with Part badge */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 2C
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Opportunities
-        </h2>
-        <p className="text-slate-600">
-          What external possibilities exist for growth? Identify chances to
-          expand and improve your business in the market.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 2C"
+        title="Your Opportunities"
+        highlightWord="Opportunities"
+        subtitle="What external possibilities exist for growth? Identify chances to expand and improve your business in the market."
+        icon={Lightbulb}
+      />
 
-      {/* DarrylTip */}
       <DarrylTip
         tip="Opportunities are everywhere, but they favor the prepared. Keep your eyes open, your skills sharp, and be ready to act when the right one appears."
         className="mb-8"
@@ -52,18 +51,15 @@ export function StepOpportunities() {
         </span>
         <div className="h-2 w-32 overflow-hidden rounded-full bg-slate-200">
           <div
-            className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+            className="h-full rounded-full bg-[#1a2744] transition-all duration-300"
             style={{ width: `${(filledCount / 8) * 100}%` }}
           />
         </div>
       </div>
 
       {/* Opportunities Rows */}
-      <div className="relative mb-10 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-lg">
-        {/* Decorative corner */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-bl-full bg-slate-50" />
-
-        <div className="relative z-10 p-6 md:p-8">
+      <div className="relative mb-10 overflow-hidden rounded-3xl border-2 border-slate-100 bg-white shadow-lg">
+        <div className="p-6 md:p-8">
           {opportunities.map((item, index) => (
             <SwotRow
               key={index}
@@ -85,12 +81,7 @@ export function StepOpportunities() {
         </div>
       </div>
 
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: Anticipate potential threats →
-        </p>
-      </div>
-    </div>
+      <UpNextFooter text="Anticipate potential threats" />
+    </StepContainer>
   );
 }

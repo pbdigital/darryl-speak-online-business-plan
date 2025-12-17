@@ -784,7 +784,7 @@ function SectionPreviewsSection() {
         </div>
 
         {/* Bento Grid */}
-        <div className="mx-auto max-w-5xl">
+        <div className=" mx-auto max-w-5xl">
           {/* Row 1: Sections 1 & 2 */}
           <div className="mb-4 grid gap-4 md:grid-cols-2">
             {/* Section 1 */}

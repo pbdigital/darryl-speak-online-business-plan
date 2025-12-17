@@ -6,7 +6,7 @@ import {
   StepContainer,
   StepHeader,
   UpNextFooter,
-  PremiumInput,
+  PremiumTextarea,
   DarrylTip,
 } from "@/components/business-plan/ui";
 
@@ -34,14 +34,15 @@ export function StepAffirmations() {
           My 2026 Affirmations
         </h3>
         {affirmations.map((affirmation, index) => (
-          <PremiumInput
+          <PremiumTextarea
             key={index}
             number={index + 1}
             label={`Affirmation ${index + 1}`}
             placeholder="I am..."
             value={affirmation}
-            onChange={(value) => updateAffirmation(index, String(value || ""))}
-            className="mb-4"
+            onChange={(value) => updateAffirmation(index, value)}
+            minHeight={80}
+            showWordCount={false}
           />
         ))}
       </div>
