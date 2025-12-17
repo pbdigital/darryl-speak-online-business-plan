@@ -2,21 +2,14 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import {
-  useSectionOneStore,
-  type SectionOneData,
-} from "@/stores/section-one-store";
 import { useAutoResize } from "@/hooks/use-auto-resize";
 
-interface WorkbookTextareaProps {
+interface PremiumTextareaProps {
   label: string;
-  fieldName?: keyof SectionOneData;
+  value: string;
+  onChange: (value: string) => void;
   placeholder?: string;
-  /** @deprecated No longer used - textarea auto-resizes based on content */
-  rows?: number;
   className?: string;
-  value?: string;
-  onChange?: (value: string) => void;
   showWordCount?: boolean;
   /** Minimum height in pixels (default: 120) */
   minHeight?: number;
@@ -26,44 +19,29 @@ interface WorkbookTextareaProps {
   number?: number;
 }
 
-export function WorkbookTextarea({
+export function PremiumTextarea({
   label,
-  fieldName,
-  placeholder,
-  rows: _rows, // Deprecated, kept for backward compatibility
-  className,
-  value: controlledValue,
+  value,
   onChange,
+  placeholder,
+  className,
   showWordCount = true,
   minHeight = 120,
   maxHeight = 300,
   number,
-}: WorkbookTextareaProps) {
+}: PremiumTextareaProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   // Auto-resize hook
   const { ref } = useAutoResize({ minHeight, maxHeight });
 
-  // Get store value if fieldName is provided
-  const storeValue = useSectionOneStore((state) =>
-    fieldName ? (state.data[fieldName] as string) : ""
-  );
-  const updateField = useSectionOneStore((state) => state.updateField);
-
-  // Use store value if fieldName provided, otherwise use controlled/uncontrolled pattern
-  const value = fieldName ? storeValue : (controlledValue ?? "");
   const hasContent = value.trim().length > 0;
   const wordCount = hasContent
     ? value.trim().split(/\s+/).filter(Boolean).length
     : 0;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    if (fieldName) {
-      updateField(fieldName, newValue);
-    } else if (onChange) {
-      onChange(newValue);
-    }
+    onChange(e.target.value);
   };
 
   return (

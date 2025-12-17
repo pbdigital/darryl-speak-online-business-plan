@@ -1,8 +1,14 @@
 "use client";
 
+import { Package } from "lucide-react";
 import { useSectionFiveStore } from "@/stores/section-five-store";
-import { WorkbookTextarea } from "@/components/business-plan/section-one/ui";
-import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
+import {
+  StepContainer,
+  StepHeader,
+  UpNextFooter,
+  PremiumTextarea,
+  DarrylTip,
+} from "@/components/business-plan/ui";
 
 export function StepResources() {
   const currentResources = useSectionFiveStore((state) => state.data.currentResources);
@@ -11,23 +17,15 @@ export function StepResources() {
   const updateNeededResource = useSectionFiveStore((state) => state.updateNeededResource);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 5B
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Exploring Your Resources
-        </h2>
-        <p className="text-slate-600">
-          Before chasing new tools and systems, take inventory of what you already
-          have. Then identify the gaps—what resources would accelerate your progress
-          if you acquired them this year?
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 5B"
+        title="Exploring Your Resources"
+        highlightWord="Resources"
+        subtitle="Take inventory of what you already have, then identify the gaps—what resources would accelerate your progress this year?"
+        icon={Package}
+      />
 
-      {/* DarrylTip */}
       <DarrylTip
         tip="Most agents underutilize what they already have. Before buying another tool, ask: 'Am I using what I have to its full potential?' Often the resource you need is already in your toolbox—you just haven't opened it yet."
         className="mb-8"
@@ -44,13 +42,15 @@ export function StepResources() {
         </p>
         <div className="space-y-4">
           {currentResources.map((resource, index) => (
-            <WorkbookTextarea
+            <PremiumTextarea
               key={`current-${index}`}
+              number={index + 1}
               label={`Resource ${index + 1}`}
               placeholder="e.g., CRM with 500 contacts, Canva Pro subscription, Weekly team meeting access..."
-              rows={2}
               value={resource}
-              onChange={(val) => updateCurrentResource(index, String(val || ""))}
+              onChange={(val) => updateCurrentResource(index, val)}
+              minHeight={80}
+              maxHeight={200}
             />
           ))}
         </div>
@@ -67,24 +67,21 @@ export function StepResources() {
         </p>
         <div className="space-y-4">
           {neededResources.map((resource, index) => (
-            <WorkbookTextarea
+            <PremiumTextarea
               key={`needed-${index}`}
+              number={index + 1}
               label={`Resource ${index + 1}`}
               placeholder="e.g., Video editing software for social media, Transaction coordinator, Lead generation system..."
-              rows={2}
               value={resource}
-              onChange={(val) => updateNeededResource(index, String(val || ""))}
+              onChange={(val) => updateNeededResource(index, val)}
+              minHeight={80}
+              maxHeight={200}
             />
           ))}
         </div>
       </div>
 
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: Define your ideal client profiles →
-        </p>
-      </div>
-    </div>
+      <UpNextFooter text="Define your ideal client profiles" />
+    </StepContainer>
   );
 }

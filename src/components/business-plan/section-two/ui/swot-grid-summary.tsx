@@ -27,12 +27,12 @@ export function SwotGridSummary({
   return (
     <div className={cn("grid gap-4 md:grid-cols-2", className)}>
       {/* Strengths Quadrant */}
-      <div className="rounded-2xl border border-slate-200 bg-[#e8f4f8] p-6">
+      <div className="rounded-2xl border-2 border-slate-100 bg-white p-6">
         <div className="mb-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1E293B]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2744]">
             <Zap className="h-4 w-4 text-white" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1E293B]">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1a2744]">
             Strengths
           </h3>
           <span className="ml-auto text-xs font-medium text-slate-500">
@@ -46,7 +46,7 @@ export function SwotGridSummary({
                 key={idx}
                 className="flex items-start gap-2 text-sm text-slate-700"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#1E293B]" />
+                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#1a2744]" />
                 <span>{item.strength}</span>
               </li>
             ))}
@@ -57,12 +57,12 @@ export function SwotGridSummary({
       </div>
 
       {/* Weaknesses Quadrant */}
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+      <div className="rounded-2xl border-2 border-slate-100 bg-white p-6">
         <div className="mb-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1E293B]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2744]">
             <AlertCircle className="h-4 w-4 text-white" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1E293B]">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1a2744]">
             Weaknesses
           </h3>
           <span className="ml-auto text-xs font-medium text-slate-500">
@@ -92,12 +92,12 @@ export function SwotGridSummary({
       </div>
 
       {/* Opportunities Quadrant */}
-      <div className="rounded-2xl border border-slate-200 bg-[#e8f4f8] p-6">
+      <div className="rounded-2xl border-2 border-slate-100 bg-white p-6">
         <div className="mb-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1E293B]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2744]">
             <TrendingUp className="h-4 w-4 text-white" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1E293B]">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1a2744]">
             Opportunities
           </h3>
           <span className="ml-auto text-xs font-medium text-slate-500">
@@ -111,7 +111,7 @@ export function SwotGridSummary({
                 key={idx}
                 className="flex items-start gap-2 text-sm text-slate-700"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#1E293B]" />
+                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#1a2744]" />
                 <span>{item.possibility}</span>
               </li>
             ))}
@@ -122,12 +122,12 @@ export function SwotGridSummary({
       </div>
 
       {/* Threats Quadrant */}
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+      <div className="rounded-2xl border-2 border-slate-100 bg-white p-6">
         <div className="mb-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1E293B]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2744]">
             <Shield className="h-4 w-4 text-white" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1E293B]">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-[#1a2744]">
             Threats
           </h3>
           <span className="ml-auto text-xs font-medium text-slate-500">

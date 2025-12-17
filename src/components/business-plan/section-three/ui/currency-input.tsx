@@ -64,7 +64,7 @@ export function CurrencyInput({
 
   return (
     <div className={cn("group", className)}>
-      <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900 transition-colors group-focus-within:text-blue-700">
+      <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-900 transition-colors group-focus-within:text-[#1a2744]">
         {label}
       </label>
       <div className="relative flex items-center">
@@ -72,14 +72,14 @@ export function CurrencyInput({
         <input
           type="text"
           inputMode="numeric"
-          className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-300 focus:border-slate-900"
+          className="w-full border-b-2 border-slate-200 bg-transparent py-3 text-lg font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-300 focus:border-[#1a2744]"
           placeholder={placeholder}
           value={formattedValue}
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
         />
-        <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-slate-900 transition-all duration-500 ease-out group-focus-within:w-full" />
+        <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-[#1a2744] transition-all duration-500 ease-out group-focus-within:w-full" />
       </div>
     </div>
   );

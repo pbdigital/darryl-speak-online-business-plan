@@ -1,6 +1,6 @@
 "use client";
 
-import { WorkbookInput, WorkbookTextarea } from "@/components/business-plan/section-one/ui";
+import { PremiumInput, PremiumTextarea } from "@/components/business-plan/ui";
 import { CurrencyInput } from "@/components/business-plan/section-three/ui/currency-input";
 import { cn } from "@/lib/utils";
 
@@ -61,13 +61,13 @@ export function ActivityCard(props: ActivityCardProps) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md",
+        "rounded-3xl border-2 border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md",
         className
       )}
     >
       {/* Card Header */}
       <div className="mb-6 flex items-center gap-3">
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F172A] text-sm font-bold text-white">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2744] text-sm font-bold text-white">
           {activityNumber}
         </span>
         <h4 className="text-lg font-bold text-slate-900">
@@ -77,7 +77,7 @@ export function ActivityCard(props: ActivityCardProps) {
 
       {/* Fields Grid */}
       <div className="space-y-5">
-        <WorkbookInput
+        <PremiumInput
           label="Activity"
           placeholder={
             type === "prospecting"
@@ -89,13 +89,13 @@ export function ActivityCard(props: ActivityCardProps) {
         />
 
         <div className="grid gap-5 md:grid-cols-2">
-          <WorkbookInput
+          <PremiumInput
             label={labels.how}
             placeholder={type === "prospecting" ? "e.g., RedX Dialer" : "e.g., Meta Ads Manager"}
             value={how}
             onChange={(val) => onFieldChange("how", String(val || ""))}
           />
-          <WorkbookInput
+          <PremiumInput
             label={labels.who}
             placeholder="e.g., First-time homebuyers"
             value={who}
@@ -104,7 +104,7 @@ export function ActivityCard(props: ActivityCardProps) {
         </div>
 
         <div className="grid gap-5 md:grid-cols-2">
-          <WorkbookInput
+          <PremiumInput
             label={labels.when}
             placeholder={
               type === "prospecting" ? "e.g., Mon-Fri 9-11am" : "e.g., Q1-Q2 campaign"
@@ -112,7 +112,7 @@ export function ActivityCard(props: ActivityCardProps) {
             value={when}
             onChange={(val) => onFieldChange("when", String(val || ""))}
           />
-          <WorkbookInput
+          <PremiumInput
             label="Farm Area?"
             placeholder="e.g., Downtown Heights"
             value={farmArea}
@@ -128,17 +128,18 @@ export function ActivityCard(props: ActivityCardProps) {
         />
 
         {type === "prospecting" && followUpPlan !== undefined && (
-          <WorkbookTextarea
+          <PremiumTextarea
             label="Follow-Up Plan"
             placeholder="Describe your follow-up strategy..."
-            rows={3}
             value={followUpPlan}
             onChange={(val) =>
               (onFieldChange as ProspectingActivityCardProps["onFieldChange"])(
                 "followUpPlan",
-                String(val || "")
+                val
               )
             }
+            minHeight={80}
+            maxHeight={200}
           />
         )}
       </div>

@@ -232,8 +232,10 @@ export function SectionOneForm() {
         />
 
         <div className="flex items-center gap-2">
-          {/* Save Status Indicator */}
-          <SaveIndicator status={saveStatus} lastSavedAt={lastSavedAt} />
+          {/* Save Status Indicator - hidden on mobile */}
+          <div className="hidden md:block">
+            <SaveIndicator status={saveStatus} lastSavedAt={lastSavedAt} />
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="text-slate-400 transition-colors hover:text-slate-900">
@@ -264,7 +266,7 @@ export function SectionOneForm() {
 
       {/* Main Content with Transitions */}
       <div
-        className={`pt-12 transition-all duration-300 ${
+        className={`transition-all duration-300 ${
           isTransitioning ? "animate-fade-out-up opacity-0" : "animate-fade-in-up"
         }`}
       >

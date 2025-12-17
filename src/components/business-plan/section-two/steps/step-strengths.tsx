@@ -1,8 +1,14 @@
 "use client";
 
+import { Zap } from "lucide-react";
 import { useSectionTwoStore } from "@/stores/section-two-store";
-import { SwotRow } from "../ui";
-import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
+import {
+  StepContainer,
+  StepHeader,
+  UpNextFooter,
+  DarrylTip,
+  SwotCard,
+} from "@/components/business-plan/ui";
 
 const strengthPlaceholders = [
   { left: "Strong negotiation skills", right: "Use in listing presentations and buyer negotiations" },
@@ -19,72 +25,40 @@ export function StepStrengths() {
   const strengths = useSectionTwoStore((state) => state.data.strengths);
   const updateStrength = useSectionTwoStore((state) => state.updateStrength);
 
-  const filledCount = strengths.filter((s) => s.strength.trim()).length;
-
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header - Left aligned with Part badge */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 2A
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Strengths
-        </h2>
-        <p className="text-slate-600">
-          What do you do well? Identify your core strengths and how you can
-          leverage them for success in your real estate business.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 2A"
+        title="Your Strengths"
+        highlightWord="Strengths"
+        subtitle="What do you do well? Identify your core strengths and how you can leverage them for success in your real estate business."
+        icon={Zap}
+      />
 
-      {/* DarrylTip */}
       <DarrylTip
         tip="Know your superpowers and use them intentionally. The best agents don't try to be good at everything—they become exceptional at what they naturally do well."
         className="mb-8"
       />
 
-      {/* Progress Indicator */}
-      <div className="mb-8 flex items-center justify-between rounded-xl bg-slate-50 px-6 py-4">
-        <span className="text-sm font-medium text-slate-700">
-          {filledCount} of 8 strengths identified
-        </span>
-        <div className="h-2 w-32 overflow-hidden rounded-full bg-slate-200">
-          <div
-            className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-            style={{ width: `${(filledCount / 8) * 100}%` }}
+      {/* Strengths Cards */}
+      <div className="mb-10 space-y-6">
+        {strengths.map((item, index) => (
+          <SwotCard
+            key={index}
+            number={index + 1}
+            primaryLabel="Strength"
+            secondaryLabel="Where can this strength be put to use?"
+            primaryValue={item.strength}
+            secondaryValue={item.useCase}
+            onPrimaryChange={(value) => updateStrength(index, "strength", value)}
+            onSecondaryChange={(value) => updateStrength(index, "useCase", value)}
+            primaryPlaceholder={strengthPlaceholders[index]?.left}
+            secondaryPlaceholder={strengthPlaceholders[index]?.right}
           />
-        </div>
+        ))}
       </div>
 
-      {/* Strengths Rows */}
-      <div className="relative mb-10 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-lg">
-        {/* Decorative corner */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-bl-full bg-slate-50" />
-
-        <div className="relative z-10 p-6 md:p-8">
-          {strengths.map((item, index) => (
-            <SwotRow
-              key={index}
-              index={index}
-              leftLabel="Strength"
-              rightLabel="Where Can Your Strength Be Put To Use"
-              leftValue={item.strength}
-              rightValue={item.useCase}
-              onLeftChange={(value) => updateStrength(index, "strength", value)}
-              onRightChange={(value) => updateStrength(index, "useCase", value)}
-              leftPlaceholder={strengthPlaceholders[index]?.left}
-              rightPlaceholder={strengthPlaceholders[index]?.right}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: Identify your weaknesses →
-        </p>
-      </div>
-    </div>
+      <UpNextFooter text="Identify your weaknesses" />
+    </StepContainer>
   );
 }

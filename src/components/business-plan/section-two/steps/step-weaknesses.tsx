@@ -1,9 +1,14 @@
 "use client";
 
+import { AlertTriangle } from "lucide-react";
 import { useSectionTwoStore } from "@/stores/section-two-store";
-import { WeaknessActionSelector } from "../ui";
-import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
-import { cn } from "@/lib/utils";
+import {
+  StepContainer,
+  StepHeader,
+  UpNextFooter,
+  DarrylTip,
+  WeaknessCard,
+} from "@/components/business-plan/ui";
 
 const weaknessPlaceholders = [
   "Inconsistent follow-up with leads",
@@ -23,185 +28,37 @@ export function StepWeaknesses() {
     (state) => state.updateWeaknessAction
   );
 
-  const filledCount = weaknesses.filter((w) => w.weakness.trim()).length;
-
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 mx-auto max-w-3xl px-4 duration-700">
-      {/* Step Header - Left aligned with Part badge */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 2B
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Weaknesses
-        </h2>
-        <p className="text-slate-600">
-          Identify areas for improvement and decide whether to accept, delegate,
-          or work on them. Honest self-assessment is key to growth.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 2B"
+        title="Your Weaknesses"
+        highlightWord="Weaknesses"
+        subtitle="Identify areas for improvement and decide whether to accept, delegate, or work on them. Honest self-assessment is key to growth."
+        icon={AlertTriangle}
+      />
 
-      {/* DarrylTip */}
       <DarrylTip
         tip="Admitting weakness takes courage, but it's where real growth begins. You don't have to fix everything—sometimes the smartest move is to delegate or accept and work around it."
         className="mb-8"
       />
 
-      {/* Progress Indicator */}
-      <div className="mb-8 flex items-center justify-between rounded-xl bg-slate-50 px-6 py-4">
-        <span className="text-sm font-medium text-slate-700">
-          {filledCount} of 8 weaknesses identified
-        </span>
-        <div className="h-2 w-32 overflow-hidden rounded-full bg-slate-200">
-          <div
-            className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-            style={{ width: `${(filledCount / 8) * 100}%` }}
+      {/* Weakness Cards */}
+      <div className="mb-10 space-y-6">
+        {weaknesses.map((item, index) => (
+          <WeaknessCard
+            key={index}
+            number={index + 1}
+            weaknessValue={item.weakness}
+            actionValue={item.action}
+            onWeaknessChange={(value) => updateWeakness(index, value)}
+            onActionChange={(action) => updateWeaknessAction(index, action)}
+            placeholder={weaknessPlaceholders[index]}
           />
-        </div>
+        ))}
       </div>
 
-      {/* Weaknesses Rows */}
-      <div className="relative mb-10 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-lg">
-        {/* Decorative corner */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-bl-full bg-slate-50" />
-
-        <div className="relative z-10 p-6 md:p-8">
-          {weaknesses.map((item, index) => {
-            const hasContent = item.weakness.trim().length > 0;
-            const isComplete = hasContent && item.action !== null;
-
-            return (
-              <div
-                key={index}
-                className={cn(
-                  "group relative border-b border-slate-100 py-6 transition-colors last:border-b-0",
-                  "hover:bg-slate-50/50"
-                )}
-              >
-                <div className="flex gap-4 md:gap-6">
-                  {/* Row Number Indicator */}
-                  <div
-                    className={cn(
-                      "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors",
-                      isComplete
-                        ? "bg-emerald-100 text-emerald-700"
-                        : hasContent
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-slate-100 text-slate-500"
-                    )}
-                  >
-                    {isComplete ? (
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={3}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    ) : (
-                      index + 1
-                    )}
-                  </div>
-
-                  {/* Input Fields */}
-                  <div className="flex flex-1 flex-col gap-4 md:flex-row md:gap-6">
-                    {/* Weakness Field */}
-                    <div className="flex-1">
-                      <label
-                        className={cn(
-                          "mb-2 block text-xs font-bold uppercase tracking-wide transition-colors",
-                          hasContent ? "text-emerald-700" : "text-slate-500"
-                        )}
-                      >
-                        Weakness
-                        {hasContent && (
-                          <svg
-                            className="ml-1.5 inline h-3 w-3 text-emerald-500"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={3}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        )}
-                      </label>
-                      <input
-                        type="text"
-                        value={item.weakness}
-                        onChange={(e) => updateWeakness(index, e.target.value)}
-                        placeholder={weaknessPlaceholders[index]}
-                        className={cn(
-                          "w-full border-b-2 bg-transparent py-2 text-base font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-300",
-                          hasContent
-                            ? "border-emerald-400"
-                            : "border-slate-200 focus:border-slate-900"
-                        )}
-                      />
-                    </div>
-
-                    {/* Action Selector */}
-                    <div className="md:w-64">
-                      <WeaknessActionSelector
-                        value={item.action}
-                        onChange={(action) =>
-                          updateWeaknessAction(index, action)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Legend */}
-      <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
-        <h4 className="mb-4 text-xs font-bold uppercase tracking-wide text-slate-700">
-          Action Guide
-        </h4>
-        <div className="grid gap-3 text-sm md:grid-cols-3">
-          <div className="flex items-start gap-2">
-            <span className="mt-0.5 rounded bg-slate-200 px-2 py-0.5 text-xs font-bold text-slate-700">
-              Accept
-            </span>
-            <span className="text-slate-600">
-              Acknowledge and work around it
-            </span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="mt-0.5 rounded bg-slate-200 px-2 py-0.5 text-xs font-bold text-slate-700">
-              Delegate
-            </span>
-            <span className="text-slate-600">Assign to someone else</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="mt-0.5 rounded bg-slate-200 px-2 py-0.5 text-xs font-bold text-slate-700">
-              Improve
-            </span>
-            <span className="text-slate-600">Work on getting better</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: Discover your opportunities →
-        </p>
-      </div>
-    </div>
+      <UpNextFooter text="Discover your opportunities" />
+    </StepContainer>
   );
 }
