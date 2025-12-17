@@ -4,3 +4,5 @@ export { StepHeader } from "./step-header";
 export { UpNextFooter } from "./up-next-footer";
 export { PremiumTextarea } from "./premium-textarea";
 export { PremiumInput } from "./premium-input";
+export { SwotCard } from "./swot-card";
+export { WeaknessCard } from "./weakness-card";

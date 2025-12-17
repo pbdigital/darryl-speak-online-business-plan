@@ -2,12 +2,12 @@
 
 import { Zap } from "lucide-react";
 import { useSectionTwoStore } from "@/stores/section-two-store";
-import { SwotRow } from "../ui";
 import {
   StepContainer,
   StepHeader,
   UpNextFooter,
   DarrylTip,
+  SwotCard,
 } from "@/components/business-plan/ui";
 
 const strengthPlaceholders = [
@@ -25,8 +25,6 @@ export function StepStrengths() {
   const strengths = useSectionTwoStore((state) => state.data.strengths);
   const updateStrength = useSectionTwoStore((state) => state.updateStrength);
 
-  const filledCount = strengths.filter((s) => s.strength.trim()).length;
-
   return (
     <StepContainer>
       <StepHeader
@@ -42,37 +40,22 @@ export function StepStrengths() {
         className="mb-8"
       />
 
-      {/* Progress Indicator */}
-      <div className="mb-8 flex items-center justify-between rounded-xl bg-slate-50 px-6 py-4">
-        <span className="text-sm font-medium text-slate-700">
-          {filledCount} of 8 strengths identified
-        </span>
-        <div className="h-2 w-32 overflow-hidden rounded-full bg-slate-200">
-          <div
-            className="h-full rounded-full bg-[#1a2744] transition-all duration-300"
-            style={{ width: `${(filledCount / 8) * 100}%` }}
+      {/* Strengths Cards */}
+      <div className="mb-10 space-y-6">
+        {strengths.map((item, index) => (
+          <SwotCard
+            key={index}
+            number={index + 1}
+            primaryLabel="Strength"
+            secondaryLabel="Where can this strength be put to use?"
+            primaryValue={item.strength}
+            secondaryValue={item.useCase}
+            onPrimaryChange={(value) => updateStrength(index, "strength", value)}
+            onSecondaryChange={(value) => updateStrength(index, "useCase", value)}
+            primaryPlaceholder={strengthPlaceholders[index]?.left}
+            secondaryPlaceholder={strengthPlaceholders[index]?.right}
           />
-        </div>
-      </div>
-
-      {/* Strengths Rows */}
-      <div className="relative mb-10 overflow-hidden rounded-3xl border-2 border-slate-100 bg-white shadow-lg">
-        <div className="p-6 md:p-8">
-          {strengths.map((item, index) => (
-            <SwotRow
-              key={index}
-              index={index}
-              leftLabel="Strength"
-              rightLabel="Where Can Your Strength Be Put To Use"
-              leftValue={item.strength}
-              rightValue={item.useCase}
-              onLeftChange={(value) => updateStrength(index, "strength", value)}
-              onRightChange={(value) => updateStrength(index, "useCase", value)}
-              leftPlaceholder={strengthPlaceholders[index]?.left}
-              rightPlaceholder={strengthPlaceholders[index]?.right}
-            />
-          ))}
-        </div>
+        ))}
       </div>
 
       <UpNextFooter text="Identify your weaknesses" />
