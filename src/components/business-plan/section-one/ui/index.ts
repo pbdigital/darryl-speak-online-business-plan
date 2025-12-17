@@ -7,3 +7,6 @@ export { EncouragementToast } from "./encouragement-toast";
 export { AnimatedCheckmark } from "./animated-checkmark";
 export { MantraWallpaper } from "./mantra-wallpaper";
 export { AnswerSummary } from "./answer-summary";
+export { StepContainer } from "./step-container";
+export { StepHeader } from "./step-header";
+export { UpNextFooter } from "./up-next-footer";

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Clock, FileText, Sparkles, Star } from "lucide-react";
-import { WorkbookTextarea, WorkbookInput, AnimatedCheckmark, AnswerSummary } from "../ui";
+import { ArrowRight, CheckCircle2, Clock, FileText, Trophy, Star, PenLine } from "lucide-react";
+import { WorkbookTextarea, WorkbookInput, AnswerSummary, StepContainer } from "../ui";
 import { useSectionOneStore } from "@/stores/section-one-store";
 
 interface StepCompleteProps {
@@ -37,7 +37,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
 
   if (showReveal) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center bg-gradient-to-b from-[#e8f4f8]/30 via-white to-white px-4">
         <div
           className={`mb-6 transition-all duration-500 ${
             revealPhase >= 1
@@ -45,10 +45,10 @@ export function StepComplete({ startTime }: StepCompleteProps) {
               : "scale-75 opacity-0"
           }`}
         >
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#1a2744]">
             {revealPhase >= 2 ? (
               <svg
-                className="h-10 w-10 text-emerald-500"
+                className="h-10 w-10 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -85,30 +85,43 @@ export function StepComplete({ startTime }: StepCompleteProps) {
   }
 
   return (
-    <div className="animate-fade-in-up mx-auto max-w-3xl px-4">
-      <div className="mb-10 text-center">
-        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-emerald-600">
-          Complete
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Reflection Complete
-        </h2>
-        <p className="text-slate-500">
+    <StepContainer>
+      {/* Header */}
+      <header className="relative mb-10">
+        <div className="absolute -right-4 top-0 hidden opacity-10 md:right-0 md:block">
+          <Trophy className="h-32 w-32 text-[#1a2744]" strokeWidth={1} />
+        </div>
+
+        <div className="relative z-10 mb-4">
+          <span className="inline-flex items-center gap-2 rounded-full bg-[#1a2744] px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white">
+            Complete
+          </span>
+        </div>
+
+        <h1 className="relative z-10 mb-3 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
+          Section{" "}
+          <span className="relative">
+            <span className="relative z-10">Complete</span>
+            <span className="absolute bottom-1 left-0 -z-0 h-3 w-full bg-[#e8f4f8]" />
+          </span>
+        </h1>
+
+        <p className="relative z-10 max-w-lg text-lg text-slate-600">
           You&apos;ve done meaningful work. Now seal it with intention.
         </p>
-      </div>
+      </header>
 
-      {/* Summary Card - Elegant sage tones */}
-      <div className="mb-10 overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-slate-50 shadow-sm">
-        <div className="border-b border-emerald-100 bg-white/50 px-8 py-5">
-          <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-emerald-800">
-            <Sparkles className="h-4 w-4" /> Your Reflection Summary
+      {/* Summary Card */}
+      <div className="mb-10 overflow-hidden rounded-3xl border-2 border-slate-100 bg-white shadow-sm">
+        <div className="border-b border-slate-100 bg-[#e8f4f8]/30 px-8 py-5">
+          <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#1a2744]">
+            <Trophy className="h-4 w-4" /> Your Reflection Summary
           </h3>
         </div>
         <div className="grid gap-6 p-8 md:grid-cols-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-              <FileText className="h-5 w-5 text-emerald-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f4f8]">
+              <FileText className="h-5 w-5 text-[#1a2744]" />
             </div>
             <div>
               <div className="text-2xl font-bold text-slate-900">{filledFieldCount}</div>
@@ -116,8 +129,8 @@ export function StepComplete({ startTime }: StepCompleteProps) {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-              <Clock className="h-5 w-5 text-emerald-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f4f8]">
+              <Clock className="h-5 w-5 text-[#1a2744]" />
             </div>
             <div>
               <div className="text-2xl font-bold text-slate-900">
@@ -127,8 +140,8 @@ export function StepComplete({ startTime }: StepCompleteProps) {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f4f8]">
+              <CheckCircle2 className="h-5 w-5 text-[#1a2744]" />
             </div>
             <div>
               <div className="text-2xl font-bold text-slate-900">1 of 5</div>
@@ -139,12 +152,12 @@ export function StepComplete({ startTime }: StepCompleteProps) {
 
         {/* Mantra Display */}
         {mantra && (
-          <div className="border-t border-emerald-100 bg-white/30 px-8 py-6">
+          <div className="border-t border-slate-100 bg-[#1a2744] px-8 py-6">
             <div className="flex items-center gap-3">
-              <Star className="h-5 w-5 text-emerald-600" />
+              <Star className="h-5 w-5 text-white/60" />
               <div>
-                <div className="text-xs text-slate-500">Your 2026 Mantra</div>
-                <div className="text-xl font-black uppercase tracking-wide text-slate-900">
+                <div className="text-xs text-white/60">Your 2026 Mantra</div>
+                <div className="text-xl font-black uppercase tracking-wide text-white">
                   {mantra}
                 </div>
               </div>
@@ -156,63 +169,80 @@ export function StepComplete({ startTime }: StepCompleteProps) {
       {/* Answer Summary - Collapsible review */}
       <AnswerSummary />
 
-      {/* Celebration Questions - Subtle styling */}
-      <div className="mb-10 rounded-2xl border border-slate-100 bg-slate-50/50 p-8">
-        <h3 className="mb-8 text-sm font-bold uppercase tracking-wider text-slate-700">
-          Celebration & Encouragement
-        </h3>
-        <div className="space-y-2">
+      {/* Celebration Questions */}
+      <section className="mb-10">
+        <div className="mb-6 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f4f8]">
+            <Trophy className="h-5 w-5 text-[#1a2744]" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">Celebration & Encouragement</h2>
+            <p className="text-sm text-slate-500">Plan how you&apos;ll celebrate wins</p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
           <WorkbookTextarea
+            number={1}
             label="How will you celebrate milestones along the way?"
             fieldName="celebrationMethod"
             placeholder="Dinner at my favorite restaurant after every 5 transactions. Weekend trip at $100k GCI..."
-            rows={3}
           />
           <WorkbookTextarea
+            number={2}
             label="What words of encouragement would you give to your future self?"
             fieldName="encouragementMessage"
             placeholder="Dear future me: Remember why you started. Every 'no' is closer to a 'yes'. You've got this..."
-            rows={3}
           />
         </div>
-      </div>
+      </section>
 
-      {/* Signature Section - Refined */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-slate-900">
-          Your Commitment
-        </h3>
-        <p className="mb-4 text-sm leading-relaxed text-slate-500">
-          By signing below, I commit to honoring these reflections and working
-          toward the intentions I&apos;ve set for 2026. This is a living
-          document—revisit it throughout the year.
-        </p>
-        <p className="mb-8 text-xs italic text-slate-400">
-          Your signature here is symbolic—a personal promise to yourself.
-          Simply type your name to acknowledge your commitment.
-        </p>
-        <div className="grid gap-8 md:grid-cols-2">
-          <WorkbookInput label="Signature" fieldName="signature" placeholder="Type your full name" />
-          <WorkbookInput label="Date" fieldName="completionDate" type="date" defaultToToday />
+      {/* Signature Section */}
+      <section className="mb-10">
+        <div className="mb-6 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f4f8]">
+            <PenLine className="h-5 w-5 text-[#1a2744]" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">Your Commitment</h2>
+            <p className="text-sm text-slate-500">Seal your intentions with a signature</p>
+          </div>
         </div>
-      </div>
+
+        <div className="rounded-3xl border-2 border-slate-100 bg-white p-8">
+          <p className="mb-4 text-sm leading-relaxed text-slate-600">
+            By signing below, I commit to honoring these reflections and working
+            toward the intentions I&apos;ve set for 2026. This is a living
+            document—revisit it throughout the year.
+          </p>
+          <p className="mb-8 text-xs italic text-slate-400">
+            Your signature here is symbolic—a personal promise to yourself.
+            Simply type your name to acknowledge your commitment.
+          </p>
+          <div className="grid gap-8 md:grid-cols-2">
+            <WorkbookInput label="Signature" fieldName="signature" placeholder="Type your full name" />
+            <WorkbookInput label="Date" fieldName="completionDate" type="date" defaultToToday />
+          </div>
+        </div>
+      </section>
 
       {/* Continue to Section 2 CTA */}
-      <div className="mt-12 text-center">
+      <footer className="mt-12 rounded-2xl bg-gradient-to-r from-[#e8f4f8] to-white p-8 text-center">
+        <p className="mb-4 text-sm font-medium text-slate-500">Ready for the next step?</p>
         <Link
           href="/plan/section-2"
-          className="group inline-flex items-center gap-2 rounded-full bg-emerald-600 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:bg-emerald-700 hover:shadow-xl"
+          className="group inline-flex items-center gap-2 rounded-full bg-[#1a2744] px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
         >
           Continue to Section 2: SWOT Analysis
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
-        <p className="mt-3 text-sm text-slate-400">
+        <p className="mt-4 text-sm text-slate-400">
           Or return to the{" "}
           <Link href="/plan" className="text-slate-600 underline hover:text-slate-800">
             dashboard
           </Link>
         </p>
-      </div>
-    </div>
+      </footer>
+    </StepContainer>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { TrendingUp, CheckCircle2, ClipboardList } from "lucide-react";
+import { TrendingUp, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   useSectionOneStore,
@@ -31,7 +31,6 @@ function PremiumNumberInput({
   const updateField = useSectionOneStore((state) => state.updateField);
 
   const displayValue = value === null || value === undefined ? "" : String(value);
-  const hasValue = displayValue.length > 0 && displayValue !== "0";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const numValue = e.target.value === "" ? null : parseFloat(e.target.value);
@@ -40,12 +39,7 @@ function PremiumNumberInput({
 
   return (
     <div className="group">
-      <label
-        className={cn(
-          "mb-2 block text-xs font-semibold uppercase tracking-wider transition-colors duration-200",
-          hasValue ? "text-emerald-600" : "text-slate-500"
-        )}
-      >
+      <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
         {label}
       </label>
       <div
@@ -53,9 +47,7 @@ function PremiumNumberInput({
           "relative overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300",
           isFocused
             ? "border-[#1a2744] shadow-lg shadow-[#1a2744]/10"
-            : hasValue
-              ? "border-emerald-200 bg-emerald-50/30"
-              : "border-slate-100 hover:border-slate-200"
+            : "border-slate-100 hover:border-slate-200"
         )}
       >
         <div className="flex items-center px-4 py-4">
@@ -73,19 +65,12 @@ function PremiumNumberInput({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
           />
-          {hasValue && (
-            <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-500" />
-          )}
         </div>
-        {/* Bottom accent line */}
+        {/* Bottom accent line - only shows on focus */}
         <div
           className={cn(
             "h-1 w-full transition-all duration-300",
-            isFocused
-              ? "bg-[#1a2744]"
-              : hasValue
-                ? "bg-emerald-400"
-                : "bg-transparent"
+            isFocused ? "bg-[#1a2744]" : "bg-transparent"
           )}
         />
       </div>
@@ -124,17 +109,15 @@ function PremiumReflection({
         "group relative rounded-3xl border-2 bg-white p-6 transition-all duration-300",
         isFocused
           ? "border-[#1a2744] shadow-xl shadow-[#1a2744]/5"
-          : hasContent
-            ? "border-emerald-200 bg-gradient-to-br from-emerald-50/50 to-white"
-            : "border-slate-100 hover:border-slate-200 hover:shadow-md"
+          : "border-slate-100 hover:border-slate-200 hover:shadow-md"
       )}
     >
-      {/* Question number badge */}
+      {/* Question number badge - transforms to checkmark when complete */}
       <div
         className={cn(
           "absolute -left-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors duration-300",
           hasContent
-            ? "bg-emerald-500 text-white"
+            ? "bg-slate-700 text-white"
             : isFocused
               ? "bg-[#1a2744] text-white"
               : "bg-slate-200 text-slate-600"
@@ -150,12 +133,7 @@ function PremiumReflection({
       </div>
 
       {/* Question */}
-      <label
-        className={cn(
-          "mb-4 block text-lg font-semibold leading-snug transition-colors duration-200",
-          hasContent ? "text-emerald-700" : "text-slate-800"
-        )}
-      >
+      <label className="mb-4 block text-lg font-semibold leading-snug text-slate-800">
         {question}
       </label>
 
@@ -196,7 +174,7 @@ export function StepProductionNumbers() {
         {/* ================================================================ */}
         <header className="relative mb-10">
           {/* Decorative illustration - clipboard icon matching PDF style */}
-          <div className="absolute -right-4 top-0 opacity-10 md:right-0">
+          <div className="absolute -right-4 top-0 hidden opacity-10 md:right-0 md:block">
             <ClipboardList className="h-32 w-32 text-[#1a2744]" strokeWidth={1} />
           </div>
 
@@ -267,16 +245,8 @@ export function StepProductionNumbers() {
             </div>
           </div>
 
-          {/* Helpful note for new agents */}
-          <div className="mb-6 rounded-xl bg-amber-50 p-4">
-            <p className="text-sm text-amber-800">
-              <strong>New to real estate?</strong> It&apos;s okay to enter zeros—this is your starting point!
-              Focus on the reflection questions below.
-            </p>
-          </div>
-
           {/* Number inputs grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <PremiumNumberInput
               label="Listings Taken"
               fieldName="listingsTaken"

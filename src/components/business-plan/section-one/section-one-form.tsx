@@ -232,8 +232,10 @@ export function SectionOneForm() {
         />
 
         <div className="flex items-center gap-2">
-          {/* Save Status Indicator */}
-          <SaveIndicator status={saveStatus} lastSavedAt={lastSavedAt} />
+          {/* Save Status Indicator - hidden on mobile */}
+          <div className="hidden md:block">
+            <SaveIndicator status={saveStatus} lastSavedAt={lastSavedAt} />
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="text-slate-400 transition-colors hover:text-slate-900">

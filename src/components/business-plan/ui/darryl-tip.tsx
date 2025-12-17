@@ -12,23 +12,29 @@ export function DarrylTip({ tip, className }: DarrylTipProps) {
   return (
     <div
       className={cn(
-        "flex items-start gap-4 rounded-xl bg-[#0F172A] p-4",
+        "relative overflow-hidden rounded-2xl bg-[#1a2744] p-5",
         className
       )}
     >
-      <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-white/20">
-        <Image
-          src="/darryl.png"
-          alt="Darryl Davis"
-          fill
-          className="object-cover"
-        />
-      </div>
-      <div className="flex-1 pt-1">
-        <p className="text-sm leading-relaxed text-slate-300">
-          <span className="font-semibold text-white">Pro Tip:</span> {tip}
-        </p>
-        <p className="mt-1 text-xs font-medium text-slate-500">— Darryl Davis</p>
+      {/* Decorative gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#2d3e5f]/50 to-transparent" />
+
+      <div className="relative flex gap-4">
+        {/* Darryl's photo */}
+        <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border-2 border-white/20">
+          <Image
+            src="/darryl.png"
+            alt="Darryl Davis"
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        {/* Tip content */}
+        <div className="flex-1">
+          <p className="mb-1 text-sm font-medium text-white/60">Pro Tip</p>
+          <p className="text-[15px] leading-relaxed text-white/90">{tip}</p>
+        </div>
       </div>
     </div>
   );

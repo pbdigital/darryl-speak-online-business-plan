@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
-import { WorkbookTextarea, MantraWallpaper } from "../ui";
+import { Star, Sparkles, ChevronLeft, ChevronRight, Users } from "lucide-react";
+import { WorkbookTextarea, MantraWallpaper, StepContainer, StepHeader, UpNextFooter } from "../ui";
 import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 import { useSectionOneStore } from "@/stores/section-one-store";
 
@@ -45,25 +45,18 @@ export function StepMantra() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4">
-      {/* Step Header - Left aligned with Part badge */}
-      <div className="mb-8">
-        <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
-          Part 1G
-        </span>
-        <h2 className="mb-2 text-3xl font-extrabold text-slate-900">
-          Mantra & Accountability
-        </h2>
-        <p className="text-slate-600">
-          Choose one powerful word to guide your year. This mantra will serve as
-          your north star when challenges arise.
-        </p>
-      </div>
+    <StepContainer>
+      <StepHeader
+        part="Part 1G"
+        title="Mantra & Accountability"
+        highlightWord="Mantra"
+        subtitle="Choose one powerful word to guide your year. This mantra will serve as your north star when challenges arise."
+        icon={Star}
+      />
 
-      {/* DarrylTip */}
       <DarrylTip
         tip="Your mantra isn't just a word—it's a decision you make every morning. When doubt creeps in, let your word remind you who you chose to become."
-        className="mb-8"
+        className="mb-10"
       />
 
       {/* Mantra Card - Ambient gradient background */}
@@ -144,36 +137,40 @@ export function StepMantra() {
       {mantra && <MantraWallpaper mantra={mantra} />}
 
       {/* Accountability Questions */}
-      <h3 className="mb-8 text-lg font-bold text-slate-900">
-        Accountability and Tracking
-      </h3>
-      <div className="space-y-2">
-        <WorkbookTextarea
-          label="How will you hold yourself accountable for your goals and intentions?"
-          fieldName="accountabilityMethod"
-          placeholder="I will check in with myself every Sunday evening to review my progress..."
-          rows={3}
-        />
-        <WorkbookTextarea
-          label="Is there a person or people that you can partner with to stay accountable?"
-          fieldName="accountabilityPartner"
-          placeholder="My accountability partner is Sarah from my office. We meet every Monday to review our weekly goals..."
-          rows={3}
-        />
-        <WorkbookTextarea
-          label="What tools or methods will you use to track your progress throughout the year?"
-          fieldName="progressTrackingTools"
-          placeholder="I'll use my CRM for pipeline tracking, a spreadsheet for GCI, and the Power Agent weekly planning sheet..."
-          rows={3}
-        />
-      </div>
+      <section className="mt-12">
+        <div className="mb-6 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f4f8]">
+            <Users className="h-5 w-5 text-[#1a2744]" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">Accountability and Tracking</h2>
+            <p className="text-sm text-slate-500">Stay on course with support</p>
+          </div>
+        </div>
 
-      {/* Up Next */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-slate-500">
-          Up Next: Celebration and reflection →
-        </p>
-      </div>
-    </div>
+        <div className="space-y-6">
+          <WorkbookTextarea
+            number={1}
+            label="How will you hold yourself accountable for your goals and intentions?"
+            fieldName="accountabilityMethod"
+            placeholder="I will check in with myself every Sunday evening to review my progress..."
+          />
+          <WorkbookTextarea
+            number={2}
+            label="Is there a person or people that you can partner with to stay accountable?"
+            fieldName="accountabilityPartner"
+            placeholder="My accountability partner is Sarah from my office. We meet every Monday to review our weekly goals..."
+          />
+          <WorkbookTextarea
+            number={3}
+            label="What tools or methods will you use to track your progress throughout the year?"
+            fieldName="progressTrackingTools"
+            placeholder="I'll use my CRM for pipeline tracking, a spreadsheet for GCI, and the Power Agent weekly planning sheet..."
+          />
+        </div>
+      </section>
+
+      <UpNextFooter text="Celebration and reflection" />
+    </StepContainer>
   );
 }
