@@ -11,6 +11,7 @@ import {
   DarrylTip,
 } from "@/components/business-plan/ui";
 import { SignatureField } from "../ui/signature-field";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepCommitmentContract() {
   const commitmentContract = useSectionFiveStore(
@@ -40,7 +41,7 @@ export function StepCommitmentContract() {
         {/* Contract Header */}
         <div className="bg-[#1a2744] p-6 text-center text-white">
           <FileSignature className="mx-auto mb-3 h-10 w-10" />
-          <h3 className="text-xl font-bold">2026 Commitment Contract</h3>
+          <h3 className="text-xl font-bold">{CURRENT_PLAN_YEAR} Commitment Contract</h3>
           <p className="text-sm text-slate-300">
             A binding agreement between you and your accountability partner
           </p>
@@ -56,7 +57,7 @@ export function StepCommitmentContract() {
               <span className="mx-2 border-b-2 border-slate-300 px-4 font-bold text-[#1a2744]">
                 {commitmentContract.transactionGoal !== null ? commitmentContract.transactionGoal : "____"}
               </span>{" "}
-              transactions in 2026.
+              transactions in {CURRENT_PLAN_YEAR}.
             </p>
           </div>
 

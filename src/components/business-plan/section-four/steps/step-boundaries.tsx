@@ -9,6 +9,7 @@ import {
   PremiumTextarea,
   DarrylTip,
 } from "@/components/business-plan/ui";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepBoundaries() {
   const boundaries = useSectionFourStore((state) => state.data.boundaries);
@@ -31,7 +32,7 @@ export function StepBoundaries() {
 
       <div className="space-y-6">
         <h3 className="text-sm font-bold uppercase tracking-wide text-slate-900">
-          My 2026 Boundaries
+          My {CURRENT_PLAN_YEAR} Boundaries
         </h3>
         {boundaries.map((boundary, index) => (
           <PremiumTextarea

@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 
 // ============================================================================
 // DESIGN TOKENS
@@ -62,7 +63,7 @@ function DashboardMockup({ progress = 35, className }: { progress?: number; clas
       <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1">
         <Sparkles className="h-3 w-3 text-blue-300" />
         <span className="text-[10px] font-bold uppercase tracking-wider text-blue-300">
-          2026 Edition
+          {CURRENT_PLAN_YEAR} Edition
         </span>
       </div>
 

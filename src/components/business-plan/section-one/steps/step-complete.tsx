@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock, FileText, Trophy, Star, PenLine } from "lucide-react";
 import { WorkbookTextarea, WorkbookInput, AnswerSummary, StepContainer } from "../ui";
 import { useSectionOneStore } from "@/stores/section-one-store";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface StepCompleteProps {
   startTime?: number;
@@ -156,7 +157,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
             <div className="flex items-center gap-3">
               <Star className="h-5 w-5 text-white/60" />
               <div>
-                <div className="text-xs text-white/60">Your 2026 Mantra</div>
+                <div className="text-xs text-white/60">Your {CURRENT_PLAN_YEAR} Mantra</div>
                 <div className="text-xl font-black uppercase tracking-wide text-white">
                   {mantra}
                 </div>
@@ -212,7 +213,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
         <div className="rounded-3xl border-2 border-slate-100 bg-white p-8">
           <p className="mb-4 text-sm leading-relaxed text-slate-600">
             By signing below, I commit to honoring these reflections and working
-            toward the intentions I&apos;ve set for 2026. This is a living
+            toward the intentions I&apos;ve set for {CURRENT_PLAN_YEAR}. This is a living
             document—revisit it throughout the year.
           </p>
           <p className="mb-8 text-xs italic text-slate-400">

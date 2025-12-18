@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 import { useSectionProgress } from "@/hooks/use-section-progress";
 
 interface PlanHeroProps {
@@ -18,7 +19,7 @@ const DARRYL_QUOTES = [
 ];
 
 export function PlanHero({
-  year = 2026,
+  year = CURRENT_PLAN_YEAR,
   userName,
   className,
 }: PlanHeroProps) {

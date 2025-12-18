@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Download, Check, Sparkles } from "lucide-react";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 const WALLPAPER_OPTIONS = [
   { id: 1, src: "/images/wallpapers/wallpaper-1.png", alt: "Dark navy with star outline" },
@@ -105,7 +106,7 @@ export function MantraWallpaper({ mantra }: MantraWallpaperProps) {
       await drawWallpaper(canvas);
 
       const link = document.createElement("a");
-      link.download = `my-2026-mantra-${mantra.toLowerCase().replace(/\s+/g, "-") || "wallpaper"}.png`;
+      link.download = `my-${CURRENT_PLAN_YEAR}-mantra-${mantra.toLowerCase().replace(/\s+/g, "-") || "wallpaper"}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (error) {

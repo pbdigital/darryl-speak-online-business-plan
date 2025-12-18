@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { LogoutButton } from './logout-button';
 import { PlanHero, SectionCardsGrid } from '@/components/business-plan';
 
@@ -72,7 +73,7 @@ export default async function PlanPage() {
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Hero Section */}
       <PlanHero
-        year={2026}
+        year={CURRENT_PLAN_YEAR}
         userName={displayName}
       />
 

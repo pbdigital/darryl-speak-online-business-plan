@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Libre_Baskerville } from "next/font/google";
 import { Toaster } from "sonner";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,7 +22,7 @@ const libreBaskerville = Libre_Baskerville({
 });
 
 export const metadata: Metadata = {
-  title: "MyPlanForSuccess - Your 2026 Real Estate Business Plan",
+  title: `MyPlanForSuccess - Your ${CURRENT_PLAN_YEAR} Real Estate Business Plan`,
   description: "Build your annual business plan with goal-setting, income planning, and accountability tracking for real estate agents.",
 };
 

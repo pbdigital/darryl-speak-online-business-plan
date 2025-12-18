@@ -5,6 +5,7 @@ import { Star, Sparkles, ChevronLeft, ChevronRight, Users } from "lucide-react";
 import { WorkbookTextarea, MantraWallpaper, StepContainer, StepHeader, UpNextFooter } from "../ui";
 import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
 import { useSectionOneStore } from "@/stores/section-one-store";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 const MANTRA_SUGGESTIONS = [
   "RELENTLESS",
@@ -68,7 +69,7 @@ export function StepMantra() {
         <Star className="absolute bottom-0 right-0 -mb-6 -mr-6 h-24 w-24 text-white opacity-5" />
 
         <h3 className="relative z-10 mb-8 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">
-          My 2026 Word or Mantra
+          My {CURRENT_PLAN_YEAR} Word or Mantra
         </h3>
 
         <input

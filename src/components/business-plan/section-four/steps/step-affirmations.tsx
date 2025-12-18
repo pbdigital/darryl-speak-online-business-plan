@@ -9,6 +9,7 @@ import {
   PremiumTextarea,
   DarrylTip,
 } from "@/components/business-plan/ui";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepAffirmations() {
   const affirmations = useSectionFourStore((state) => state.data.affirmations);
@@ -20,7 +21,7 @@ export function StepAffirmations() {
         part="Part 4A"
         title="Motivating Affirmations"
         highlightWord="Affirmations"
-        subtitle="Choose 3-5 affirmations that reinforce who you are becoming in 2026. Write them in the present tense, as if they're already true."
+        subtitle={`Choose 3-5 affirmations that reinforce who you are becoming in ${CURRENT_PLAN_YEAR}. Write them in the present tense, as if they're already true.`}
         icon={Sparkles}
       />
 
@@ -31,7 +32,7 @@ export function StepAffirmations() {
 
       <div className="space-y-6">
         <h3 className="text-sm font-bold uppercase tracking-wide text-slate-900">
-          My 2026 Affirmations
+          My {CURRENT_PLAN_YEAR} Affirmations
         </h3>
         {affirmations.map((affirmation, index) => (
           <PremiumTextarea

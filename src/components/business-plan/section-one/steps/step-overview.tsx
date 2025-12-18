@@ -2,6 +2,7 @@
 
 import { BookOpen, Sparkles, Heart, Target } from "lucide-react";
 import { StepContainer, StepHeader } from "@/components/business-plan/ui";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface StepOverviewProps {
   onStart: () => void;
@@ -14,7 +15,7 @@ export function StepOverview({ onStart }: StepOverviewProps) {
         part="Section 1"
         title="Annual Reflection & Intention Setting"
         highlightWord="Reflection"
-        subtitle="The foundation of your 2026 success starts with understanding your 2025 journey."
+        subtitle={`The foundation of your ${CURRENT_PLAN_YEAR} success starts with understanding your ${CURRENT_PLAN_YEAR - 1} journey.`}
         icon={BookOpen}
       />
 

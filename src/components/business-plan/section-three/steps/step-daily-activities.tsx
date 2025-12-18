@@ -5,6 +5,7 @@ import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { StepContainer, StepHeader, UpNextFooter } from "@/components/business-plan/ui";
 import { CalculatedField } from "../ui/calculated-field";
 import { SummaryCard } from "../ui/summary-card";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepDailyActivities() {
   const { incomePlanning, calculated, updateWorkSchedule } =
@@ -173,7 +174,7 @@ export function StepDailyActivities() {
           </div>
 
           <CalculatedField
-            label="Total Working Days in 2026"
+            label={`Total Working Days in ${CURRENT_PLAN_YEAR}`}
             value={calculated.workingDays}
             format="number"
             helpText={`(${incomePlanning.workDaysPerWeek || 5} days × 52 weeks) - (${incomePlanning.workDaysPerWeek || 5} days × ${incomePlanning.weeksOff || 0} weeks off)`}

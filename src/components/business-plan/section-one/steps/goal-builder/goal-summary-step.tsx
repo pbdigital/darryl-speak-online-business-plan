@@ -6,6 +6,7 @@ import { useSectionOneStore } from "@/stores/section-one-store";
 import { StepContainer, StepHeader } from "../../ui";
 import { UpNextFooter } from "@/components/business-plan/ui/up-next-footer";
 import { cn } from "@/lib/utils";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface GoalSummaryStepProps {
   onBack: () => void;
@@ -35,7 +36,7 @@ export function GoalSummaryStep({ onBack, onEditGoal }: GoalSummaryStepProps) {
     <StepContainer>
       <StepHeader
         part="Part 1E"
-        title="Your 2026 Goals"
+        title={`Your ${CURRENT_PLAN_YEAR} Goals`}
         highlightWord="Goals"
         subtitle="Review your goals and their action plans. Click any goal to see details."
         icon={Target}

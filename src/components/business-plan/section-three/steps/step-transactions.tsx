@@ -7,6 +7,7 @@ import { CurrencyInput } from "../ui/currency-input";
 import { PercentageInput } from "../ui/percentage-input";
 import { CalculatedField } from "../ui/calculated-field";
 import { SummaryCard } from "../ui/summary-card";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepTransactions() {
   const { incomePlanning, calculated, updateMarketData } =
@@ -146,7 +147,7 @@ export function StepTransactions() {
           </div>
 
           <CalculatedField
-            label="Total Transactions Needed in 2026"
+            label={`Total Transactions Needed in ${CURRENT_PLAN_YEAR}`}
             value={calculated.totalTransactionsNeeded}
             format="number"
             highlight
@@ -155,7 +156,7 @@ export function StepTransactions() {
       </div>
 
       <SummaryCard
-        title="Transactions to Close in 2026"
+        title={`Transactions to Close in ${CURRENT_PLAN_YEAR}`}
         value={calculated.totalTransactionsNeeded}
         format="number"
         variant="primary"

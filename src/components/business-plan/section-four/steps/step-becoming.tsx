@@ -9,6 +9,7 @@ import {
   PremiumTextarea,
   DarrylTip,
 } from "@/components/business-plan/ui";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepBecoming() {
   const whoINeedToBecome = useSectionFourStore((state) => state.data.whoINeedToBecome);
@@ -25,7 +26,7 @@ export function StepBecoming() {
       />
 
       <DarrylTip
-        tip="Your results in 2026 will be a reflection of who you become. Focus on identity, not just outcomes. When you change who you are, your actions—and results—follow."
+        tip={`Your results in ${CURRENT_PLAN_YEAR} will be a reflection of who you become. Focus on identity, not just outcomes. When you change who you are, your actions—and results—follow.`}
         className="mb-8"
       />
 
@@ -33,7 +34,7 @@ export function StepBecoming() {
         <PremiumTextarea
           number={1}
           label="Who I Need to Become"
-          placeholder="To achieve my 2026 goals, I need to become someone who... (be specific about the habits, skills, beliefs, and changes you need to make)"
+          placeholder={`To achieve my ${CURRENT_PLAN_YEAR} goals, I need to become someone who... (be specific about the habits, skills, beliefs, and changes you need to make)`}
           value={whoINeedToBecome}
           onChange={updateWhoINeedToBecome}
           minHeight={200}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Target, Check, Clock, FileText, Trophy, Star } from "lucide-react";
 import { useSectionFiveStore } from "@/stores/section-five-store";
 import { StepContainer } from "@/components/business-plan/ui";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface StepCompleteProps {
   startTime?: number;
@@ -125,7 +126,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
         </h1>
 
         <p className="relative z-10 max-w-lg text-lg text-slate-600">
-          Congratulations! You&apos;ve completed your entire 2026 Business Plan. You now have a comprehensive roadmap for success.
+          Congratulations! You&apos;ve completed your entire {CURRENT_PLAN_YEAR} Business Plan. You now have a comprehensive roadmap for success.
         </p>
       </header>
 
@@ -174,7 +175,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
             <div className="flex items-center gap-3">
               <Star className="h-5 w-5 text-white/60" />
               <div>
-                <div className="text-xs text-white/60">Your 2026 Commitment</div>
+                <div className="text-xs text-white/60">Your {CURRENT_PLAN_YEAR} Commitment</div>
                 <div className="text-xl font-black text-white">
                   {data.commitmentContract.transactionGoal} Transactions
                 </div>
@@ -262,7 +263,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
               You Did It!
             </p>
             <p className="leading-relaxed text-slate-700">
-              You&apos;ve completed your entire 2026 Business Plan—from reflection to commitment. This document represents your strategy, your goals, and your promise to yourself. Now it&apos;s time to execute.
+              You&apos;ve completed your entire {CURRENT_PLAN_YEAR} Business Plan—from reflection to commitment. This document represents your strategy, your goals, and your promise to yourself. Now it&apos;s time to execute.
             </p>
           </div>
         </div>
@@ -279,7 +280,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
               1
             </span>
             <span className="text-slate-600">
-              <strong className="text-[#1a2744]">Review your complete business plan</strong> from start to finish—all 5 sections now form your roadmap for 2026
+              <strong className="text-[#1a2744]">Review your complete business plan</strong> from start to finish—all 5 sections now form your roadmap for {CURRENT_PLAN_YEAR}
             </span>
           </li>
           <li className="flex items-start gap-3">
@@ -311,7 +312,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
 
       {/* Dashboard CTA */}
       <footer className="rounded-2xl bg-gradient-to-r from-[#e8f4f8] to-white p-8 text-center">
-        <p className="mb-4 text-sm font-medium text-slate-500">Your 2026 Business Plan is ready</p>
+        <p className="mb-4 text-sm font-medium text-slate-500">Your {CURRENT_PLAN_YEAR} Business Plan is ready</p>
         <Link
           href="/plan"
           className="group inline-flex items-center gap-2 rounded-full bg-[#1a2744] px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"

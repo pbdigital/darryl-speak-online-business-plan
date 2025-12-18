@@ -5,6 +5,7 @@ import { CheckCircle2, FileSignature } from "lucide-react";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { StepContainer, StepHeader } from "@/components/business-plan/ui";
 import { SummaryCard } from "../ui/summary-card";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepIncomeCommitment() {
   const { incomePlanning, calculated, updateCommitmentText } =
@@ -252,7 +253,7 @@ export function StepIncomeCommitment() {
           <div className="mb-6 rounded-2xl bg-slate-50 p-4 text-center">
             <p className="text-sm italic text-slate-600">
               &ldquo;I commit to following my income plan and taking consistent
-              daily action to achieve my 2026 goals.&rdquo;
+              daily action to achieve my {CURRENT_PLAN_YEAR} goals.&rdquo;
             </p>
           </div>
 

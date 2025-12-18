@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { StepContainer } from "@/components/business-plan/ui";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface StepCompleteProps {
   startTime?: number;
@@ -117,7 +118,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
         </h1>
 
         <p className="relative z-10 max-w-lg text-lg text-slate-600">
-          You&apos;ve mapped out your entire income plan for 2026. Now it&apos;s time to make it happen.
+          You&apos;ve mapped out your entire income plan for {CURRENT_PLAN_YEAR}. Now it&apos;s time to make it happen.
         </p>
       </header>
 

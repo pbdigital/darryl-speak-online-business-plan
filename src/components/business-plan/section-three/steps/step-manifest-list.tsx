@@ -5,6 +5,7 @@ import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { StepContainer, StepHeader, DarrylTip, UpNextFooter } from "@/components/business-plan/ui";
 import { GoalTable } from "../ui/goal-table";
 import { SummaryCard } from "../ui/summary-card";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepManifestList() {
   const { incomePlanning, calculated, updateGoal } = useBusinessPlanStore();
@@ -15,7 +16,7 @@ export function StepManifestList() {
         part="Part 3B"
         title="Your Manifest List"
         highlightWord="Manifest"
-        subtitle="Beyond covering your expenses, what do you want to accomplish in 2026? Be specific and honest. This is your WHY."
+        subtitle={`Beyond covering your expenses, what do you want to accomplish in ${CURRENT_PLAN_YEAR}? Be specific and honest. This is your WHY.`}
         icon={Sparkles}
       />
 

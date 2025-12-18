@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Smile, Check, Clock, FileText, Trophy } from "lucide-react";
 import { useSectionFourStore } from "@/stores/section-four-store";
 import { StepContainer } from "@/components/business-plan/ui";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface StepCompleteProps {
   startTime?: number;
@@ -118,7 +119,7 @@ export function StepComplete({ startTime }: StepCompleteProps) {
         </h1>
 
         <p className="relative z-10 max-w-lg text-lg text-slate-600">
-          You&apos;ve built your personal stability system. This foundation will keep you grounded, focused, and motivated throughout 2026.
+          You&apos;ve built your personal stability system. This foundation will keep you grounded, focused, and motivated throughout {CURRENT_PLAN_YEAR}.
         </p>
       </header>
 

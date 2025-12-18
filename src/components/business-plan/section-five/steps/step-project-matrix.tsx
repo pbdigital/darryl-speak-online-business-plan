@@ -9,6 +9,7 @@ import {
   DarrylTip,
 } from "@/components/business-plan/ui";
 import { ProjectMatrixGrid } from "../ui/project-matrix-grid";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepProjectMatrix() {
   const projectMatrix = useSectionFiveStore((state) => state.data.projectMatrix);
@@ -84,7 +85,7 @@ export function StepProjectMatrix() {
       {/* Project Matrix Grid */}
       <div className="mb-8">
         <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-900">
-          My 2026 Project Matrix
+          My {CURRENT_PLAN_YEAR} Project Matrix
         </h3>
         <ProjectMatrixGrid
           projectNames={projectMatrix.projectNames}
