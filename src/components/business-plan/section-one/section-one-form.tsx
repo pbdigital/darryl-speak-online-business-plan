@@ -21,7 +21,7 @@ import { StepProductionNumbers } from "./steps/step-production-numbers";
 import { StepReflectionQuestions } from "./steps/step-reflection-questions";
 import { StepGratitude } from "./steps/step-gratitude";
 import { StepSelfReflection } from "./steps/step-self-reflection";
-import { StepGoalsIntentions } from "./steps/step-goals-intentions";
+import { GoalBuilder } from "./steps/goal-builder";
 import { StepWellness } from "./steps/step-wellness";
 import { StepMantra } from "./steps/step-mantra";
 import { StepCelebration } from "./steps/step-celebration";
@@ -46,7 +46,7 @@ const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
   2: ["significantAchievements", "challengesAndOvercoming", "learnedAboutSelf"],
   3: ["gratefulFor", "gratefulPeople", "joyfulMoments"],
   4: ["mostFulfilled", "leastSatisfied", "overallWellbeing", "coreValuesAlignment", "valuePrioritiesShift"],
-  5: ["topGoalsIntentions", "goalsImportance", "goalStrategies", "immediateSteps", "potentialObstacles", "obstacleStrategies"],
+  5: ["goals"],
   6: ["selfCarePriorities", "nurturingWellbeing", "selfCareMethods", "skillsToImprove", "learningCommitment", "giveBackCommunity", "positiveImpact"],
   7: ["mantra", "accountabilityMethod", "accountabilityPartner", "progressTrackingTools"],
   8: ["celebrationMilestones", "reflectionFrequency", "improvementsAndChanges", "coreImportance"],
@@ -195,7 +195,7 @@ export function SectionOneForm() {
       case 4:
         return <StepSelfReflection />;
       case 5:
-        return <StepGoalsIntentions />;
+        return <GoalBuilder />;
       case 6:
         return <StepWellness />;
       case 7:
