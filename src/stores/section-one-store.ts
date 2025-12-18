@@ -153,12 +153,19 @@ const TOTAL_FIELDS = 46;
 // Total steps in Section 1 (0=Overview, 1-8=Content steps, 9=Complete)
 const TOTAL_STEPS = 10;
 
+// GoalBuilder sub-step type
+export type GoalBuilderSubStep = "list" | "breakdown" | "summary";
+
 interface SectionOneStore {
   data: SectionOneData;
 
   // Step tracking for progress
   currentStep: number;
   highestStepReached: number;
+
+  // GoalBuilder navigation state (session-only, not persisted)
+  goalBuilderSubStep: GoalBuilderSubStep;
+  goalBuilderGoalIndex: number;
 
   // Save state tracking
   isDirty: boolean;
@@ -187,6 +194,11 @@ interface SectionOneStore {
   ) => void;
   updateGoalImmediateStep: (goalId: string, stepIndex: number, value: string) => void;
 
+  // GoalBuilder navigation actions
+  setGoalBuilderSubStep: (subStep: GoalBuilderSubStep, goalIndex?: number) => void;
+  advanceGoalBuilder: () => { shouldAdvanceToNextSection: boolean };
+  retreatGoalBuilder: () => { shouldRetreatToPrevSection: boolean };
+
   // Persistence actions
   hydrate: (serverData: Partial<SectionOneData>) => void;
   getData: () => SectionOneData;
@@ -204,6 +216,8 @@ export const useSectionOneStore = create<SectionOneStore>()(
       data: initialData,
       currentStep: 0,
       highestStepReached: 0,
+      goalBuilderSubStep: "list" as GoalBuilderSubStep,
+      goalBuilderGoalIndex: 0,
       isDirty: false,
       lastSavedAt: null,
 
@@ -233,6 +247,8 @@ export const useSectionOneStore = create<SectionOneStore>()(
           data: initialData,
           currentStep: 0,
           highestStepReached: 0,
+          goalBuilderSubStep: "list",
+          goalBuilderGoalIndex: 0,
           isDirty: false,
           lastSavedAt: null,
         });
@@ -247,7 +263,7 @@ export const useSectionOneStore = create<SectionOneStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            goals: [...state.data.goals, createEmptyGoal()],
+            goals: [...(state.data.goals ?? []), createEmptyGoal()],
           },
           isDirty: true,
         }));
@@ -257,7 +273,7 @@ export const useSectionOneStore = create<SectionOneStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            goals: state.data.goals.filter((g) => g.id !== id),
+            goals: (state.data.goals ?? []).filter((g) => g.id !== id),
           },
           isDirty: true,
         }));
@@ -267,7 +283,7 @@ export const useSectionOneStore = create<SectionOneStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            goals: state.data.goals.map((g) =>
+            goals: (state.data.goals ?? []).map((g) =>
               g.id === id ? { ...g, [field]: value } : g
             ),
           },
@@ -279,7 +295,7 @@ export const useSectionOneStore = create<SectionOneStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            goals: state.data.goals.map((g) => {
+            goals: (state.data.goals ?? []).map((g) => {
               if (g.id !== goalId) return g;
               const newSteps = [...g.immediateSteps];
               newSteps[stepIndex] = value;
@@ -288,6 +304,82 @@ export const useSectionOneStore = create<SectionOneStore>()(
           },
           isDirty: true,
         }));
+      },
+
+      // GoalBuilder navigation actions
+      setGoalBuilderSubStep: (subStep, goalIndex) => {
+        set({
+          goalBuilderSubStep: subStep,
+          goalBuilderGoalIndex: goalIndex ?? 0,
+        });
+      },
+
+      advanceGoalBuilder: () => {
+        const { goalBuilderSubStep, goalBuilderGoalIndex, data } = get();
+        const validGoals = (data.goals ?? []).filter((g) => g.title.trim() !== "");
+
+        if (goalBuilderSubStep === "list") {
+          // From list, go to first goal breakdown (if there are valid goals)
+          if (validGoals.length > 0) {
+            set({ goalBuilderSubStep: "breakdown", goalBuilderGoalIndex: 0 });
+            return { shouldAdvanceToNextSection: false };
+          }
+          // No valid goals, stay on list (shouldn't happen if UI disables button)
+          return { shouldAdvanceToNextSection: false };
+        }
+
+        if (goalBuilderSubStep === "breakdown") {
+          // From breakdown, go to next goal or summary
+          if (goalBuilderGoalIndex < validGoals.length - 1) {
+            set({ goalBuilderGoalIndex: goalBuilderGoalIndex + 1 });
+            return { shouldAdvanceToNextSection: false };
+          }
+          // Last goal, go to summary
+          set({ goalBuilderSubStep: "summary", goalBuilderGoalIndex: 0 });
+          return { shouldAdvanceToNextSection: false };
+        }
+
+        if (goalBuilderSubStep === "summary") {
+          // From summary, advance to next section (Step 6)
+          // Keep state at "summary" so Back button returns here
+          return { shouldAdvanceToNextSection: true };
+        }
+
+        return { shouldAdvanceToNextSection: false };
+      },
+
+      retreatGoalBuilder: () => {
+        const { goalBuilderSubStep, goalBuilderGoalIndex, data } = get();
+        const validGoals = (data.goals ?? []).filter((g) => g.title.trim() !== "");
+
+        if (goalBuilderSubStep === "summary") {
+          // From summary, go back to last goal breakdown
+          if (validGoals.length > 0) {
+            set({ goalBuilderSubStep: "breakdown", goalBuilderGoalIndex: validGoals.length - 1 });
+            return { shouldRetreatToPrevSection: false };
+          }
+          // No goals, go to list
+          set({ goalBuilderSubStep: "list", goalBuilderGoalIndex: 0 });
+          return { shouldRetreatToPrevSection: false };
+        }
+
+        if (goalBuilderSubStep === "breakdown") {
+          // From breakdown, go to previous goal or list
+          if (goalBuilderGoalIndex > 0) {
+            set({ goalBuilderGoalIndex: goalBuilderGoalIndex - 1 });
+            return { shouldRetreatToPrevSection: false };
+          }
+          // First goal, go back to list
+          set({ goalBuilderSubStep: "list", goalBuilderGoalIndex: 0 });
+          return { shouldRetreatToPrevSection: false };
+        }
+
+        if (goalBuilderSubStep === "list") {
+          // From list, retreat to previous section (Step 4)
+          return { shouldRetreatToPrevSection: true };
+        }
+
+        return { shouldRetreatToPrevSection: false };
       },
 
       hydrate: (serverData) => {
@@ -323,11 +415,20 @@ export const useSectionOneStore = create<SectionOneStore>()(
       },
 
       getGoals: () => {
-        return get().data.goals;
+        return get().data.goals ?? [];
       },
     }),
     {
       name: "myplanforsuccess:section-one",
+      // Exclude session-only navigation state from persistence
+      partialize: (state) => ({
+        data: state.data,
+        currentStep: state.currentStep,
+        highestStepReached: state.highestStepReached,
+        isDirty: state.isDirty,
+        lastSavedAt: state.lastSavedAt,
+        // goalBuilderSubStep and goalBuilderGoalIndex are intentionally excluded
+      }),
     }
   )
 );

@@ -4,19 +4,13 @@ import { Target, Plus, X } from "lucide-react";
 import { useSectionOneStore } from "@/stores/section-one-store";
 import { StepContainer, StepHeader } from "../../ui";
 import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
-import { cn } from "@/lib/utils";
 
-interface GoalListStepProps {
-  onNext: () => void;
-}
-
-export function GoalListStep({ onNext }: GoalListStepProps) {
+export function GoalListStep() {
   const goals = useSectionOneStore((state) => state.data.goals) ?? [];
   const addGoal = useSectionOneStore((state) => state.addGoal);
   const removeGoal = useSectionOneStore((state) => state.removeGoal);
   const updateGoal = useSectionOneStore((state) => state.updateGoal);
 
-  const hasValidGoals = goals.some((g) => g.title.trim() !== "");
   const canAddMore = goals.length < 10;
 
   const handleAddGoal = () => {
@@ -35,12 +29,6 @@ export function GoalListStep({ onNext }: GoalListStepProps) {
     updateGoal(id, "title", value);
   };
 
-  const handleNext = () => {
-    if (hasValidGoals) {
-      onNext();
-    }
-  };
-
   return (
     <StepContainer>
       <StepHeader
@@ -52,7 +40,7 @@ export function GoalListStep({ onNext }: GoalListStepProps) {
       />
 
       <DarrylTip
-        tip="Start with 3-5 meaningful goals. Quality beats quantity. Each goal you add here will get its own breakdown page where you'll plan exactly how to achieve it."
+        tip="Start with 3-5 meaningful goals. Quality beats quantity. Each goal you add here will get its own breakdown page when you click Next Step."
         className="mb-10"
       />
 
@@ -109,22 +97,6 @@ export function GoalListStep({ onNext }: GoalListStepProps) {
             Add your first goal
           </button>
         )}
-      </div>
-
-      {/* Inline Next Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={handleNext}
-          disabled={!hasValidGoals}
-          className={cn(
-            "rounded-full px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all",
-            hasValidGoals
-              ? "bg-[#1E293B] text-white shadow-lg hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
-              : "cursor-not-allowed bg-slate-200 text-slate-400"
-          )}
-        >
-          Break Down Goals →
-        </button>
       </div>
     </StepContainer>
   );

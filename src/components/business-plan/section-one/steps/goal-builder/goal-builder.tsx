@@ -6,17 +6,15 @@ import { GoalListStep } from "./goal-list-step";
 import { GoalBreakdownStep } from "./goal-breakdown-step";
 import { GoalSummaryStep } from "./goal-summary-step";
 
-type SubStep =
-  | { type: "list" }
-  | { type: "breakdown"; goalIndex: number }
-  | { type: "summary" };
-
 export function GoalBuilder() {
   const goals = useSectionOneStore((state) => state.data.goals) ?? [];
   const addGoal = useSectionOneStore((state) => state.addGoal);
 
-  // Internal sub-step state
-  const [subStep, setSubStep] = useState<SubStep>({ type: "list" });
+  // Read sub-step from store (single source of truth)
+  const subStepType = useSectionOneStore((state) => state.goalBuilderSubStep);
+  const goalIndex = useSectionOneStore((state) => state.goalBuilderGoalIndex);
+  const setGoalBuilderSubStep = useSectionOneStore((state) => state.setGoalBuilderSubStep);
+
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Get valid goals (with titles)
@@ -29,80 +27,52 @@ export function GoalBuilder() {
     }
   }, [goals.length, addGoal]);
 
-  // Transition helper
-  const transitionTo = (nextStep: SubStep) => {
+  // Transition helper - updates store and handles animation
+  const transitionTo = (nextSubStep: "list" | "breakdown" | "summary", nextGoalIndex?: number) => {
     setIsTransitioning(true);
     setTimeout(() => {
-      setSubStep(nextStep);
+      setGoalBuilderSubStep(nextSubStep, nextGoalIndex);
       window.scrollTo({ top: 0, behavior: "smooth" });
       setTimeout(() => setIsTransitioning(false), 50);
     }, 200);
   };
 
-  // Navigation handlers
-  const handleGoToBreakdown = () => {
-    if (validGoals.length > 0) {
-      transitionTo({ type: "breakdown", goalIndex: 0 });
-    }
-  };
-
-  const handleBackToList = () => {
-    transitionTo({ type: "list" });
-  };
-
-  const handleNextGoal = (currentIndex: number) => {
-    if (currentIndex < validGoals.length - 1) {
-      transitionTo({ type: "breakdown", goalIndex: currentIndex + 1 });
-    } else {
-      transitionTo({ type: "summary" });
-    }
-  };
-
-  const handlePrevGoal = (currentIndex: number) => {
-    if (currentIndex > 0) {
-      transitionTo({ type: "breakdown", goalIndex: currentIndex - 1 });
-    } else {
-      transitionTo({ type: "list" });
-    }
-  };
-
+  // Navigation handlers for GoalSummaryStep
   const handleBackToLastGoal = () => {
     if (validGoals.length > 0) {
-      transitionTo({ type: "breakdown", goalIndex: validGoals.length - 1 });
+      transitionTo("breakdown", validGoals.length - 1);
     } else {
-      transitionTo({ type: "list" });
+      transitionTo("list");
     }
   };
 
   const handleEditGoal = (index: number) => {
     if (index === -1) {
       // "Add more goals" clicked
-      transitionTo({ type: "list" });
+      transitionTo("list");
     } else {
-      transitionTo({ type: "breakdown", goalIndex: index });
+      transitionTo("breakdown", index);
     }
   };
 
   // Render current sub-step
   const renderSubStep = () => {
-    switch (subStep.type) {
+    switch (subStepType) {
       case "list":
-        return <GoalListStep onNext={handleGoToBreakdown} />;
+        return <GoalListStep />;
 
       case "breakdown": {
-        const goal = validGoals[subStep.goalIndex];
+        const goal = validGoals[goalIndex];
         if (!goal) {
           // Invalid goal index, go back to list
-          setSubStep({ type: "list" });
+          setGoalBuilderSubStep("list");
           return null;
         }
         return (
           <GoalBreakdownStep
             goalId={goal.id}
-            goalIndex={subStep.goalIndex}
+            goalIndex={goalIndex}
             totalGoals={validGoals.length}
-            onBack={() => handlePrevGoal(subStep.goalIndex)}
-            onNext={() => handleNextGoal(subStep.goalIndex)}
           />
         );
       }

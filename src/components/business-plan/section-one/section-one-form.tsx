@@ -54,7 +54,7 @@ const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
 };
 
 export function SectionOneForm() {
-  const { currentStep, setCurrentStep, updateField, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData } = useSectionOneStore();
+  const { currentStep, setCurrentStep, updateField, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData, advanceGoalBuilder, retreatGoalBuilder, goalBuilderSubStep, data } = useSectionOneStore();
 
   // Hydrate store with server data on mount
   const { isHydrating } = useHydrateSection<SectionOneData>("reflection", hydrate);
@@ -73,6 +73,11 @@ export function SectionOneForm() {
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
+
+  // Check if Next Step should be disabled (Step 5 Goal List with no valid goals)
+  const goals = data.goals ?? [];
+  const hasValidGoals = goals.some((g) => g.title.trim() !== "");
+  const isNextDisabled = activeStep === 5 && goalBuilderSubStep === "list" && !hasValidGoals;
 
   // Sync local state with store on mount (in case store has persisted step)
   // NOTE: All hooks must be called before any early returns to follow Rules of Hooks
@@ -144,6 +149,17 @@ export function SectionOneForm() {
   }
 
   const handleNext = () => {
+    // Special handling for GoalBuilder (Step 5)
+    if (activeStep === 5) {
+      const { shouldAdvanceToNextSection } = advanceGoalBuilder();
+      if (!shouldAdvanceToNextSection) {
+        // GoalBuilder handled the navigation internally (transitions to breakdown/summary)
+        // The store update triggers re-render of GoalBuilder
+        return;
+      }
+      // Fall through to advance to Step 6
+    }
+
     if (activeStep < TOTAL_STEPS - 1) {
       // Start exit transition
       setIsTransitioning(true);
@@ -170,6 +186,16 @@ export function SectionOneForm() {
   };
 
   const handleBack = () => {
+    // Special handling for GoalBuilder (Step 5)
+    if (activeStep === 5) {
+      const { shouldRetreatToPrevSection } = retreatGoalBuilder();
+      if (!shouldRetreatToPrevSection) {
+        // GoalBuilder handled the navigation internally
+        return;
+      }
+      // Fall through to retreat to Step 4
+    }
+
     if (activeStep > 0) {
       setIsTransitioning(true);
       setTimeout(() => {
@@ -304,7 +330,12 @@ export function SectionOneForm() {
             ) : (
               <button
                 onClick={handleNext}
-                className="group flex cursor-pointer items-center rounded-full bg-[#1E293B] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
+                disabled={isNextDisabled}
+                className={`group flex items-center rounded-full px-8 py-4 text-xs font-bold uppercase tracking-widest shadow-lg transition-all ${
+                  isNextDisabled
+                    ? "cursor-not-allowed bg-slate-200 text-slate-400"
+                    : "cursor-pointer bg-[#1E293B] text-white hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
+                }`}
               >
                 Next Step
                 <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

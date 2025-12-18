@@ -1,6 +1,6 @@
 "use client";
 
-import { Target, Shield, Lightbulb, ChevronLeft, ChevronRight } from "lucide-react";
+import { Target, Shield, Lightbulb } from "lucide-react";
 import { useSectionOneStore, type Goal } from "@/stores/section-one-store";
 import { StepContainer, StepHeader, WorkbookTextarea } from "../../ui";
 import { cn } from "@/lib/utils";
@@ -9,16 +9,12 @@ interface GoalBreakdownStepProps {
   goalId: string;
   goalIndex: number;
   totalGoals: number;
-  onBack: () => void;
-  onNext: () => void;
 }
 
 export function GoalBreakdownStep({
   goalId,
   goalIndex,
   totalGoals,
-  onBack,
-  onNext,
 }: GoalBreakdownStepProps) {
   const goal = useSectionOneStore((state) =>
     state.data.goals.find((g) => g.id === goalId)
@@ -42,8 +38,6 @@ export function GoalBreakdownStep({
   const handleStepChange = (stepIndex: number, value: string) => {
     updateGoalImmediateStep(goalId, stepIndex, value);
   };
-
-  const isLastGoal = goalIndex === totalGoals - 1;
 
   return (
     <StepContainer>
@@ -172,25 +166,6 @@ export function GoalBreakdownStep({
           />
         </div>
       </section>
-
-      {/* Navigation */}
-      <div className="flex items-center justify-between border-t border-slate-100 pt-6">
-        <button
-          onClick={onBack}
-          className="group flex items-center gap-1 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-slate-600"
-        >
-          <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          {goalIndex === 0 ? "Edit Goals" : "Previous Goal"}
-        </button>
-
-        <button
-          onClick={onNext}
-          className="group flex items-center gap-1 rounded-full bg-[#1E293B] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
-        >
-          {isLastGoal ? "Review Goals" : "Next Goal"}
-          <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </button>
-      </div>
     </StepContainer>
   );
 }
