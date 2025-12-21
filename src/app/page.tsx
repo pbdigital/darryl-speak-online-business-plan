@@ -1,399 +1,139 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  Calculator,
-  Target,
-  Brain,
-  Users,
-  ArrowRight,
-  ChevronRight,
-  Quote,
-  Award,
-  GraduationCap,
-  Star,
-  Phone,
-  ExternalLink,
-  CheckCircle2,
-  TrendingUp,
-  Calendar,
-  BarChart3,
-  Sparkles,
-  Shield,
-  Clock,
-  Grid3X3,
-  Smile,
-  MessageCircle,
-  PhoneCall,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowRight, Star, Clock, Calculator, Smile, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 
 // ============================================================================
-// DESIGN TOKENS
+// DESIGN TOKENS FROM FIGMA
 // ============================================================================
-// Using the project's existing design system from globals.css:
-// - Primary: Navy Dark (#1a2744) - oklch(0.22 0.04 250)
-// - Secondary: Light Blue (#e8f4f8) - oklch(0.95 0.02 210)
-// - Accent: Navy Light (#2d3e5f) - oklch(0.32 0.04 250)
-// - Dark Navy: #0F172A (used in dashboard)
-//
-// Typography: Using the project's font-sans (Geist) with serif (Libre Baskerville)
-// for headlines to add warmth and coaching personality.
-// ============================================================================
-
-// ============================================================================
-// MOCKUP COMPONENTS
-// These represent the actual product UI for the landing page
+// Primary dark: #0f172a
+// Blue gradient: #1c4ca1
+// Teal accent: #28afb0
+// Light gray text: #e7e9e9
+// Muted gray: #737373
+// Dark card bg: #1e293b
+// Muted blue: #91aec0
+// Footer bg: #0b1c3b
 // ============================================================================
 
-// Dashboard Mockup - Shows what the main dashboard looks like
-function DashboardMockup({ progress = 35, className }: { progress?: number; className?: string }) {
+// ============================================================================
+// ICONS COMPONENTS
+// ============================================================================
+
+function ProgressIcon({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'relative w-full max-w-[520px] rounded-2xl bg-[#0F172A] p-6 shadow-2xl',
-        className
-      )}
-    >
-      {/* Edition badge */}
-      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1">
-        <Sparkles className="h-3 w-3 text-blue-300" />
-        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-300">
-          {CURRENT_PLAN_YEAR} Edition
+    <svg className={className} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 3C8.373 3 3 8.373 3 15C3 21.627 8.373 27 15 27C21.627 27 27 21.627 27 15C27 8.373 21.627 3 15 3ZM15 24C10.029 24 6 19.971 6 15C6 10.029 10.029 6 15 6C19.971 6 24 10.029 24 15C24 19.971 19.971 24 15 24Z" fill="#91AEC0"/>
+      <path d="M15 6V15L20.5 18.5" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function CalculatorIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="3" width="20" height="24" rx="2" stroke="#91AEC0" strokeWidth="2"/>
+      <rect x="8" y="6" width="14" height="5" fill="#91AEC0"/>
+      <circle cx="10" cy="15" r="1.5" fill="#91AEC0"/>
+      <circle cx="15" cy="15" r="1.5" fill="#91AEC0"/>
+      <circle cx="20" cy="15" r="1.5" fill="#91AEC0"/>
+      <circle cx="10" cy="20" r="1.5" fill="#91AEC0"/>
+      <circle cx="15" cy="20" r="1.5" fill="#91AEC0"/>
+      <circle cx="20" cy="20" r="1.5" fill="#91AEC0"/>
+      <circle cx="10" cy="24" r="1.5" fill="#91AEC0"/>
+      <rect x="14" y="22.5" width="7" height="3" rx="1" fill="#91AEC0"/>
+    </svg>
+  );
+}
+
+function CloudUploadIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 20C3.79086 20 2 18.2091 2 16C2 13.7909 3.79086 12 6 12C6.10495 12 6.20919 12.0035 6.31256 12.0103C7.01839 8.6185 10.0656 6 13.7143 6C17.3629 6 20.4101 8.6185 21.116 12.0103C21.2193 12.0035 21.3236 12 21.4286 12C24.5257 12 27 14.4743 27 17.5714C27 20.6686 24.5257 23.1429 21.4286 23.1429H6C4.34315 23.1429 3 21.7997 3 20.1429" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M15 13V21M15 13L12 16M15 13L18 16" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function FolderIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 8C3 6.89543 3.89543 6 5 6H11L14 9H25C26.1046 9 27 9.89543 27 11V22C27 23.1046 26.1046 24 25 24H5C3.89543 24 3 23.1046 3 22V8Z" stroke="#91AEC0" strokeWidth="2"/>
+      <path d="M15 14L20 17L15 20" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function GridIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="10" height="10" rx="2" stroke="#91AEC0" strokeWidth="2"/>
+      <rect x="17" y="3" width="10" height="10" rx="2" stroke="#91AEC0" strokeWidth="2"/>
+      <rect x="3" y="17" width="10" height="10" rx="2" stroke="#91AEC0" strokeWidth="2"/>
+      <rect x="17" y="17" width="10" height="10" rx="2" stroke="#91AEC0" strokeWidth="2"/>
+    </svg>
+  );
+}
+
+function ChecklistIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="24" height="24" rx="3" stroke="#91AEC0" strokeWidth="2"/>
+      <path d="M8 10L11 13L15 8" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M18 10H22" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M8 17L11 20L15 15" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M18 17H22" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+function MindIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="15" cy="12" r="9" stroke="#91AEC0" strokeWidth="2"/>
+      <path d="M12 24C12 24 13 21 15 21C17 21 18 24 18 24" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M10 27H20" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M11 10C11 10 13 8 15 10C17 12 15 14 15 14" stroke="#91AEC0" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="15" cy="16" r="1" fill="#91AEC0"/>
+    </svg>
+  );
+}
+
+// ============================================================================
+// HEADER COMPONENT
+// ============================================================================
+
+function Header() {
+  return (
+    <header className="flex items-center justify-between w-full max-w-[1180px] mx-auto">
+      <div className="relative h-[20px] w-[150px] md:h-[25px] md:w-[200px]">
+        <Image
+          src="/logo.svg"
+          alt="MyPlanForSuccess"
+          fill
+          className="object-contain object-left"
+          priority
+        />
+      </div>
+      <Link
+        href="/register"
+        className="h-[40px] md:h-[44px] px-4 md:px-5 py-2 md:py-2.5 rounded-[6px] border border-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/10 transition-colors"
+      >
+        <span className="font-[var(--font-open-sans)] font-semibold text-xs md:text-sm text-[#28afb0] capitalize leading-5">
+          Get Started
         </span>
-      </div>
-
-      {/* Main headline */}
-      <h3 className="mb-2 text-xl font-extrabold leading-tight text-white md:text-2xl">
-        The Ultimate
-        <br />
-        Real Estate Business Plan
-      </h3>
-
-      <p className="mb-4 text-xs text-slate-400">
-        Your blueprint for breakthroughs and a life worth smiling about.
-      </p>
-
-      {/* Darryl Quote */}
-      <div className="mb-4 flex items-center gap-3 rounded-lg bg-white/5 p-3">
-        <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-white/20">
-          <Image src="/darryl.png" alt="Darryl Davis" fill className="object-cover" />
-        </div>
-        <div>
-          <p className="text-[11px] italic text-slate-300">
-            &ldquo;The best business plan is the one you actually use.&rdquo;
-          </p>
-          <p className="mt-0.5 text-[10px] text-slate-500">— Darryl Davis</p>
-        </div>
-      </div>
-
-      {/* Progress card */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-        <div className="mb-3 flex items-center justify-between">
-          <div>
-            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
-              Your Progress
-            </p>
-            <p className="text-2xl font-bold text-white">{progress}%</p>
-          </div>
-          <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)]" />
-        </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-700/50">
-          <div
-            className="h-full rounded-full bg-blue-400 transition-all duration-700"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <p className="mt-2 text-[10px] text-slate-500">2 of 5 sections completed</p>
-      </div>
-    </div>
+      </Link>
+    </header>
   );
-}
-
-// Expense Table Mockup - Static version with sample data
-function ExpenseTableMockup({ className }: { className?: string }) {
-  const expenses = [
-    { name: 'Mortgage/Rent', amount: 2500 },
-    { name: 'Car Payment', amount: 450 },
-    { name: 'Insurance', amount: 350 },
-    { name: 'Utilities', amount: 200 },
-    { name: 'Food', amount: 600 },
-    { name: 'Other', amount: 400 },
-  ];
-  const total = expenses.reduce((sum, e) => sum + e.amount, 0);
-
-  return (
-    <div className={cn('overflow-hidden rounded-lg border border-slate-700', className)}>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="bg-[#0F172A] text-white">
-            <th className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-wider">
-              Expense
-            </th>
-            <th className="px-3 py-2 text-right text-[10px] font-bold uppercase tracking-wider">
-              Monthly
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {expenses.map((expense, index) => (
-            <tr
-              key={expense.name}
-              className={cn(
-                'border-b border-slate-700/50',
-                index % 2 === 0 ? 'bg-slate-800/50' : 'bg-slate-800/30'
-              )}
-            >
-              <td className="px-3 py-2 text-xs text-slate-300">{expense.name}</td>
-              <td className="px-3 py-2 text-right text-xs font-medium text-white">
-                ${expense.amount.toLocaleString()}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr className="bg-[#e8f4f8]">
-            <td className="px-3 py-2 text-xs font-bold uppercase tracking-wide text-[#0F172A]">
-              Monthly Total
-            </td>
-            <td className="px-3 py-2 text-right text-sm font-bold text-[#0F172A]">
-              ${total.toLocaleString()}
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  );
-}
-
-// Daily Targets Mockup - Shows the calculated daily activities
-function DailyTargetsMockup({ className }: { className?: string }) {
-  const targets = [
-    { icon: PhoneCall, label: 'Reach-Outs', value: '18.5', suffix: '/day', color: 'bg-amber-500' },
-    {
-      icon: MessageCircle,
-      label: 'Conversations',
-      value: '1.5',
-      suffix: '/day',
-      color: 'bg-emerald-500',
-    },
-    { icon: Calendar, label: 'Appointments', value: '0.3', suffix: '/day', color: 'bg-blue-500' },
-  ];
-
-  return (
-    <div className={cn('space-y-3', className)}>
-      {targets.map((target) => (
-        <div
-          key={target.label}
-          className="flex items-center gap-3 rounded-lg bg-white/10 p-3 backdrop-blur-sm"
-        >
-          <div className={cn('rounded-lg p-2', target.color)}>
-            <target.icon className="h-4 w-4 text-white" />
-          </div>
-          <div className="flex-1">
-            <p className="text-[10px] uppercase tracking-wider text-slate-400">{target.label}</p>
-            <p className="text-lg font-bold text-white">
-              {target.value}
-              <span className="text-sm font-normal text-slate-400">{target.suffix}</span>
-            </p>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// Section Card Mockup - Represents a section in the dashboard grid
-function SectionCardMockup({
-  number,
-  title,
-  icon: Icon,
-  status,
-  progress = 0,
-  className,
-}: {
-  number: number;
-  title: string;
-  icon: React.ElementType;
-  status: 'complete' | 'in-progress' | 'locked';
-  progress?: number;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        'relative overflow-hidden rounded-xl border p-4 transition-all',
-        status === 'complete'
-          ? 'border-emerald-500/30 bg-emerald-500/5'
-          : status === 'in-progress'
-            ? 'border-blue-500/30 bg-blue-500/5'
-            : 'border-slate-200 bg-white',
-        className
-      )}
-    >
-      {/* Corner decoration */}
-      <div
-        className={cn(
-          'absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-20',
-          status === 'complete'
-            ? 'bg-emerald-500'
-            : status === 'in-progress'
-              ? 'bg-blue-500'
-              : 'bg-slate-200'
-        )}
-      />
-
-      <div className="relative">
-        <div className="mb-2 flex items-center gap-2">
-          <div
-            className={cn(
-              'flex h-8 w-8 items-center justify-center rounded-lg',
-              status === 'complete'
-                ? 'bg-emerald-500 text-white'
-                : status === 'in-progress'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-slate-100 text-slate-500'
-            )}
-          >
-            {status === 'complete' ? (
-              <CheckCircle2 className="h-4 w-4" />
-            ) : (
-              <Icon className="h-4 w-4" />
-            )}
-          </div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            Section {number}
-          </span>
-        </div>
-        <h4 className="mb-2 text-sm font-bold text-slate-800">{title}</h4>
-
-        {/* Progress bar */}
-        {status !== 'locked' && (
-          <div className="h-1 w-full overflow-hidden rounded-full bg-slate-100">
-            <div
-              className={cn(
-                'h-full rounded-full transition-all',
-                status === 'complete' ? 'bg-emerald-500' : 'bg-blue-500'
-              )}
-              style={{ width: `${status === 'complete' ? 100 : progress}%` }}
-            />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Calculator Flow Mockup - Shows the transformation from expenses to targets
-function CalculatorFlowMockup({
-  className,
-  variant = 'dark',
-}: {
-  className?: string;
-  variant?: 'dark' | 'light';
-}) {
-  const steps = [
-    { label: 'Annual Expenses', value: '$54,000', icon: Calculator },
-    { label: 'Tax Adjusted', value: '$72,000', icon: TrendingUp },
-    { label: 'GCI Needed', value: '$96,000', icon: Target },
-    { label: 'Transactions', value: '32', icon: BarChart3 },
-  ];
-
-  const isDark = variant === 'dark';
-
-  return (
-    <div className={cn('', className)}>
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        {steps.map((step, index) => (
-          <div key={step.label} className="flex items-center gap-2">
-            <div
-              className={cn(
-                'rounded-xl p-3 text-center',
-                isDark ? 'bg-white/10 backdrop-blur-sm' : 'bg-primary/5 border border-primary/10'
-              )}
-            >
-              <step.icon
-                className={cn('mx-auto mb-1 h-5 w-5', isDark ? 'text-amber-400' : 'text-amber-500')}
-              />
-              <p
-                className={cn('text-lg font-bold', isDark ? 'text-white' : 'text-primary')}
-              >
-                {step.value}
-              </p>
-              <p
-                className={cn(
-                  'text-[9px] uppercase tracking-wider',
-                  isDark ? 'text-slate-400' : 'text-muted-foreground'
-                )}
-              >
-                {step.label}
-              </p>
-            </div>
-            {index < steps.length - 1 && (
-              <ChevronRight
-                className={cn(
-                  'h-5 w-5 flex-shrink-0',
-                  isDark ? 'text-slate-500' : 'text-slate-300'
-                )}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Animated Counter Hook
-function useCountUp(end: number, duration: number = 2000, start: number = 0) {
-  const [count, setCount] = useState(start);
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    let startTime: number;
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      setCount(Math.floor(progress * (end - start) + start));
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-
-    requestAnimationFrame(animate);
-  }, [isVisible, end, start, duration]);
-
-  return { count, ref };
 }
 
 // ============================================================================
-// SECTION 1: HERO
-// Asymmetric layout with floating dashboard mockup
+// HERO SECTION
 // ============================================================================
+
 function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -402,201 +142,134 @@ function HeroSection() {
   }, []);
 
   return (
-    <section className="relative flex min-h-[90vh] items-center overflow-hidden bg-gradient-to-br from-[#0F172A] via-primary to-accent">
-      {/* Background Pattern - Geometric grid */}
-      <div className="absolute inset-0 opacity-[0.05]">
-        <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="1" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
+    <section className="relative overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#1c4ca1]" />
+
+      {/* Blur effect */}
+      <div className="absolute right-[91px] top-[184px] w-[452px] h-[452px] bg-[#1c4ca1] blur-[50px] rounded-full" />
+
+      {/* Decorative wave */}
+      <div className="absolute right-[-20px] top-[210px] w-[461px] h-[749px] opacity-20">
+        <svg viewBox="0 0 461 749" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+          <path d="M461 0C461 0 400 100 350 200C300 300 250 400 200 500C150 600 100 700 0 749" stroke="white" strokeWidth="2" strokeOpacity="0.3"/>
         </svg>
       </div>
 
-      {/* Decorative gradient blobs */}
-      <div className="absolute right-0 top-0 h-[600px] w-[600px] rounded-full bg-amber-500/10 blur-[120px]" />
-      <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-blue-500/10 blur-[100px]" />
+      <div className="relative z-10 px-6 md:px-16 lg:px-[130px] pt-[40px] md:pt-[60px] pb-[60px] md:pb-[80px]">
+        <Header />
 
-      <div className="container relative z-10 mx-auto px-6 py-16 lg:px-8 lg:py-24">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Left side - Content */}
-          <div className="max-w-xl">
-            {/* Badge */}
-            <div
-              className={cn(
-                'mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 transition-all duration-700',
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-              )}
-            >
-              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-              <span className="text-sm font-medium text-amber-200">
-                35+ Years of Real Estate Coaching Excellence
-              </span>
+        <div className="mt-10 md:mt-[80px] flex flex-col lg:flex-row gap-10 lg:gap-[131px] items-center">
+          {/* Left content */}
+          <div className="w-full lg:w-[678px] flex flex-col gap-8 md:gap-10">
+            <div className="flex flex-col gap-4 md:gap-6">
+              {/* Badge */}
+              <div
+                className={cn(
+                  'inline-flex self-start items-center gap-2 px-3 md:px-4 py-1 md:py-1.5 rounded-[20px] bg-[rgba(40,175,176,0.2)] border border-[rgba(40,175,176,0.4)] transition-all duration-700',
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                )}
+              >
+                <Star className="w-4 h-4 md:w-5 md:h-5 text-[#28afb0] fill-[#28afb0]" />
+                <span className="font-[var(--font-poppins)] text-xs md:text-sm text-[#28afb0] leading-6 md:leading-7 tracking-[0.56px]">
+                  35+ Years of Real Estate Coaching Excellence
+                </span>
+              </div>
+
+              {/* Headline */}
+              <h1
+                className={cn(
+                  'font-[var(--font-poppins)] font-bold text-[32px] md:text-[48px] lg:text-[60px] leading-[1.2] text-white transition-all duration-700 delay-100',
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                )}
+              >
+                Your Blueprint for a<br />Breakthrough Year
+              </h1>
+
+              {/* Description paragraphs */}
+              <p
+                className={cn(
+                  'font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#e7e9e9] transition-all duration-700 delay-200',
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                )}
+              >
+                The interactive business plan that calculates your GCI goal, breaks it down into daily activities, and keeps you accountable all year long.
+              </p>
+              <p
+                className={cn(
+                  'font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#e7e9e9] transition-all duration-700 delay-300',
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                )}
+              >
+                Join thousands of agents using the proven Power Agent methodology to design careers and lives worth smiling about.
+              </p>
             </div>
 
-            {/* Main Headline */}
-            <h1
-              className={cn(
-                'mb-6 font-serif text-4xl font-bold leading-[1.1] tracking-tight text-white transition-all delay-100 duration-700 sm:text-5xl lg:text-6xl xl:text-7xl',
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-              )}
-            >
-              Your Blueprint for a{' '}
-              <span className="relative inline-block">
-                <span className="relative z-10">Breakthrough</span>
-                <span className="absolute bottom-2 left-0 right-0 -z-0 h-4 -rotate-1 bg-amber-500/40" />
-              </span>{' '}
-              Year
-            </h1>
-
-            {/* Subheadline */}
-            <p
-              className={cn(
-                'mb-6 text-lg leading-relaxed text-slate-300 transition-all delay-200 duration-700 sm:text-xl',
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-              )}
-            >
-              The interactive business plan that calculates your GCI goal, breaks it down into daily
-              activities, and keeps you accountable all year long.
-            </p>
-
-            {/* Supporting Text */}
-            <p
-              className={cn(
-                'mb-8 text-base text-slate-400 transition-all delay-300 duration-700',
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-              )}
-            >
-              Join thousands of agents using the proven Power Agent methodology.
-            </p>
-
-            {/* CTAs */}
+            {/* CTA Buttons */}
             <div
               className={cn(
-                'flex flex-col gap-4 transition-all delay-[400ms] duration-700 sm:flex-row',
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                'flex flex-col sm:flex-row gap-3 md:gap-4 transition-all duration-700 delay-[400ms]',
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               )}
             >
-              <Button
-                asChild
-                size="lg"
-                className="group bg-amber-500 px-8 py-6 text-lg font-semibold text-slate-900 shadow-lg shadow-amber-500/20 hover:bg-amber-400"
+              <Link
+                href="/register"
+                className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
               >
-                <Link href="/register">
+                <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
                   Start Your Plan
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                size="lg"
-                className="border border-white/20 px-8 py-6 text-lg text-white hover:bg-white/10"
+                </span>
+                <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/login"
+                className="h-[44px] px-5 py-2.5 rounded-[6px] border border-white flex items-center justify-center gap-2.5 hover:bg-white/10 transition-colors"
               >
-                <Link href="/login">Log In</Link>
-              </Button>
+                <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
+                  Log in
+                </span>
+              </Link>
             </div>
           </div>
 
-          {/* Right side - Dashboard Mockup */}
+          {/* Right side - App Preview */}
           <div
             className={cn(
-              'relative transition-all delay-500 duration-1000',
-              isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+              'hidden lg:block w-[371px] h-[429px] rounded-lg shadow-[20px_20px_44px_0px_rgba(26,69,147,0.4)] overflow-hidden transition-all duration-1000 delay-500',
+              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
             )}
           >
-            <div className="animate-float relative">
-              {/* Glow effect behind mockup */}
-              <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-amber-500/20 to-blue-500/20 blur-2xl" />
-              <DashboardMockup progress={35} className="relative" />
-            </div>
-
-            {/* Floating badge */}
-            <div className="animate-float-subtle absolute -bottom-4 -left-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-                <span className="text-sm font-medium text-emerald-300">Auto-saves as you go</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// SECTION 2: PRODUCT PREVIEW (Calculator Demo)
-// Shows the "magic" - real-time calculations
-// ============================================================================
-function ProductPreviewSection() {
-  return (
-    <section className="relative overflow-hidden bg-[#0F172A] py-20 lg:py-28">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute left-1/4 top-0 h-96 w-96 rounded-full bg-amber-500 blur-[150px]" />
-        <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-blue-500 blur-[100px]" />
-      </div>
-
-      <div className="container relative z-10 mx-auto px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mx-auto mb-12 max-w-2xl text-center lg:mb-16">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1">
-            <Calculator className="h-4 w-4 text-amber-400" />
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
-              Smart Calculations
-            </span>
-          </div>
-          <h2 className="mb-4 font-serif text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
-            From Expenses to Daily Actions
-            <span className="text-amber-400"> in Seconds</span>
-          </h2>
-          <p className="text-lg text-slate-400">
-            Enter your numbers. Watch the math work itself out. Know exactly what it takes to hit
-            your goals.
-          </p>
-        </div>
-
-        {/* Calculator Demo */}
-        <div className="mx-auto max-w-5xl">
-          <div className="grid gap-8 lg:grid-cols-3 lg:gap-6">
-            {/* Left - Expense Table */}
-            <div className="lg:col-span-1">
-              <p className="mb-3 text-center text-xs font-bold uppercase tracking-wider text-slate-400">
-                1. Enter Your Expenses
-              </p>
-              <ExpenseTableMockup />
-            </div>
-
-            {/* Center - Flow Arrow */}
-            <div className="flex items-center justify-center lg:col-span-1">
-              <div className="flex flex-col items-center gap-4 lg:flex-col">
-                <div className="hidden h-px w-full bg-gradient-to-r from-transparent via-amber-500/50 to-transparent lg:block lg:h-32 lg:w-px lg:bg-gradient-to-b" />
-                <div className="animate-pulse-glow rounded-full border border-amber-500/30 bg-amber-500/20 p-4">
-                  <Sparkles className="h-6 w-6 text-amber-400" />
+            <div className="relative w-full h-full bg-gradient-to-b from-[#0f172a] to-[#1e293b]">
+              {/* App mockup content */}
+              <div className="absolute inset-0 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-3 h-3 rounded-full bg-red-500" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
                 </div>
-                <p className="text-center text-sm font-medium text-amber-400">Auto-Calculates</p>
-                <div className="hidden h-px w-full bg-gradient-to-r from-transparent via-amber-500/50 to-transparent lg:block lg:h-32 lg:w-px lg:bg-gradient-to-b" />
+                <div className="space-y-4">
+                  <div className="h-8 bg-white/10 rounded w-3/4" />
+                  <div className="h-4 bg-white/5 rounded w-full" />
+                  <div className="h-4 bg-white/5 rounded w-2/3" />
+                  <div className="grid grid-cols-2 gap-3 mt-6">
+                    <div className="h-20 bg-[#28afb0]/20 rounded-lg border border-[#28afb0]/30" />
+                    <div className="h-20 bg-white/5 rounded-lg border border-white/10" />
+                    <div className="h-20 bg-white/5 rounded-lg border border-white/10" />
+                    <div className="h-20 bg-white/5 rounded-lg border border-white/10" />
+                  </div>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#28afb0]/20" />
+                      <div className="h-4 bg-white/10 rounded flex-1" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-white/10" />
+                      <div className="h-4 bg-white/5 rounded flex-1" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Right - Daily Targets */}
-            <div className="lg:col-span-1">
-              <p className="mb-3 text-center text-xs font-bold uppercase tracking-wider text-slate-400">
-                2. Get Your Daily Targets
-              </p>
-              <DailyTargetsMockup />
-            </div>
-          </div>
-
-          {/* Bottom - Full Flow */}
-          <div className="mt-12">
-            <p className="mb-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">
-              Your Complete Numbers Journey
-            </p>
-            <CalculatorFlowMockup />
           </div>
         </div>
       </div>
@@ -605,111 +278,403 @@ function ProductPreviewSection() {
 }
 
 // ============================================================================
-// SECTION 3: HOW IT WORKS
-// Visual flow with mini UI previews
+// BENEFITS SECTION
 // ============================================================================
-const steps = [
+
+const benefits = [
   {
-    number: '01',
-    title: 'Create Your Account',
-    description: "Sign up in seconds. Power Agent members can log in with existing credentials.",
-    icon: Users,
-    preview: 'form',
+    icon: CalculatorIcon,
+    label: 'Benefit 1: Know Your Numbers',
+    title: 'Calculate Your Path to Success',
+    description: 'Enter your expenses and goals. Watch as the plan calculates your GCI target, required transactions, and daily activities automatically. No spreadsheets. No guesswork.',
   },
   {
-    number: '02',
-    title: 'Complete Your Plan',
-    description: 'Work through five guided sections at your own pace. Auto-saves as you go.',
-    icon: Target,
-    preview: 'stepper',
+    icon: FolderIcon,
+    label: 'Benefit 2: Organize Your Strategy',
+    title: 'A Complete Roadmap',
+    description: 'From SWOT analysis to prospecting mix, from mindset rituals to accountability contracts—every piece of your business strategy lives in one place.',
   },
   {
-    number: '03',
-    title: 'Take Action Daily',
-    description: 'Use your personalized numbers as your roadmap. Hit your goals.',
-    icon: TrendingUp,
-    preview: 'targets',
+    icon: ProgressIcon,
+    label: 'Benefit 3: Track Your Progress',
+    title: "See How Far You've Come",
+    description: 'Track completion across all five sections. Celebrate your wins, identify gaps, and stay motivated with clear progress indicators.',
+  },
+  {
+    icon: CloudUploadIcon,
+    label: 'Benefit 4: Access Anywhere',
+    title: 'Plan on Your Schedule',
+    description: "Whether you're at your desk, on your phone, or between showings, your business plan is always within reach. No printing, no paper, no excuses.",
   },
 ];
 
-function HowItWorksSection() {
+function BenefitsSection() {
   return (
-    <section className="relative overflow-hidden bg-slate-50 py-20 lg:py-28">
-      {/* Background pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }}
-      />
+    <section className="bg-[#f8fafc] px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="flex flex-col gap-10 md:gap-[60px] items-center">
+          {/* Header */}
+          <div className="text-center max-w-[800px]">
+            <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] mb-4 md:mb-6">
+              Everything You Need to Succeed
+            </h2>
+            <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
+              The business plan that does the heavy lifting for you. Calculate your numbers, track your progress, and stay accountable—all in one place.
+            </p>
+          </div>
 
-      <div className="container relative z-10 mx-auto px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <h2 className="mb-4 font-serif text-3xl font-bold text-primary sm:text-4xl lg:text-5xl">
-            Three Steps to Your Best Year Yet
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Getting started is simple. We guide you through every step.
-          </p>
+          {/* Benefits grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+            {benefits.map((benefit, index) => (
+              <div
+                key={index}
+                className="bg-[rgba(145,174,192,0.1)] border border-[rgba(145,174,192,0.2)] rounded-[20px] p-5 md:p-6 flex flex-col sm:flex-row gap-4"
+              >
+                <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[#0f172a] rounded-[9px] flex items-center justify-center shrink-0">
+                  <benefit.icon className="w-[24px] h-[24px] md:w-[30px] md:h-[30px]" />
+                </div>
+                <div className="flex flex-col gap-2 flex-1">
+                  <p className="font-[var(--font-poppins)] font-medium text-xs md:text-sm text-[#28afb0] uppercase leading-5">
+                    {benefit.label}
+                  </p>
+                  <h3 className="font-[var(--font-poppins)] font-semibold text-lg md:text-xl text-[#0f172a] leading-6 md:leading-7">
+                    {benefit.title}
+                  </h3>
+                  <p className="font-[var(--font-poppins)] font-light text-sm md:text-base text-[#737373] leading-6 md:leading-7">
+                    {benefit.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <Link
+            href="/register"
+            className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
+          >
+            <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
+              Get started Free
+            </span>
+            <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
+      </div>
+    </section>
+  );
+}
 
-        {/* Steps */}
-        <div className="mx-auto max-w-5xl">
-          <div className="grid gap-8 md:grid-cols-3">
-            {steps.map((step, index) => (
-              <div key={step.number} className="relative">
-                {/* Connector line */}
-                {index < steps.length - 1 && (
-                  <div className="absolute left-1/2 top-20 hidden h-px w-full bg-gradient-to-r from-primary/30 to-transparent md:block" />
-                )}
+// ============================================================================
+// THREE STEPS SECTION
+// ============================================================================
 
-                <div className="relative rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
-                  {/* Step number */}
-                  <div className="mb-4 flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-sm font-bold text-slate-900">
-                      {index + 1}
-                    </span>
-                    <h3 className="text-lg font-bold text-primary">{step.title}</h3>
+const steps = [
+  {
+    step: 1,
+    title: 'Create Your Account',
+    description: "Sign up in seconds. If you're a Power Agent member, log in with your existing credentials.",
+  },
+  {
+    step: 2,
+    title: 'Complete Your Plan',
+    description: "Work through five guided sections at your own pace. From reflection to income planning to accountability, we've got you covered.",
+  },
+  {
+    step: 3,
+    title: 'Take Action Daily',
+    description: 'Use your personalized numbers as your roadmap. Make your reach-outs. Have your conversations. Hit your goals.',
+  },
+];
+
+function ThreeStepsSection() {
+  return (
+    <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="flex flex-col gap-10 md:gap-[60px] items-center">
+          {/* Header */}
+          <div className="text-center max-w-[800px]">
+            <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] mb-4 md:mb-6">
+              Three Steps to Your Best Year Yet
+            </h2>
+            <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
+              Your best year doesn&apos;t happen by accident—it happens by design. Follow these three steps to build clarity, create momentum, and turn your vision into measurable results.
+            </p>
+          </div>
+
+          {/* Steps */}
+          <div className="flex flex-col md:flex-row gap-4 md:gap-5 w-full">
+            {steps.map((step) => (
+              <div
+                key={step.step}
+                className="flex-1 bg-white border border-[#e7e9e9] rounded-[20px] p-5 md:p-[30px] overflow-hidden relative"
+              >
+                {/* Decorative corner elements */}
+                <div className="absolute right-[-10px] top-[-10px] w-[58px] h-[58px] rounded-full bg-[#28afb0]/10" />
+                <div className="absolute right-[30px] top-[30px] w-[52px] h-[52px] rounded-full bg-[#28afb0]/5" />
+
+                <p className="font-[var(--font-poppins)] font-semibold text-xs md:text-sm text-[rgba(145,174,192,0.6)] uppercase tracking-[1.96px] leading-7 mb-3 md:mb-4">
+                  Step {step.step}
+                </p>
+                <div className="flex flex-col gap-2">
+                  <h3 className="font-[var(--font-poppins)] font-semibold text-lg md:text-[22px] text-[#0b1c3b] leading-6 md:leading-7">
+                    {step.title}
+                  </h3>
+                  <p className="font-[var(--font-poppins)] text-sm md:text-base text-[#737373] leading-6 md:leading-7">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <Link
+            href="/register"
+            className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
+          >
+            <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
+              Get started Free
+            </span>
+            <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// FIVE SECTIONS OVERVIEW
+// ============================================================================
+
+const sections = [
+  {
+    number: 1,
+    title: 'Annual Reflection',
+    subtitle: '& Intention Setting',
+    description: "Look back to move forward. Review last year's wins and lessons, then set meaningful intentions for the year ahead. This is where clarity begins.",
+    icon: Clock,
+  },
+  {
+    number: 2,
+    title: 'SWOT',
+    subtitle: 'Analysis',
+    description: 'Know your strengths. Address your weaknesses. Seize opportunities. Prepare for threats. A clear-eyed assessment of where you stand today.',
+    icon: GridIcon,
+  },
+  {
+    number: 3,
+    title: 'Vision, Goals',
+    subtitle: '& Income Planning',
+    description: 'The heart of your business plan. Calculate your expenses, set your income goals, and reverse-engineer the exact daily activities needed to get there.',
+    icon: Calculator,
+  },
+  {
+    number: 4,
+    title: 'Mindset, Self-Care',
+    subtitle: '& Motivation',
+    description: 'Your mindset is your engine. Define your affirmations, rituals, boundaries, and support systems that keep you grounded and moving forward.',
+    icon: Smile,
+    wide: true,
+  },
+  {
+    number: 5,
+    title: 'Accountability',
+    subtitle: '& Progress Tracking',
+    description: 'Turn plans into projects. Define your ideal clients, build your prospecting and marketing mix, and create the systems that keep you on track all year.',
+    icon: Shield,
+    wide: true,
+  },
+];
+
+function FiveSectionsOverview() {
+  return (
+    <section className="relative px-6 md:px-16 lg:px-[130px] py-12 md:py-20 overflow-hidden">
+      {/* Dark background */}
+      <div className="absolute inset-0 bg-[#0f172a]" />
+
+      {/* Gradient blobs - hidden on mobile */}
+      <div className="hidden md:block absolute left-[80px] top-[239px] w-[335px] h-[335px]">
+        <div className="absolute inset-[-29.85%] bg-[#1c4ca1] rounded-full blur-[100px] opacity-40" />
+      </div>
+      <div className="hidden md:block absolute right-[130px] top-[189px] w-[370px] h-[370px]">
+        <div className="absolute inset-[-27.03%] bg-[#28afb0] rounded-full blur-[100px] opacity-20" />
+      </div>
+      <div className="hidden lg:block absolute bottom-[80px] left-[916px] w-[344px] h-[344px]">
+        <div className="absolute inset-[-29.07%] bg-[#1c4ca1] rounded-full blur-[100px] opacity-30" />
+      </div>
+
+      <div className="relative z-10 max-w-[1180px] mx-auto">
+        <div className="flex flex-col gap-10 md:gap-[60px] items-center">
+          {/* Header */}
+          <div className="text-center max-w-[800px]">
+            <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-white mb-4 md:mb-6">
+              Five Sections. One Complete Business Plan.
+            </h2>
+            <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#e7e9e9]">
+              Build a business plan that works from every angle. These five sections guide you through reflection, strategy, goal-setting, mindset, and accountability—giving you a complete, actionable roadmap for the year ahead.
+            </p>
+          </div>
+
+          {/* Section cards */}
+          <div className="w-full flex flex-col gap-4 md:gap-5">
+            {/* Top row - 3 cards (stacked on mobile) */}
+            <div className="flex flex-col lg:flex-row gap-4 md:gap-5">
+              {sections.slice(0, 3).map((section) => (
+                <div
+                  key={section.number}
+                  className="flex-1 bg-[#1e293b] border border-[rgba(145,174,192,0.2)] rounded-[20px] p-5 md:p-[30px] overflow-hidden relative min-h-[200px] md:min-h-[315px]"
+                >
+                  {/* Corner decoration */}
+                  <div className="absolute right-[-71px] top-[-71px] w-[158px] h-[158px] rounded-full bg-[#28afb0]/10" />
+
+                  {/* Icon */}
+                  <div className="absolute right-[15px] md:right-[19px] top-[15px] md:top-[19px] w-[24px] h-[24px] md:w-[30px] md:h-[30px]">
+                    <section.icon className="w-full h-full text-[#91aec0]" />
                   </div>
 
-                  <p className="mb-6 text-sm text-muted-foreground">{step.description}</p>
+                  <p className="font-[var(--font-poppins)] font-semibold text-xs md:text-sm text-[rgba(145,174,192,0.6)] tracking-[1.96px] leading-7 mb-3 md:mb-4">
+                    SECTION {section.number}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-[var(--font-poppins)] text-lg md:text-[22px] leading-6 md:leading-7">
+                      <span className="font-semibold text-white">{section.title}</span>{' '}
+                      <span className="font-normal text-[#91aec0]">{section.subtitle}</span>
+                    </h3>
+                    <p className="font-[var(--font-poppins)] text-sm md:text-base text-[#e7e9e9] leading-6 md:leading-7">
+                      {section.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-                  {/* Mini preview */}
-                  <div className="rounded-lg bg-slate-50 p-4">
-                    {step.preview === 'form' && (
-                      <div className="space-y-2">
-                        <div className="h-8 w-full rounded border border-slate-200 bg-white" />
-                        <div className="h-8 w-full rounded border border-slate-200 bg-white" />
-                        <div className="h-8 w-24 rounded bg-primary" />
-                      </div>
-                    )}
-                    {step.preview === 'stepper' && (
-                      <div className="flex items-center justify-between">
-                        {[1, 2, 3, 4, 5].map((n) => (
-                          <div
-                            key={n}
-                            className={cn(
-                              'h-6 w-6 rounded-full',
-                              n <= 2 ? 'bg-emerald-500' : n === 3 ? 'bg-blue-500' : 'bg-slate-200'
-                            )}
-                          />
-                        ))}
-                      </div>
-                    )}
-                    {step.preview === 'targets' && (
-                      <div className="space-y-2">
-                        {['18.5/day', '1.5/day', '0.3/day'].map((t, i) => (
-                          <div
-                            key={i}
-                            className="flex items-center justify-between rounded bg-white px-2 py-1"
-                          >
-                            <div className="h-3 w-16 rounded bg-slate-200" />
-                            <span className="text-xs font-bold text-primary">{t}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+            {/* Bottom row - 2 wider cards */}
+            <div className="flex flex-col md:flex-row gap-4 md:gap-5">
+              {sections.slice(3, 5).map((section) => (
+                <div
+                  key={section.number}
+                  className="flex-1 bg-[#1e293b] border border-[rgba(145,174,192,0.2)] rounded-[20px] p-5 md:p-[30px] overflow-hidden relative min-h-[180px] md:min-h-[250px]"
+                >
+                  {/* Corner decoration */}
+                  <div className="absolute right-[-71px] top-[-71px] w-[158px] h-[158px] rounded-full bg-[#28afb0]/10" />
+
+                  {/* Icon */}
+                  <div className="absolute right-[15px] md:right-[19px] top-[15px] md:top-[19px] w-[24px] h-[24px] md:w-[30px] md:h-[30px]">
+                    <section.icon className="w-full h-full text-[#91aec0]" />
+                  </div>
+
+                  <p className="font-[var(--font-poppins)] font-semibold text-xs md:text-sm text-[rgba(145,174,192,0.6)] tracking-[1.96px] leading-7 mb-3 md:mb-4">
+                    SECTION {section.number}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-[var(--font-poppins)] text-lg md:text-[22px] leading-6 md:leading-7">
+                      <span className="font-semibold text-white">{section.title}</span>{' '}
+                      <span className="font-normal text-[#91aec0]">{section.subtitle}</span>
+                    </h3>
+                    <p className="font-[var(--font-poppins)] text-sm md:text-base text-[#e7e9e9] leading-6 md:leading-7">
+                      {section.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <Link
+            href="/register"
+            className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
+          >
+            <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
+              Get started Free
+            </span>
+            <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// TESTIMONIALS SECTION
+// ============================================================================
+
+const testimonials = [
+  {
+    quote: "The business plan helped me go from scattered goals to a clear daily roadmap. I closed 30% more transactions this year.",
+    author: 'Sarah M.',
+    role: 'RE/MAX Agent, Chicago',
+    initials: 'SM',
+  },
+  {
+    quote: "Having everything calculate automatically and being able to update it on my phone between showings is a game-changer.",
+    author: 'Michael R.',
+    role: 'Keller Williams, Austin',
+    initials: 'MR',
+  },
+  {
+    quote: "The SWOT analysis and mindset sections were eye-opening. It's not just about numbers - it's about who you become.",
+    author: 'Jennifer L.',
+    role: 'Coldwell Banker, Denver',
+    initials: 'JL',
+  },
+];
+
+function TestimonialsSection() {
+  return (
+    <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="flex flex-col gap-8 md:gap-[60px]">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a]">
+              Agents Like You Are Getting Results
+            </h2>
+            <div className="hidden md:flex gap-5">
+              <button className="w-10 h-10 rounded-full border border-[#e7e9e9] flex items-center justify-center hover:bg-[#f8fafc] transition-colors">
+                <ArrowRight className="w-5 h-5 text-[#0f172a] rotate-180" />
+              </button>
+              <button className="w-10 h-10 rounded-full border border-[#e7e9e9] flex items-center justify-center hover:bg-[#f8fafc] transition-colors">
+                <ArrowRight className="w-5 h-5 text-[#0f172a]" />
+              </button>
+            </div>
+          </div>
+
+          {/* Testimonial cards */}
+          <div className="flex flex-col md:flex-row gap-4 md:gap-5">
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={index}
+                className="flex-1 bg-white border border-[#e7e9e9] rounded-[20px] p-5 md:p-6 flex flex-col gap-4"
+              >
+                {/* Stars */}
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 md:w-5 md:h-5 fill-[#fbbf24] text-[#fbbf24]" />
+                  ))}
+                </div>
+
+                {/* Quote */}
+                <p className="font-[var(--font-poppins)] text-sm md:text-base text-[#0f172a] leading-6 md:leading-7 flex-1">
+                  &ldquo;{testimonial.quote}&rdquo;
+                </p>
+
+                {/* Author */}
+                <div className="flex items-center gap-3 pt-4 border-t border-[#e7e9e9]">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#0f172a]/10 flex items-center justify-center">
+                    <span className="font-[var(--font-poppins)] font-semibold text-xs md:text-sm text-[#0f172a]">
+                      {testimonial.initials}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-[var(--font-poppins)] font-semibold text-sm text-[#0f172a]">
+                      {testimonial.author}
+                    </p>
+                    <p className="font-[var(--font-poppins)] text-xs md:text-sm text-[#737373]">
+                      {testimonial.role}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -722,483 +687,64 @@ function HowItWorksSection() {
 }
 
 // ============================================================================
-// SECTION 4: SECTION PREVIEWS (Bento Grid)
-// Shows what each section of the business plan covers
+// ABOUT SECTION (with Darryl)
 // ============================================================================
-const sections = [
-  {
-    number: 1,
-    title: 'Annual Reflection',
-    subtitle: '& Intention Setting',
-    description: "Review last year's wins, set meaningful intentions.",
-    icon: Clock,
-    color: 'from-amber-500 to-orange-500',
-  },
-  {
-    number: 2,
-    title: 'SWOT Analysis',
-    subtitle: '',
-    description: 'Know your strengths. Address weaknesses. Seize opportunities.',
-    icon: Grid3X3,
-    color: 'from-emerald-500 to-teal-500',
-  },
-  {
-    number: 3,
-    title: 'Vision, Goals',
-    subtitle: '& Income Planning',
-    description:
-      'Calculate expenses, set income goals, reverse-engineer daily activities.',
-    icon: Calculator,
-    color: 'from-blue-500 to-indigo-500',
-    featured: true,
-  },
-  {
-    number: 4,
-    title: 'Mindset & Self-Care',
-    subtitle: '',
-    description: 'Define affirmations, rituals, and support systems.',
-    icon: Smile,
-    color: 'from-violet-500 to-purple-500',
-  },
-  {
-    number: 5,
-    title: 'Accountability',
-    subtitle: '& Progress Tracking',
-    description: 'Build prospecting and marketing systems that last.',
-    icon: Shield,
-    color: 'from-rose-500 to-pink-500',
-  },
-];
-
-function SectionPreviewsSection() {
-  return (
-    <section className="relative overflow-hidden bg-white py-20 lg:py-28">
-      <div className="container relative z-10 mx-auto px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <h2 className="mb-4 font-serif text-3xl font-bold text-primary sm:text-4xl lg:text-5xl">
-            Five Sections. One Complete Plan.
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Each section builds on the last, guiding you from reflection to action.
-          </p>
-        </div>
-
-        {/* Bento Grid */}
-        <div className=" mx-auto max-w-5xl">
-          {/* Row 1: Sections 1 & 2 */}
-          <div className="mb-4 grid gap-4 md:grid-cols-2">
-            {/* Section 1 */}
-            <div className="group rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
-              <div
-                className={cn(
-                  'mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br',
-                  sections[0].color
-                )}
-              >
-                <Clock className="h-6 w-6 text-white" />
-              </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Section 1
-              </p>
-              <h3 className="mt-1 text-lg font-bold text-primary">{sections[0].title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{sections[0].description}</p>
-            </div>
-
-            {/* Section 2 */}
-            <div className="group rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
-              <div
-                className={cn(
-                  'mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br',
-                  sections[1].color
-                )}
-              >
-                <Grid3X3 className="h-6 w-6 text-white" />
-              </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Section 2
-              </p>
-              <h3 className="mt-1 text-lg font-bold text-primary">{sections[1].title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{sections[1].description}</p>
-            </div>
-          </div>
-
-          {/* Row 2: Section 3 - Featured (full width) */}
-          <div className="mb-4">
-            <div className="group rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-blue-500/5 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md lg:p-8">
-              <div className="flex flex-col items-start gap-6 lg:flex-row lg:items-center">
-                <div className="flex-shrink-0">
-                  <div
-                    className={cn(
-                      'inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br',
-                      sections[2].color
-                    )}
-                  >
-                    <Calculator className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                    Section 3 - The Heart of Your Plan
-                  </span>
-                  <h3 className="mt-1 text-xl font-bold text-primary lg:text-2xl">
-                    {sections[2].title} {sections[2].subtitle}
-                  </h3>
-                  <p className="mt-2 text-muted-foreground">{sections[2].description}</p>
-                </div>
-                <div className="w-full flex-shrink-0 lg:w-auto">
-                  <CalculatorFlowMockup variant="light" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Row 3: Sections 4 & 5 */}
-          <div className="grid gap-4 md:grid-cols-2">
-            {/* Section 4 */}
-            <div className="group rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
-              <div
-                className={cn(
-                  'mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br',
-                  sections[3].color
-                )}
-              >
-                <Smile className="h-6 w-6 text-white" />
-              </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Section 4
-              </p>
-              <h3 className="mt-1 text-lg font-bold text-primary">{sections[3].title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{sections[3].description}</p>
-            </div>
-
-            {/* Section 5 */}
-            <div className="group rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
-              <div
-                className={cn(
-                  'mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br',
-                  sections[4].color
-                )}
-              >
-                <Shield className="h-6 w-6 text-white" />
-              </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Section 5
-              </p>
-              <h3 className="mt-1 text-lg font-bold text-primary">
-                {sections[4].title} {sections[4].subtitle}
-              </h3>
-              <p className="mt-2 text-sm text-muted-foreground">{sections[4].description}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// SECTION 5: SOCIAL PROOF
-// Animated stats + testimonials with placeholder photos
-// ============================================================================
-const testimonials = [
-  {
-    quote:
-      "The business plan helped me go from scattered goals to a clear daily roadmap. I closed 30% more transactions this year.",
-    author: 'Sarah M.',
-    role: 'RE/MAX Agent, Chicago',
-    initials: 'SM',
-  },
-  {
-    quote:
-      "Having everything calculate automatically and being able to update it on my phone between showings is a game-changer.",
-    author: 'Michael R.',
-    role: 'Keller Williams, Austin',
-    initials: 'MR',
-  },
-  {
-    quote:
-      "The SWOT analysis and mindset sections were eye-opening. It's not just about numbers - it's about who you become.",
-    author: 'Jennifer L.',
-    role: 'Coldwell Banker, Denver',
-    initials: 'JL',
-  },
-];
-
-function SocialProofSection() {
-  const yearsCount = useCountUp(35, 2000);
-  const agentsCount = useCountUp(10000, 2500);
-  const fieldsCount = useCountUp(100, 1500);
-
-  return (
-    <section className="relative overflow-hidden bg-slate-50 py-20 lg:py-28">
-      <div className="container relative z-10 mx-auto px-6 lg:px-8">
-        {/* Animated Stats */}
-        <div className="mb-16 grid gap-8 md:grid-cols-3">
-          <div ref={yearsCount.ref} className="text-center">
-            <p className="text-5xl font-bold text-primary lg:text-6xl">
-              {yearsCount.count}
-              <span className="text-amber-500">+</span>
-            </p>
-            <p className="mt-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-              Years of Coaching
-            </p>
-          </div>
-          <div ref={agentsCount.ref} className="text-center">
-            <p className="text-5xl font-bold text-primary lg:text-6xl">
-              {agentsCount.count.toLocaleString()}
-              <span className="text-amber-500">+</span>
-            </p>
-            <p className="mt-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-              Agents Coached
-            </p>
-          </div>
-          <div ref={fieldsCount.ref} className="text-center">
-            <p className="text-5xl font-bold text-primary lg:text-6xl">
-              {fieldsCount.count}
-              <span className="text-amber-500">+</span>
-            </p>
-            <p className="mt-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-              Auto-Calculated Fields
-            </p>
-          </div>
-        </div>
-
-        {/* Section Header */}
-        <div className="mx-auto mb-12 max-w-2xl text-center">
-          <h2 className="mb-4 font-serif text-3xl font-bold text-primary sm:text-4xl">
-            Agents Like You Are Getting Results
-          </h2>
-        </div>
-
-        {/* Testimonials */}
-        <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className="relative rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:shadow-md"
-            >
-              {/* Quote Icon */}
-              <Quote className="mb-4 h-8 w-8 text-primary/10" />
-
-              {/* Stars */}
-              <div className="mb-4 flex gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
-
-              {/* Quote */}
-              <blockquote className="mb-6 text-sm leading-relaxed text-foreground">
-                &ldquo;{testimonial.quote}&rdquo;
-              </blockquote>
-
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                {/* PLACEHOLDER: Replace with actual testimonial photo */}
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <span className="text-sm font-bold text-primary">{testimonial.initials}</span>
-                </div>
-                <div>
-                  <p className="font-semibold text-primary">{testimonial.author}</p>
-                  <p className="text-xs text-muted-foreground">{testimonial.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Brokerage Logos */}
-        <div className="mt-16 text-center">
-          <p className="mb-6 text-sm text-muted-foreground">
-            Trusted by agents at top brokerages nationwide
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 opacity-40">
-            {/* PLACEHOLDER: Replace with actual logo images */}
-            <span className="text-xl font-bold text-primary">RE/MAX</span>
-            <span className="text-xl font-bold text-primary">Keller Williams</span>
-            <span className="text-xl font-bold text-primary">Coldwell Banker</span>
-            <span className="text-xl font-bold text-primary">Century 21</span>
-            <span className="text-xl font-bold text-primary">eXp Realty</span>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// SECTION 6: ABOUT / TRUST (Darryl Featured)
-// ============================================================================
-const trustPoints = [
-  { icon: Award, label: '35+ Years of Real Estate Coaching' },
-  { icon: Users, label: 'Thousands of Agents Coached' },
-  { icon: GraduationCap, label: 'Goldman Sachs 10KSB Alumni' },
-  { icon: Star, label: 'Certified Speaking Professional' },
-];
 
 function AboutSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-primary to-accent py-20 text-white lg:py-28">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-            backgroundSize: '32px 32px',
-          }}
-        />
-      </div>
-
-      <div className="container relative z-10 mx-auto px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid items-center gap-12 lg:grid-cols-5 lg:gap-16">
-            {/* Left - Darryl's Photo */}
-            <div className="lg:col-span-2">
-              <div className="relative mx-auto max-w-sm">
-                {/* Glow effect */}
-                <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-amber-500/30 to-blue-500/30 blur-2xl" />
-
-                {/* Photo container */}
-                <div className="relative overflow-hidden rounded-2xl border-4 border-white/20 shadow-2xl">
-                  <Image
-                    src="/darryl.png"
-                    alt="Darryl Davis - Real Estate Coach"
-                    width={400}
-                    height={500}
-                    className="h-auto w-full object-cover"
-                  />
-
-                  {/* Badge overlay */}
-                  <div className="absolute bottom-4 left-4 rounded-lg border border-amber-500/30 bg-amber-500/90 px-4 py-2">
-                    <p className="text-sm font-bold text-slate-900">35+ Years</p>
-                    <p className="text-xs text-slate-700">Coaching Excellence</p>
-                  </div>
-                </div>
-              </div>
+    <section className="bg-[#f8fafc] px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 items-center">
+          {/* Left - Darryl's photo */}
+          <div className="relative w-full max-w-[300px] md:max-w-[400px] shrink-0">
+            <div className="relative rounded-[20px] overflow-hidden">
+              <Image
+                src="/darryl.png"
+                alt="Darryl Davis"
+                width={400}
+                height={500}
+                className="w-full h-auto"
+              />
             </div>
-
-            {/* Right - Content */}
-            <div className="lg:col-span-3">
-              <h2 className="mb-6 font-serif text-3xl font-bold sm:text-4xl lg:text-5xl">
-                Built on Decades of Real Estate Success
-              </h2>
-
-              <div className="mb-8 space-y-4 text-lg text-white/80">
-                <p>
-                  MyPlanForSuccess is powered by{' '}
-                  <strong className="text-white">Darryl Davis Seminars</strong>, the company behind
-                  the Power Agent Program that has helped thousands of real estate professionals
-                  design careers and lives worth smiling about.
-                </p>
-                <p>
-                  For over three decades, Darryl Davis has been coaching agents to prospect without
-                  fear, list with confidence, and build businesses that last. This digital business
-                  plan brings that proven methodology to your fingertips.
-                </p>
-              </div>
-
-              {/* Trust Points */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                {trustPoints.map((point) => (
-                  <div
-                    key={point.label}
-                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm"
-                  >
-                    <point.icon className="h-6 w-6 flex-shrink-0 text-amber-400" />
-                    <span className="text-sm font-medium text-white/90">{point.label}</span>
-                  </div>
-                ))}
-              </div>
+            {/* Badge */}
+            <div className="absolute bottom-4 left-4 bg-[#28afb0] rounded-lg px-3 md:px-4 py-2">
+              <p className="font-[var(--font-poppins)] font-bold text-xs md:text-sm text-white">35+ Years</p>
+              <p className="font-[var(--font-poppins)] text-xs text-white/80">Coaching Excellence</p>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
-// ============================================================================
-// SECTION 7: FINAL CTA
-// ============================================================================
-function FinalCTASection() {
-  return (
-    <section className="relative overflow-hidden bg-white py-20 lg:py-28">
-      {/* Background decoration */}
-      <div className="absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-secondary/50 opacity-50 blur-3xl" />
-      </div>
-
-      <div className="container relative z-10 mx-auto px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            {/* Left - Mockup showing completion */}
-            <div className="relative order-2 lg:order-1">
-              <div className="relative mx-auto max-w-md">
-                {/* Celebration elements */}
-                <div className="animate-float-subtle absolute -right-4 -top-4 rounded-full bg-emerald-500 p-3">
-                  <CheckCircle2 className="h-6 w-6 text-white" />
-                </div>
-
-                {/* Dashboard showing 100% */}
-                <DashboardMockup progress={100} />
-
-                {/* Completion badge */}
-                <div className="animate-pulse-glow absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-xl border border-emerald-500/30 bg-emerald-500 px-6 py-2">
-                  <p className="text-sm font-bold text-white">Plan Complete!</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - CTA Content */}
-            <div className="order-1 lg:order-2">
-              <h2 className="mb-6 font-serif text-3xl font-bold text-primary sm:text-4xl lg:text-5xl">
-                Ready to Make This Your Breakthrough Year?
-              </h2>
-
-              {/* Value props */}
-              <ul className="mb-8 space-y-3">
-                {[
-                  'Calculate your exact GCI goal and daily activities',
-                  'Track progress across all 5 sections',
-                  'Access anytime, anywhere - auto-saves as you go',
-                ].map((item, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" />
-                    <span className="text-muted-foreground">{item}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <Button
-                  asChild
-                  size="lg"
-                  className="group bg-primary px-10 py-6 text-lg font-semibold shadow-lg shadow-primary/20 hover:bg-primary/90"
-                >
-                  <Link href="/register">
-                    Start Your Plan
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-              </div>
-
-              {/* Secondary Text */}
-              <p className="mt-6 text-sm text-muted-foreground">
-                Free for Power Agent members.{' '}
-                <a
-                  href="https://darrylspeaks.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-primary hover:underline"
-                >
-                  Learn about membership
-                  <ExternalLink className="h-3 w-3" />
-                </a>
+          {/* Right - Content */}
+          <div className="flex flex-col gap-4 md:gap-6">
+            <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] text-center lg:text-left">
+              Built on Decades of Real Estate Success
+            </h2>
+            <div className="space-y-3 md:space-y-4">
+              <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373] text-center lg:text-left">
+                MyPlanForSuccess is powered by <strong className="text-[#0f172a]">Darryl Davis Seminars</strong>, the company behind the Power Agent Program that has helped thousands of real estate professionals design careers and lives worth smiling about.
+              </p>
+              <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373] text-center lg:text-left">
+                For over three decades, Darryl Davis has been coaching agents to prospect without fear, list with confidence, and build businesses that last. This digital business plan brings that proven methodology to your fingertips.
               </p>
             </div>
+
+            {/* Trust points */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mt-2 md:mt-4">
+              {[
+                '35+ Years of Real Estate Coaching',
+                'Thousands of Agents Coached',
+                'Goldman Sachs 10KSB Alumni',
+                'Certified Speaking Professional',
+              ].map((point, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 md:p-4 bg-white rounded-xl border border-[#e7e9e9]">
+                  <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#28afb0] flex items-center justify-center shrink-0">
+                    <svg className="w-3 h-3 md:w-4 md:h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <span className="font-[var(--font-poppins)] text-xs md:text-sm text-[#0f172a]">{point}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -1207,100 +753,45 @@ function FinalCTASection() {
 }
 
 // ============================================================================
-// SECTION 8: FOOTER
+// FINAL CTA SECTION
 // ============================================================================
+
+function FinalCTASection() {
+  return (
+    <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+      <div className="max-w-[1180px] mx-auto">
+        <div className="bg-gradient-to-r from-[#0f172a] to-[#1c4ca1] rounded-[20px] md:rounded-[30px] px-6 md:px-12 lg:px-20 py-10 md:py-16 text-center">
+          <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] lg:text-[40px] leading-[1.2] text-white mb-4 md:mb-6">
+            Ready to Make This Your Breakthrough Year?
+          </h2>
+          <p className="font-[var(--font-poppins)] text-sm md:text-lg leading-6 md:leading-7 text-[#e7e9e9] mb-6 md:mb-8 max-w-[600px] mx-auto">
+            Join thousands of agents using the proven Power Agent methodology. Start building your business plan today.
+          </p>
+          <Link
+            href="/register"
+            className="inline-flex h-[44px] md:h-[52px] px-6 md:px-8 py-2.5 md:py-3 rounded-[6px] bg-[#28afb0] items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
+          >
+            <span className="font-[var(--font-open-sans)] font-semibold text-sm md:text-base text-white capitalize">
+              Start Your Plan Free
+            </span>
+            <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// FOOTER
+// ============================================================================
+
 function Footer() {
   return (
-    <footer className="bg-primary text-white">
-      {/* Main Footer */}
-      <div className="container mx-auto px-6 py-12 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand Column */}
-          <div className="lg:col-span-2">
-            <h3 className="mb-2 text-xl font-bold">MyPlanForSuccess</h3>
-            <p className="mb-4 text-sm italic text-white/70">
-              Design a career and life worth smiling about.
-            </p>
-            <p className="text-sm text-white/60">
-              Powered by Darryl Davis Seminars, Inc.
-              <br />
-              The company behind the Power Agent Program.
-            </p>
-          </div>
-
-          {/* Links Column */}
-          <div>
-            <h4 className="mb-4 font-semibold text-white/90">Quick Links</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/login" className="text-sm text-white/60 transition hover:text-white">
-                  Log In
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/register"
-                  className="text-sm text-white/60 transition hover:text-white"
-                >
-                  Sign Up
-                </Link>
-              </li>
-              <li>
-                <a
-                  href="https://darrylspeaks.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-white/60 transition hover:text-white"
-                >
-                  Power Agent Program
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Column */}
-          <div>
-            <h4 className="mb-4 font-semibold text-white/90">Contact</h4>
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2 text-sm text-white/60">
-                <Phone className="h-4 w-4" />
-                631-929-5555
-              </li>
-              <li>
-                <a
-                  href="https://darrylspeaks.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-white/60 transition hover:text-white"
-                >
-                  DarrylSpeaks.com
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-white/10">
-        <div className="container mx-auto px-6 py-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <p className="text-sm text-white/50">
-              &copy; {new Date().getFullYear()} Darryl Davis Seminars, Inc. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6">
-              <Link href="/privacy" className="text-sm text-white/50 transition hover:text-white">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-sm text-white/50 transition hover:text-white">
-                Terms of Service
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+    <footer className="bg-[#0b1c3b] min-h-[60px] py-4 md:py-0 md:h-[60px] flex items-center justify-center px-6">
+      <p className="font-[var(--font-poppins)] text-xs md:text-sm text-white text-center">
+        Darryl Davis | Copyright 2025 | Terms &amp; Conditions | Privacy Policy
+      </p>
     </footer>
   );
 }
@@ -1308,14 +799,15 @@ function Footer() {
 // ============================================================================
 // MAIN PAGE COMPONENT
 // ============================================================================
+
 export default function LandingPage() {
   return (
     <main className="min-h-screen">
       <HeroSection />
-      <ProductPreviewSection />
-      <HowItWorksSection />
-      <SectionPreviewsSection />
-      <SocialProofSection />
+      <BenefitsSection />
+      <ThreeStepsSection />
+      <FiveSectionsOverview />
+      <TestimonialsSection />
       <AboutSection />
       <FinalCTASection />
       <Footer />
