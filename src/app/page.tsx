@@ -109,10 +109,10 @@ function MindIcon({ className }: { className?: string }) {
 function Header() {
   return (
     <header className="flex items-center justify-between w-full max-w-[1180px] mx-auto">
-      <div className="relative h-[20px] w-[150px] md:h-[25px] md:w-[200px]">
+      <div className="relative h-[25px] w-[200px]">
         <Image
-          src="/logo.svg"
-          alt="MyPlanForSuccess"
+          src="/logo-white.svg"
+          alt="Darryl Davis Seminars"
           fill
           className="object-contain object-left"
           priority
@@ -120,9 +120,9 @@ function Header() {
       </div>
       <Link
         href="/register"
-        className="h-[40px] md:h-[44px] px-4 md:px-5 py-2 md:py-2.5 rounded-[6px] border border-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/10 transition-colors"
+        className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors"
       >
-        <span className="font-[var(--font-open-sans)] font-semibold text-xs md:text-sm text-[#28afb0] capitalize leading-5">
+        <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
           Get Started
         </span>
       </Link>
@@ -156,22 +156,22 @@ function HeroSection() {
         </svg>
       </div>
 
-      <div className="relative z-10 px-6 md:px-16 lg:px-[130px] pt-[40px] md:pt-[60px] pb-[60px] md:pb-[80px]">
+      <div className="relative z-10 px-6 md:px-16 lg:px-[130px] pt-[60px] pb-[80px]">
         <Header />
 
-        <div className="mt-10 md:mt-[80px] flex flex-col lg:flex-row gap-10 lg:gap-[131px] items-center">
+        <div className="mt-[80px] flex flex-col lg:flex-row gap-10 lg:gap-[131px] items-center">
           {/* Left content */}
-          <div className="w-full lg:w-[678px] flex flex-col gap-8 md:gap-10">
-            <div className="flex flex-col gap-4 md:gap-6">
+          <div className="w-full lg:w-[678px] flex flex-col gap-[40px]">
+            <div className="flex flex-col gap-[24px]">
               {/* Badge */}
               <div
                 className={cn(
-                  'inline-flex self-start items-center gap-2 px-3 md:px-4 py-1 md:py-1.5 rounded-[20px] bg-[rgba(40,175,176,0.2)] border border-[rgba(40,175,176,0.4)] transition-all duration-700',
+                  'inline-flex self-start items-center gap-[8px] px-[16px] py-[6px] rounded-[20px] bg-[rgba(40,175,176,0.2)] border border-[rgba(40,175,176,0.4)] transition-all duration-700',
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                 )}
               >
-                <Star className="w-4 h-4 md:w-5 md:h-5 text-[#28afb0] fill-[#28afb0]" />
-                <span className="font-[var(--font-poppins)] text-xs md:text-sm text-[#28afb0] leading-6 md:leading-7 tracking-[0.56px]">
+                <Star className="w-[20px] h-[20px] text-[#28afb0] fill-[#28afb0]" />
+                <span className="font-[var(--font-poppins)] text-[14px] text-[#28afb0] leading-[28px] tracking-[0.56px]">
                   35+ Years of Real Estate Coaching Excellence
                 </span>
               </div>
@@ -179,7 +179,7 @@ function HeroSection() {
               {/* Headline */}
               <h1
                 className={cn(
-                  'font-[var(--font-poppins)] font-bold text-[32px] md:text-[48px] lg:text-[60px] leading-[1.2] text-white transition-all duration-700 delay-100',
+                  'font-[var(--font-poppins)] font-bold text-[36px] md:text-[48px] lg:text-[60px] leading-[1.2] text-white transition-all duration-700 delay-100',
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                 )}
               >
@@ -189,7 +189,7 @@ function HeroSection() {
               {/* Description paragraphs */}
               <p
                 className={cn(
-                  'font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#e7e9e9] transition-all duration-700 delay-200',
+                  'font-[var(--font-poppins)] text-[16px] leading-[28px] text-[#e7e9e9] transition-all duration-700 delay-200',
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                 )}
               >
@@ -197,7 +197,7 @@ function HeroSection() {
               </p>
               <p
                 className={cn(
-                  'font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#e7e9e9] transition-all duration-700 delay-300',
+                  'font-[var(--font-poppins)] text-[16px] leading-[28px] text-[#e7e9e9] transition-all duration-700 delay-300',
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                 )}
               >
@@ -208,25 +208,25 @@ function HeroSection() {
             {/* CTA Buttons */}
             <div
               className={cn(
-                'flex flex-col sm:flex-row gap-3 md:gap-4 transition-all duration-700 delay-[400ms]',
+                'flex flex-col sm:flex-row gap-[16px] transition-all duration-700 delay-[400ms]',
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               )}
             >
               <Link
                 href="/register"
-                className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
+                className="h-[44px] px-[20px] py-[10px] rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-[10px] hover:bg-[#28afb0]/90 transition-colors group"
               >
-                <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
+                <span className="font-[var(--font-open-sans)] font-semibold text-[14px] text-white capitalize leading-[20px]">
                   Start Your Plan
                 </span>
-                <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-[24px] h-[24px] text-white group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/login"
-                className="h-[44px] px-5 py-2.5 rounded-[6px] border border-white flex items-center justify-center gap-2.5 hover:bg-white/10 transition-colors"
+                className="h-[44px] px-[20px] py-[10px] rounded-[6px] border border-white flex items-center justify-center gap-[10px] hover:bg-white/10 transition-colors"
               >
-                <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
-                  Log in
+                <span className="font-[var(--font-open-sans)] font-semibold text-[14px] text-white capitalize leading-[20px]">
+                  Log In
                 </span>
               </Link>
             </div>
@@ -235,40 +235,29 @@ function HeroSection() {
           {/* Right side - App Preview */}
           <div
             className={cn(
-              'hidden lg:block w-[371px] h-[429px] rounded-lg shadow-[20px_20px_44px_0px_rgba(26,69,147,0.4)] overflow-hidden transition-all duration-1000 delay-500',
+              'hidden lg:block relative transition-all duration-1000 delay-500',
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
             )}
           >
-            <div className="relative w-full h-full bg-gradient-to-b from-[#0f172a] to-[#1e293b]">
-              {/* App mockup content */}
-              <div className="absolute inset-0 p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-3 h-3 rounded-full bg-red-500" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                  <div className="w-3 h-3 rounded-full bg-green-500" />
-                </div>
-                <div className="space-y-4">
-                  <div className="h-8 bg-white/10 rounded w-3/4" />
-                  <div className="h-4 bg-white/5 rounded w-full" />
-                  <div className="h-4 bg-white/5 rounded w-2/3" />
-                  <div className="grid grid-cols-2 gap-3 mt-6">
-                    <div className="h-20 bg-[#28afb0]/20 rounded-lg border border-[#28afb0]/30" />
-                    <div className="h-20 bg-white/5 rounded-lg border border-white/10" />
-                    <div className="h-20 bg-white/5 rounded-lg border border-white/10" />
-                    <div className="h-20 bg-white/5 rounded-lg border border-white/10" />
-                  </div>
-                  <div className="mt-6 space-y-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#28afb0]/20" />
-                      <div className="h-4 bg-white/10 rounded flex-1" />
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-white/10" />
-                      <div className="h-4 bg-white/5 rounded flex-1" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Decorative stars */}
+            <div className="absolute -top-[60px] -right-[40px] w-[120px] h-[120px]">
+              <Image
+                src="/bg-stars.svg"
+                alt=""
+                fill
+                className="object-contain"
+              />
+            </div>
+
+            {/* App Screenshot */}
+            <div className="w-[371px] h-[429px] rounded-[8px] shadow-[20px_20px_44px_0px_rgba(26,69,147,0.4)] overflow-hidden">
+              <Image
+                src="/App-Screenshot.png"
+                alt="MyPlanForSuccess App Preview"
+                width={371}
+                height={429}
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
