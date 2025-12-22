@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Star } from "lucide-react";
@@ -774,7 +774,6 @@ const testimonials = [
     quote:
       "“This business plan finally gave me clarity. For the first time, I knew my exact numbers—my GCI target, my daily reach-outs, everything. I doubled my listings in just three months because I had a roadmap I could actually follow.",
     imageSrc: "/testimonials/testimonial-1.jpg",
-    variant: "dark",
   },
   {
     name: "Maria Davis",
@@ -782,7 +781,6 @@ const testimonials = [
     quote:
       "I’ve tried so many planning tools, but nothing breaks it down as clearly as this. The daily action steps took the guesswork out of my routine and helped me stay consistent during a busy year. My confidence—and my income—skyrocketed.",
     imageSrc: "/testimonials/testimonial-2.jpg",
-    variant: "light",
   },
   {
     name: "Jacob Joshua",
@@ -790,31 +788,185 @@ const testimonials = [
     quote:
       "This plan changed how I run my business. I loved seeing my progress across all five sections, and updating my numbers throughout the year kept me accountable. I hit my annual goal ahead of schedule.",
     imageSrc: "/testimonials/testimonial-3.jpg",
-    variant: "light",
+  },
+  {
+    name: "Sarah M.",
+    role: "RE/MAX Agent, Chicago",
+    quote:
+      "The business plan helped me go from scattered goals to a clear daily roadmap. I closed 30% more transactions this year.",
+    imageSrc: "/testimonials/testimonial-1.jpg",
+  },
+  {
+    name: "Michael R.",
+    role: "Keller Williams, Austin",
+    quote:
+      "Having everything calculate automatically and being able to update it on my phone between showings is a game-changer.",
+    imageSrc: "/testimonials/testimonial-2.jpg",
+  },
+  {
+    name: "Jennifer L.",
+    role: "Coldwell Banker, Denver",
+    quote:
+      "The SWOT analysis and mindset sections were eye-opening. It's not just about numbers - it's about who you become.",
+    imageSrc: "/testimonials/testimonial-3.jpg",
   },
 ];
 
 function TestimonialsSection() {
+  const [isXlUp, setIsXlUp] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
+  const mobileScrollerRef = useRef<HTMLDivElement | null>(null);
+  const mobileCardRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const mobileStrideRef = useRef<number | null>(null);
+  const lastNavSourceRef = useRef<"buttons" | "scroll" | null>(null);
+
+  const desktopVisibleCount = 3;
+  const desktopCardWidth = 450;
+  const desktopGap = 20;
+  const desktopStride = desktopCardWidth + desktopGap;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1280px)");
+    const update = () => setIsXlUp(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const maxStart = isXlUp
+      ? Math.max(0, testimonials.length - desktopVisibleCount)
+      : Math.max(0, testimonials.length - 1);
+
+    setStartIndex((current) => Math.min(current, maxStart));
+  }, [isXlUp]);
+
+  const goPrev = () => {
+    lastNavSourceRef.current = "buttons";
+    const maxStart = isXlUp
+      ? Math.max(0, testimonials.length - desktopVisibleCount)
+      : Math.max(0, testimonials.length - 1);
+
+    setStartIndex((current) => (current <= 0 ? maxStart : current - 1));
+  };
+
+  const goNext = () => {
+    lastNavSourceRef.current = "buttons";
+    const maxStart = isXlUp
+      ? Math.max(0, testimonials.length - desktopVisibleCount)
+      : Math.max(0, testimonials.length - 1);
+
+    setStartIndex((current) => (current >= maxStart ? 0 : current + 1));
+  };
+
+  useEffect(() => {
+    if (isXlUp) return;
+    if (lastNavSourceRef.current !== "buttons") return;
+    const target = mobileCardRefs.current[startIndex];
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+    lastNavSourceRef.current = null;
+  }, [isXlUp, startIndex]);
+
+  useEffect(() => {
+    if (isXlUp) return;
+    const first = mobileCardRefs.current[0];
+    const second = mobileCardRefs.current[1];
+    if (!first || !second) return;
+    const stride = second.offsetLeft - first.offsetLeft;
+    if (stride > 0) mobileStrideRef.current = stride;
+  }, [isXlUp]);
+
+  const onMobileScroll = () => {
+    if (isXlUp) return;
+    const scroller = mobileScrollerRef.current;
+    const stride = mobileStrideRef.current;
+    if (!scroller || !stride) return;
+    lastNavSourceRef.current = "scroll";
+    const nextIndex = Math.max(
+      0,
+      Math.min(testimonials.length - 1, Math.round(scroller.scrollLeft / stride)),
+    );
+    setStartIndex(nextIndex);
+  };
+
   return (
     <section className="bg-white">
-      {/* Mobile/tablet fallback */}
+      {/* Mobile/tablet carousel */}
       <div className="xl:hidden px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
         <div className="max-w-[1180px] mx-auto">
           <div className="flex flex-col gap-8 md:gap-[60px]">
-            <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a]">
-              Agents Like You Are Getting Results
-            </h2>
+            <div className="flex items-start justify-between gap-4">
+              <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a]">
+                Agents Like You Are Getting Results
+              </h2>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  aria-label="Previous testimonial"
+                  onClick={goPrev}
+                  className="relative p-0 m-0 bg-transparent border-0 focus:outline-none"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M20 12H4M4 12L10 6M4 12L10 18"
+                      stroke="#0F172A"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next testimonial"
+                  onClick={goNext}
+                  className="w-[50px] h-[50px] pl-[18px] pr-5 py-[11px] bg-slate-900 rounded-[26px] flex justify-center items-center focus:outline-none shrink-0"
+                >
+                  <span className="relative">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 12H20M20 12L14 6M20 12L14 18"
+                        stroke="white"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </div>
 
-            <div className="flex flex-col gap-4">
-              {testimonials.map((testimonial) => {
-                const isDark = testimonial.variant === "dark";
+            <div
+              ref={mobileScrollerRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              onScroll={onMobileScroll}
+            >
+              {testimonials.map((testimonial, index) => {
+                const isActive = index === startIndex;
 
                 return (
                   <div
                     key={testimonial.name}
+                    ref={(el) => {
+                      mobileCardRefs.current[index] = el;
+                    }}
                     className={cn(
-                      "rounded-[20px] outline outline-1 outline-offset-[-1px] outline-[#91aec0]/20 p-6 flex justify-start items-start gap-4",
-                      isDark ? "bg-slate-800" : "bg-slate-50",
+                      "snap-start shrink-0 w-[85vw] max-w-[450px] rounded-[20px] outline outline-1 outline-offset-[-1px] outline-[#91aec0]/20 p-6 flex justify-start items-start gap-4",
+                      isActive ? "bg-slate-800" : "bg-slate-50",
                     )}
                   >
                     <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-[#d9d9d9] shrink-0">
@@ -831,7 +983,7 @@ function TestimonialsSection() {
                       <p
                         className={cn(
                           "font-[var(--font-poppins)] text-xl font-semibold leading-7",
-                          isDark ? "text-white" : "text-slate-900",
+                          isActive ? "text-white" : "text-slate-900",
                         )}
                       >
                         {testimonial.name}
@@ -842,7 +994,7 @@ function TestimonialsSection() {
                       <p
                         className={cn(
                           "font-[var(--font-poppins)] text-base font-light leading-7",
-                          isDark ? "text-white" : "text-neutral-500",
+                          isActive ? "text-white" : "text-neutral-500",
                         )}
                       >
                         {testimonial.quote}
@@ -867,6 +1019,7 @@ function TestimonialsSection() {
             <button
               type="button"
               aria-label="Previous testimonial"
+              onClick={goPrev}
               className="relative p-0 m-0 bg-transparent border-0 focus:outline-none"
             >
               <svg
@@ -889,6 +1042,7 @@ function TestimonialsSection() {
             <button
               type="button"
               aria-label="Next testimonial"
+              onClick={goNext}
               className="w-[50px] h-[50px] pl-[18px] pr-5 py-[11px] bg-slate-900 rounded-[26px] flex justify-center items-center focus:outline-none"
             >
               <span className="relative">
@@ -913,55 +1067,64 @@ function TestimonialsSection() {
         </div>
 
         <div className="w-[1440px] h-[308px] left-0 top-[190px] absolute">
-          <div className="w-[1645px] left-[93px] top-0 absolute inline-flex justify-center items-center gap-5 overflow-hidden">
-            {testimonials.map((testimonial, index) => {
-              const isDark = testimonial.variant === "dark";
-              const dataProperty = index === 0 ? "Variant2" : "Default";
+          <div className="w-[1645px] left-[93px] top-0 absolute overflow-hidden">
+            <div
+              className="inline-flex items-center gap-5 transition-transform duration-500 ease-out"
+              style={{
+                paddingLeft: "127.5px",
+                paddingRight: "127.5px",
+                transform: `translateX(-${startIndex * desktopStride}px)`,
+              }}
+            >
+              {testimonials.map((testimonial, index) => {
+                const isActive = index === startIndex;
+                const dataProperty = isActive ? "Variant2" : "Default";
 
-              return (
-                <div
-                  key={testimonial.name}
-                  data-property-1={dataProperty}
-                  className={cn(
-                    "w-[450px] h-[328px] p-[30px] rounded-[20px] outline outline-1 outline-offset-[-1px] outline-[#91aec0]/20 flex justify-start items-start gap-4",
-                    isDark ? "bg-slate-800" : "bg-slate-50",
-                  )}
-                >
-                  <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-[#d9d9d9] shrink-0">
-                    <Image
-                      src={testimonial.imageSrc}
-                      alt={testimonial.name}
-                      width={60}
-                      height={60}
-                      className="w-full h-full object-cover"
-                      priority={index === 0}
-                    />
-                  </div>
+                return (
+                  <div
+                    key={testimonial.name}
+                    data-property-1={dataProperty}
+                    className={cn(
+                      "w-[450px] h-[328px] p-[30px] rounded-[20px] outline outline-1 outline-offset-[-1px] outline-[#91aec0]/20 flex justify-start items-start gap-4",
+                      isActive ? "bg-slate-800" : "bg-slate-50",
+                    )}
+                  >
+                    <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-[#d9d9d9] shrink-0">
+                      <Image
+                        src={testimonial.imageSrc}
+                        alt={testimonial.name}
+                        width={60}
+                        height={60}
+                        className="w-full h-full object-cover"
+                        priority={index === startIndex}
+                      />
+                    </div>
 
-                  <div className="flex-1 inline-flex flex-col justify-start items-start gap-2">
-                    <div
-                      className={cn(
-                        "self-stretch justify-start text-xl font-semibold font-[var(--font-poppins)] leading-7",
-                        isDark ? "text-white" : "text-slate-900",
-                      )}
-                    >
-                      {testimonial.name}
-                    </div>
-                    <div className="self-stretch justify-start text-[#28afb0] text-sm font-medium font-[var(--font-poppins)] capitalize leading-5">
-                      {testimonial.role}
-                    </div>
-                    <div
-                      className={cn(
-                        "self-stretch justify-start text-base font-light font-[var(--font-poppins)] leading-7",
-                        isDark ? "text-white" : "text-neutral-500",
-                      )}
-                    >
-                      {testimonial.quote}
+                    <div className="flex-1 inline-flex flex-col justify-start items-start gap-2">
+                      <div
+                        className={cn(
+                          "self-stretch justify-start text-xl font-semibold font-[var(--font-poppins)] leading-7",
+                          isActive ? "text-white" : "text-slate-900",
+                        )}
+                      >
+                        {testimonial.name}
+                      </div>
+                      <div className="self-stretch justify-start text-[#28afb0] text-sm font-medium font-[var(--font-poppins)] capitalize leading-5">
+                        {testimonial.role}
+                      </div>
+                      <div
+                        className={cn(
+                          "self-stretch justify-start text-base font-light font-[var(--font-poppins)] leading-7",
+                          isActive ? "text-white" : "text-neutral-500",
+                        )}
+                      >
+                        {testimonial.quote}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
