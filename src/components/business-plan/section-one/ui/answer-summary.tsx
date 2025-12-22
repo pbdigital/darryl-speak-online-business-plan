@@ -44,15 +44,6 @@ const SUMMARY_SECTIONS: SummarySection[] = [
     ],
   },
   {
-    title: "Goals & Intentions",
-    fields: [
-      { label: "Top Goals", fieldName: "topGoalsIntentions" },
-      { label: "Why Goals Matter", fieldName: "goalsImportance" },
-      { label: "Strategies", fieldName: "goalStrategies" },
-      { label: "Immediate Steps", fieldName: "immediateSteps" },
-    ],
-  },
-  {
     title: "Self-Care & Growth",
     fields: [
       { label: "Self-Care Priorities", fieldName: "selfCarePriorities" },
