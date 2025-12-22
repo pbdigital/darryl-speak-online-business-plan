@@ -211,7 +211,14 @@ export function SectionOneForm() {
 
     switch (activeStep) {
       case 0:
-        return <StepOverview onStart={() => setActiveStep(1)} />;
+        return <StepOverview onStart={() => {
+          setIsTransitioning(true);
+          setTimeout(() => {
+            setActiveStep(1);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            setTimeout(() => setIsTransitioning(false), 50);
+          }, 200);
+        }} />;
       case 1:
         return <StepProductionNumbers />;
       case 2:
