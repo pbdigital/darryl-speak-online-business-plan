@@ -905,7 +905,7 @@ function TestimonialsSection() {
                   type="button"
                   aria-label="Previous testimonial"
                   onClick={goPrev}
-                  className="relative p-0 m-0 bg-transparent border-0 focus:outline-none"
+                  className="group relative p-0 m-0 bg-transparent border-0 focus:outline-none cursor-pointer transition-transform duration-200 ease-out hover:opacity-80 active:scale-95"
                 >
                   <svg
                     width="24"
@@ -913,6 +913,7 @@ function TestimonialsSection() {
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    className="transition-transform duration-200 ease-out group-hover:-translate-x-0.5"
                   >
                     <path
                       d="M20 12H4M4 12L10 6M4 12L10 18"
@@ -927,7 +928,7 @@ function TestimonialsSection() {
                   type="button"
                   aria-label="Next testimonial"
                   onClick={goNext}
-                  className="w-[50px] h-[50px] pl-[18px] pr-5 py-[11px] bg-slate-900 rounded-[26px] flex justify-center items-center focus:outline-none shrink-0"
+                  className="group w-[50px] h-[50px] pl-[18px] pr-5 py-[11px] bg-slate-900 rounded-[26px] flex justify-center items-center focus:outline-none shrink-0 cursor-pointer transition-all duration-200 ease-out hover:bg-slate-900/90 hover:shadow-md active:scale-95"
                 >
                   <span className="relative">
                     <svg
@@ -936,6 +937,7 @@ function TestimonialsSection() {
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      className="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
                     >
                       <path
                         d="M4 12H20M20 12L14 6M20 12L14 18"
@@ -1020,7 +1022,7 @@ function TestimonialsSection() {
               type="button"
               aria-label="Previous testimonial"
               onClick={goPrev}
-              className="relative p-0 m-0 bg-transparent border-0 focus:outline-none"
+              className="group relative p-0 m-0 bg-transparent border-0 focus:outline-none cursor-pointer transition-transform duration-200 ease-out hover:opacity-80 active:scale-95"
             >
               <svg
                 width="24"
@@ -1028,6 +1030,7 @@ function TestimonialsSection() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className="transition-transform duration-200 ease-out group-hover:-translate-x-0.5"
               >
                 <path
                   d="M20 12H4M4 12L10 6M4 12L10 18"
@@ -1043,7 +1046,7 @@ function TestimonialsSection() {
               type="button"
               aria-label="Next testimonial"
               onClick={goNext}
-              className="w-[50px] h-[50px] pl-[18px] pr-5 py-[11px] bg-slate-900 rounded-[26px] flex justify-center items-center focus:outline-none"
+              className="group w-[50px] h-[50px] pl-[18px] pr-5 py-[11px] bg-slate-900 rounded-[26px] flex justify-center items-center focus:outline-none cursor-pointer transition-all duration-200 ease-out hover:bg-slate-900/90 hover:shadow-md active:scale-95"
             >
               <span className="relative">
                 <svg
@@ -1052,6 +1055,7 @@ function TestimonialsSection() {
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
                 >
                   <path
                     d="M4 12H20M20 12L14 6M20 12L14 18"
