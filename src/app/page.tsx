@@ -769,88 +769,199 @@ function FiveSectionsOverview() {
 
 const testimonials = [
   {
+    name: "Amelia Joseph",
+    role: "Real Estate Agent",
     quote:
-      "The business plan helped me go from scattered goals to a clear daily roadmap. I closed 30% more transactions this year.",
-    author: "Sarah M.",
-    role: "RE/MAX Agent, Chicago",
-    initials: "SM",
+      "“This business plan finally gave me clarity. For the first time, I knew my exact numbers—my GCI target, my daily reach-outs, everything. I doubled my listings in just three months because I had a roadmap I could actually follow.",
+    imageSrc: "/testimonials/testimonial-1.jpg",
+    variant: "dark",
   },
   {
+    name: "Maria Davis",
+    role: "Real Estate Agent",
     quote:
-      "Having everything calculate automatically and being able to update it on my phone between showings is a game-changer.",
-    author: "Michael R.",
-    role: "Keller Williams, Austin",
-    initials: "MR",
+      "I’ve tried so many planning tools, but nothing breaks it down as clearly as this. The daily action steps took the guesswork out of my routine and helped me stay consistent during a busy year. My confidence—and my income—skyrocketed.",
+    imageSrc: "/testimonials/testimonial-2.jpg",
+    variant: "light",
   },
   {
+    name: "Jacob Joshua",
+    role: "Real Estate Agent",
     quote:
-      "The SWOT analysis and mindset sections were eye-opening. It's not just about numbers - it's about who you become.",
-    author: "Jennifer L.",
-    role: "Coldwell Banker, Denver",
-    initials: "JL",
+      "This plan changed how I run my business. I loved seeing my progress across all five sections, and updating my numbers throughout the year kept me accountable. I hit my annual goal ahead of schedule.",
+    imageSrc: "/testimonials/testimonial-3.jpg",
+    variant: "light",
   },
 ];
 
 function TestimonialsSection() {
   return (
-    <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
-      <div className="max-w-[1180px] mx-auto">
-        <div className="flex flex-col gap-8 md:gap-[60px]">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <section className="bg-white">
+      {/* Mobile/tablet fallback */}
+      <div className="xl:hidden px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+        <div className="max-w-[1180px] mx-auto">
+          <div className="flex flex-col gap-8 md:gap-[60px]">
             <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a]">
               Agents Like You Are Getting Results
             </h2>
-            <div className="hidden md:flex gap-5">
-              <button className="w-10 h-10 rounded-full border border-[#e7e9e9] flex items-center justify-center hover:bg-[#f8fafc] transition-colors">
-                <ArrowRight className="w-5 h-5 text-[#0f172a] rotate-180" />
-              </button>
-              <button className="w-10 h-10 rounded-full border border-[#e7e9e9] flex items-center justify-center hover:bg-[#f8fafc] transition-colors">
-                <ArrowRight className="w-5 h-5 text-[#0f172a]" />
-              </button>
+
+            <div className="flex flex-col gap-4">
+              {testimonials.map((testimonial) => {
+                const isDark = testimonial.variant === "dark";
+
+                return (
+                  <div
+                    key={testimonial.name}
+                    className={cn(
+                      "rounded-[20px] outline outline-1 outline-offset-[-1px] outline-[#91aec0]/20 p-6 flex justify-start items-start gap-4",
+                      isDark ? "bg-slate-800" : "bg-slate-50",
+                    )}
+                  >
+                    <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-[#d9d9d9] shrink-0">
+                      <Image
+                        src={testimonial.imageSrc}
+                        alt={testimonial.name}
+                        width={60}
+                        height={60}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="flex-1 flex flex-col gap-2">
+                      <p
+                        className={cn(
+                          "font-[var(--font-poppins)] text-xl font-semibold leading-7",
+                          isDark ? "text-white" : "text-slate-900",
+                        )}
+                      >
+                        {testimonial.name}
+                      </p>
+                      <p className="font-[var(--font-poppins)] text-sm font-medium leading-5 capitalize text-[#28afb0]">
+                        {testimonial.role}
+                      </p>
+                      <p
+                        className={cn(
+                          "font-[var(--font-poppins)] text-base font-light leading-7",
+                          isDark ? "text-white" : "text-neutral-500",
+                        )}
+                      >
+                        {testimonial.quote}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Testimonial cards */}
-          <div className="flex flex-col md:flex-row gap-4 md:gap-5">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="flex-1 bg-white border border-[#e7e9e9] rounded-[20px] p-5 md:p-6 flex flex-col gap-4"
+      {/* Desktop layout (match `figma.jsx`) */}
+      <div className="hidden xl:inline-flex w-[1440px] h-[615px] px-[130px] py-20 relative bg-white flex-col justify-start items-start gap-20 overflow-hidden mx-auto">
+        <div className="w-[1180px] inline-flex justify-between items-center">
+          <div className="justify-start text-slate-900 text-[32px] font-bold font-[var(--font-poppins)] leading-[38.40px]">
+            Agents Like You Are Getting Results
+          </div>
+
+          <div className="flex justify-start items-center gap-[21px]">
+            <button
+              type="button"
+              aria-label="Previous testimonial"
+              className="relative p-0 m-0 bg-transparent border-0 focus:outline-none"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                {/* Stars */}
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 md:w-5 md:h-5 fill-[#fbbf24] text-[#fbbf24]"
+                <path
+                  d="M20 12H4M4 12L10 6M4 12L10 18"
+                  stroke="#0F172A"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              aria-label="Next testimonial"
+              className="w-[50px] h-[50px] pl-[18px] pr-5 py-[11px] bg-slate-900 rounded-[26px] flex justify-center items-center focus:outline-none"
+            >
+              <span className="relative">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4 12H20M20 12L14 6M20 12L14 18"
+                    stroke="white"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div className="w-[1440px] h-[308px] left-0 top-[190px] absolute">
+          <div className="w-[1645px] left-[93px] top-0 absolute inline-flex justify-center items-center gap-5 overflow-hidden">
+            {testimonials.map((testimonial, index) => {
+              const isDark = testimonial.variant === "dark";
+              const dataProperty = index === 0 ? "Variant2" : "Default";
+
+              return (
+                <div
+                  key={testimonial.name}
+                  data-property-1={dataProperty}
+                  className={cn(
+                    "w-[450px] h-[328px] p-[30px] rounded-[20px] outline outline-1 outline-offset-[-1px] outline-[#91aec0]/20 flex justify-start items-start gap-4",
+                    isDark ? "bg-slate-800" : "bg-slate-50",
+                  )}
+                >
+                  <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-[#d9d9d9] shrink-0">
+                    <Image
+                      src={testimonial.imageSrc}
+                      alt={testimonial.name}
+                      width={60}
+                      height={60}
+                      className="w-full h-full object-cover"
+                      priority={index === 0}
                     />
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <p className="font-[var(--font-poppins)] text-sm md:text-base text-[#0f172a] leading-6 md:leading-7 flex-1">
-                  &ldquo;{testimonial.quote}&rdquo;
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center gap-3 pt-4 border-t border-[#e7e9e9]">
-                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#0f172a]/10 flex items-center justify-center">
-                    <span className="font-[var(--font-poppins)] font-semibold text-xs md:text-sm text-[#0f172a]">
-                      {testimonial.initials}
-                    </span>
                   </div>
-                  <div>
-                    <p className="font-[var(--font-poppins)] font-semibold text-sm text-[#0f172a]">
-                      {testimonial.author}
-                    </p>
-                    <p className="font-[var(--font-poppins)] text-xs md:text-sm text-[#737373]">
+
+                  <div className="flex-1 inline-flex flex-col justify-start items-start gap-2">
+                    <div
+                      className={cn(
+                        "self-stretch justify-start text-xl font-semibold font-[var(--font-poppins)] leading-7",
+                        isDark ? "text-white" : "text-slate-900",
+                      )}
+                    >
+                      {testimonial.name}
+                    </div>
+                    <div className="self-stretch justify-start text-[#28afb0] text-sm font-medium font-[var(--font-poppins)] capitalize leading-5">
                       {testimonial.role}
-                    </p>
+                    </div>
+                    <div
+                      className={cn(
+                        "self-stretch justify-start text-base font-light font-[var(--font-poppins)] leading-7",
+                        isDark ? "text-white" : "text-neutral-500",
+                      )}
+                    >
+                      {testimonial.quote}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
