@@ -77,7 +77,7 @@ export function StepWellness() {
             number={5}
             label="How will you commit to continuous learning and personal growth?"
             fieldName="learningCommitment"
-            placeholder="Read one business book per month. Attend the Power Agent Summit. Join a mastermind group..."
+            placeholder="Read one business book per month. Attend the POWER AGENT® Summit. Join a mastermind group..."
           />
         </div>
       </section>

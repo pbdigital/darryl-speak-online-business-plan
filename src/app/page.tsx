@@ -343,7 +343,7 @@ function HeroSection() {
                     : "opacity-0 translate-y-4"
                 )}
               >
-                Join thousands of agents using the proven Power Agent
+                Join thousands of agents using the proven POWER AGENT®
                 methodology to design careers and lives worth smiling about.
               </p>
             </div>
@@ -518,7 +518,7 @@ const steps = [
     step: 1,
     title: "Create Your Account",
     description:
-      "Sign up in seconds. If you're a Power Agent member, log in with your existing credentials.",
+      "Sign up in seconds. If you're a POWER AGENT® member, log in with your existing credentials.",
   },
   {
     step: 2,
@@ -1178,7 +1178,7 @@ function AboutSection() {
                 <strong className="text-[#0f172a]">
                   Darryl Davis Seminars
                 </strong>
-                , the company behind the Power Agent Program that has helped
+                , the company behind the POWER AGENT® Program that has helped
                 thousands of real estate professionals design careers and lives
                 worth smiling about.
               </p>
@@ -1243,7 +1243,7 @@ function FinalCTASection() {
             Ready to Make This Your Breakthrough Year?
           </h2>
           <p className="font-[var(--font-poppins)] text-sm md:text-lg leading-6 md:leading-7 text-[#e7e9e9] mb-6 md:mb-8 max-w-[600px] mx-auto">
-            Join thousands of agents using the proven Power Agent methodology.
+            Join thousands of agents using the proven POWER AGENT® methodology.
             Start building your business plan today.
           </p>
           <Link
@@ -1269,7 +1269,9 @@ function Footer() {
   return (
     <footer className="bg-[#0b1c3b] min-h-[60px] py-4 md:py-0 md:h-[60px] flex items-center justify-center px-6">
       <p className="font-[var(--font-poppins)] text-xs md:text-sm text-white text-center">
-        Darryl Davis | Copyright 2025 | Terms &amp; Conditions | Privacy Policy
+Darryl Davis | Copyright 2025 |{" "}
+        <a href="https://darrylspeaks.com/terms-of-service" target="_blank" rel="noopener noreferrer" className="hover:underline">Terms &amp; Conditions</a>{" "}|{" "}
+        <a href="https://darrylspeaks.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="hover:underline">Privacy Policy</a>
       </p>
     </footer>
   );

@@ -78,7 +78,7 @@ export function InitialScreen({
         // If user created their account via Power Agent SSO, they must use SSO to login
         if (result.data.exists && result.data.isPowerAgentLinked) {
           setError(
-            'This account was created with Power Agent. Please use the "Continue with Power Agent" button above to sign in.'
+            'This account was created with POWER AGENT®. Please use the "Continue with POWER AGENT®" button above to sign in.'
           );
           return;
         }

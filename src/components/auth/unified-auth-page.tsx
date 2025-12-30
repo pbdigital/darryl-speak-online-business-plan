@@ -53,7 +53,7 @@ export function UnifiedAuthPage() {
     if (!ssoUrl) {
       setState((prev) => ({
         ...prev,
-        error: 'Power Agent SSO is not configured.',
+        error: 'POWER AGENT® SSO is not configured.',
       }));
       return;
     }

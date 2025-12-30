@@ -103,7 +103,7 @@ export function UsersTable({ users }: UsersTableProps) {
 
   const getProviderBadge = (provider: string | null) => {
     if (provider === 'wordpress') {
-      return <Badge className="bg-blue-100 text-blue-800">Power Agent</Badge>;
+      return <Badge className="bg-blue-100 text-blue-800">POWER AGENT®</Badge>;
     }
     return <Badge variant="outline">{provider || 'Email'}</Badge>;
   };
@@ -134,7 +134,7 @@ export function UsersTable({ users }: UsersTableProps) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Providers</SelectItem>
-            <SelectItem value="wordpress">Power Agent SSO</SelectItem>
+            <SelectItem value="wordpress">POWER AGENT® SSO</SelectItem>
             <SelectItem value="email">Email/OAuth</SelectItem>
           </SelectContent>
         </Select>

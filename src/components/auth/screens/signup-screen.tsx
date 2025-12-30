@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createClient } from '@/lib/supabase/client';
@@ -179,21 +178,23 @@ export function SignupScreen({ email, onBack, onSuccess }: SignupScreenProps) {
                 <div>
                   <FormLabel className="text-sm font-normal cursor-pointer text-gray-600">
                     I agree to the{' '}
-                    <Link
-                      href="/terms"
+                    <a
+                      href="https://darrylspeaks.com/terms-of-service"
                       className="text-primary hover:underline"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       Terms
-                    </Link>{' '}
+                    </a>{' '}
                     and{' '}
-                    <Link
-                      href="/privacy"
+                    <a
+                      href="https://darrylspeaks.com/privacy-policy"
                       className="text-primary hover:underline"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       Privacy Policy
-                    </Link>
+                    </a>
                   </FormLabel>
                   <FormMessage />
                 </div>

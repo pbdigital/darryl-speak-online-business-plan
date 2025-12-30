@@ -166,7 +166,7 @@ export function StepMantra() {
             number={3}
             label="What tools or methods will you use to track your progress throughout the year?"
             fieldName="progressTrackingTools"
-            placeholder="I'll use my CRM for pipeline tracking, a spreadsheet for GCI, and the Power Agent weekly planning sheet..."
+            placeholder="I'll use my CRM for pipeline tracking, a spreadsheet for GCI, and the POWER AGENT® weekly planning sheet..."
           />
         </div>
       </section>

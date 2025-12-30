@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 interface AuthFooterProps {
@@ -13,19 +12,23 @@ export function AuthFooter({ className }: AuthFooterProps) {
         className
       )}
     >
-      <Link
-        href="/privacy"
+      <a
+        href="https://darrylspeaks.com/privacy-policy"
+        target="_blank"
+        rel="noopener noreferrer"
         className="hover:text-gray-600 transition-colors"
       >
         Privacy Policy
-      </Link>
+      </a>
       <span className="text-gray-300">|</span>
-      <Link
-        href="/terms"
+      <a
+        href="https://darrylspeaks.com/terms-of-service"
+        target="_blank"
+        rel="noopener noreferrer"
         className="hover:text-gray-600 transition-colors"
       >
         Terms of Service
-      </Link>
+      </a>
     </div>
   );
 }

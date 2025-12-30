@@ -12,7 +12,7 @@ interface SsoButtonProps {
 
 const providerConfig = {
   'power-agent': {
-    label: 'Continue with Power Agent',
+    label: 'Continue with POWER AGENT®',
     icon: (
       <svg
         className="h-5 w-5"
