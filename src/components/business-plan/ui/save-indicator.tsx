@@ -22,7 +22,7 @@ export function SaveIndicator({
   return (
     <div
       className={cn(
-        'flex items-center gap-1.5 text-xs text-muted-foreground transition-opacity',
+        'hidden md:flex items-center gap-1.5 text-xs text-muted-foreground transition-opacity',
         status === 'idle' && !lastSavedAt && 'opacity-0',
         className
       )}

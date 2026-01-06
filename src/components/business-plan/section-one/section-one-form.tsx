@@ -276,7 +276,6 @@ export function SectionOneForm() {
           totalSteps={TOTAL_STEPS}
           highestStepReached={highestStepReached}
           onStepClick={handleStepNavigation}
-          showPercentage={activeStep > 0}
           className="mx-6 flex-1"
           isStepComplete={isStepComplete}
         />

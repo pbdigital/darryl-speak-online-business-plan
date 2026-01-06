@@ -191,7 +191,6 @@ export function SectionFourForm() {
           stepLabels={STEP_LABELS}
           highestStepReached={highestStepReached}
           onStepClick={handleStepNavigation}
-          showPercentage={activeStep > 0}
           className="mx-6 flex-1"
           isStepComplete={isStepComplete}
         />

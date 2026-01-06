@@ -629,8 +629,16 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
 
       // Check if a specific step is complete
       isStepComplete: (step: number) => {
-        // Step 0 (Overview) and Step 8 (Complete) are always complete
-        if (step === 0 || step === 8) return true;
+        // Step 0 (Overview) is always complete
+        if (step === 0) return true;
+
+        // Step 8 (Complete) is only complete if all content steps (1-7) are complete
+        if (step === 8) {
+          for (let i = 1; i <= 7; i++) {
+            if (!get().isStepComplete(i)) return false;
+          }
+          return true;
+        }
 
         const data = get().data;
 

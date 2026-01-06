@@ -20,7 +20,6 @@ interface ProgressStepperProps {
   totalSteps: number;
   highestStepReached?: number;
   onStepClick?: (step: number) => void;
-  showPercentage?: boolean;
   className?: string;
   stepLabels?: string[];
   /** Optional callback to check if a step is complete (based on field validation, not navigation) */
@@ -32,7 +31,6 @@ export function ProgressStepper({
   totalSteps,
   highestStepReached = currentStep,
   onStepClick,
-  showPercentage = false,
   className,
   stepLabels = DEFAULT_STEP_LABELS,
   isStepComplete,
@@ -66,13 +64,8 @@ export function ProgressStepper({
 
   return (
     <div className={cn("flex flex-col items-center", className)}>
-      {/* Mobile view: Text with progress bar */}
-      <div className="flex flex-col items-center gap-1.5 md:hidden">
-        <span className="text-xs font-medium text-slate-500">
-          Step {currentStep} of {totalSteps - 1}
-          {showPercentage && ` (${progressPercentage}%)`}
-        </span>
-        {/* Progress bar */}
+      {/* Mobile view: Progress bar only */}
+      <div className="flex flex-col items-center md:hidden">
         <div className="h-1 w-24 overflow-hidden rounded-full bg-slate-200">
           <div
             className="h-full rounded-full bg-emerald-400 transition-all duration-500"
@@ -90,8 +83,8 @@ export function ProgressStepper({
               <div
                 className={cn(
                   "h-0.5 w-6 transition-all duration-500",
-                  // Connector is green if the previous step is complete OR if we're at/past this step
-                  (shouldShowComplete(i - 1) || i <= currentStep) ? "bg-emerald-400" : "bg-slate-200"
+                  // Connector is green only if we've reached or passed this step
+                  i <= currentStep ? "bg-emerald-400" : "bg-slate-200"
                 )}
               />
             )}
@@ -146,13 +139,6 @@ export function ProgressStepper({
           </div>
         ))}
       </div>
-
-      {/* Step indicator (desktop only) */}
-      {showPercentage && (
-        <div className="mt-1 hidden text-center text-[10px] font-medium text-slate-400 md:block">
-          Step {currentStep} of {totalSteps - 1}
-        </div>
-      )}
     </div>
   );
 }

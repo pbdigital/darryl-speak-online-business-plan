@@ -489,8 +489,16 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
 
   // Check if a specific step is complete
   isStepComplete: (step: number) => {
-    // Step 0 (Overview) and Step 9 (Complete) are always complete
-    if (step === 0 || step === 9) return true;
+    // Step 0 (Overview) is always complete
+    if (step === 0) return true;
+
+    // Step 9 (Complete) is only complete if all content steps (1-8) are complete
+    if (step === 9) {
+      for (let i = 1; i <= 8; i++) {
+        if (!get().isStepComplete(i)) return false;
+      }
+      return true;
+    }
 
     const { incomePlanning } = get();
 
