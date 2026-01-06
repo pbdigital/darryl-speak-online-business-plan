@@ -147,10 +147,10 @@ export function ProgressStepper({
         ))}
       </div>
 
-      {/* Progress percentage (desktop only) */}
+      {/* Step indicator (desktop only) */}
       {showPercentage && (
         <div className="mt-1 hidden text-center text-[10px] font-medium text-slate-400 md:block">
-          {progressPercentage}% complete
+          Step {currentStep} of {totalSteps - 1}
         </div>
       )}
     </div>
