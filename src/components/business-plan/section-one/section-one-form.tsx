@@ -26,7 +26,7 @@ import { StepWellness } from "./steps/step-wellness";
 import { StepMantra } from "./steps/step-mantra";
 import { StepCelebration } from "./steps/step-celebration";
 import { StepComplete } from "./steps/step-complete";
-import { ProgressStepper, EncouragementToast } from "./ui";
+import { ProgressStepper, EncouragementToast, ValidationToast } from "./ui";
 
 const TOTAL_STEPS = 10; // 0-9 (Overview + 8 content steps + Complete)
 
@@ -54,7 +54,7 @@ const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
 };
 
 export function SectionOneForm() {
-  const { currentStep, setCurrentStep, updateField, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData, advanceGoalBuilder, retreatGoalBuilder, goalBuilderSubStep, data } = useSectionOneStore();
+  const { currentStep, setCurrentStep, updateField, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData, advanceGoalBuilder, retreatGoalBuilder, goalBuilderSubStep, data, isStepComplete, getStepMissingFields } = useSectionOneStore();
 
   // Hydrate store with server data on mount
   const { isHydrating } = useHydrateSection<SectionOneData>("reflection", hydrate);
@@ -73,6 +73,10 @@ export function SectionOneForm() {
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
+
+  // Validation toast state
+  const [showValidationToast, setShowValidationToast] = useState(false);
+  const [validationMissingFields, setValidationMissingFields] = useState<string[]>([]);
 
   // Check if Next Step should be disabled (Step 5 Goal List with no valid goals)
   const goals = data.goals ?? [];
@@ -131,6 +135,11 @@ export function SectionOneForm() {
     setToastMessage("");
   }, []);
 
+  const handleHideValidationToast = useCallback(() => {
+    setShowValidationToast(false);
+    setValidationMissingFields([]);
+  }, []);
+
   // Handler for clicking on progress stepper dots
   const handleStepNavigation = useCallback((step: number) => {
     if (step <= highestStepReached && step !== activeStep) {
@@ -161,6 +170,13 @@ export function SectionOneForm() {
     }
 
     if (activeStep < TOTAL_STEPS - 1) {
+      // Check if current step is incomplete and show validation feedback
+      const missingFields = getStepMissingFields(activeStep);
+      if (missingFields.length > 0) {
+        setValidationMissingFields(missingFields);
+        setShowValidationToast(true);
+      }
+
       // Start exit transition
       setIsTransitioning(true);
 
@@ -170,9 +186,9 @@ export function SectionOneForm() {
         setActiveStep(nextStep);
         window.scrollTo({ top: 0, behavior: "smooth" });
 
-        // Show encouragement toast for milestone steps
+        // Show encouragement toast for milestone steps (only if step was complete)
         const message = ENCOURAGEMENT_MESSAGES[activeStep];
-        if (message) {
+        if (message && missingFields.length === 0) {
           setTimeout(() => {
             setToastMessage(message);
             setShowToast(true);
@@ -262,6 +278,7 @@ export function SectionOneForm() {
           onStepClick={handleStepNavigation}
           showPercentage={activeStep > 0}
           className="mx-6 flex-1"
+          isStepComplete={isStepComplete}
         />
 
         <div className="flex items-center gap-2">
@@ -313,6 +330,13 @@ export function SectionOneForm() {
         onHide={handleHideToast}
       />
 
+      {/* Validation Toast */}
+      <ValidationToast
+        missingFields={validationMissingFields}
+        show={showValidationToast}
+        onHide={handleHideValidationToast}
+      />
+
       {/* Floating Navigation Footer */}
       {activeStep > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-100 bg-white p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
@@ -326,14 +350,24 @@ export function SectionOneForm() {
             </button>
 
             {activeStep === TOTAL_STEPS - 1 ? (
-              <Link
-                href="/plan/section-2"
-                onClick={handleNavigationSave}
-                className="group flex items-center rounded-full bg-emerald-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-emerald-700 hover:shadow-xl active:scale-[0.98]"
-              >
-                Continue to Section 2
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+              isStepComplete(activeStep) ? (
+                <Link
+                  href="/plan/section-2"
+                  onClick={handleNavigationSave}
+                  className="group flex items-center rounded-full bg-emerald-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-emerald-700 hover:shadow-xl active:scale-[0.98]"
+                >
+                  Continue to Section 2
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className="group flex cursor-not-allowed items-center rounded-full bg-slate-200 px-8 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 shadow-lg"
+                >
+                  Continue to Section 2
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </button>
+              )
             ) : (
               <button
                 onClick={handleNext}

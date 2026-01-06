@@ -4,6 +4,7 @@ export { SectionCover } from "./section-cover";
 export { DefinitionBox } from "./definition-box";
 export { ProgressStepper } from "./progress-stepper";
 export { EncouragementToast } from "./encouragement-toast";
+export { ValidationToast } from "./validation-toast";
 export { AnimatedCheckmark } from "./animated-checkmark";
 export { MantraWallpaper } from "./mantra-wallpaper";
 export { AnswerSummary } from "./answer-summary";

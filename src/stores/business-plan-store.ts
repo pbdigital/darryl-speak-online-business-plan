@@ -14,6 +14,18 @@ const WEEKS_PER_YEAR = 52;
 // Total steps in Section 3 (excluding overview at 0, content steps 1-8, complete at 9)
 const TOTAL_CONTENT_STEPS = 8;
 
+// Step validation labels for Section 3
+const STEP_VALIDATION_LABELS: Record<number, string[]> = {
+  1: ["At least one personal expense"],
+  2: ["At least one business expense"],
+  3: ["At least one manifest goal with name and amount"],
+  4: ["Estimated tax rate"],
+  5: ["Broker split percentage"],
+  6: ["Average sales price", "Average commission rate"],
+  7: ["Work days per week", "Weeks off per year"],
+  8: ["What reaching your goal means", "What failing your goal means"],
+};
+
 interface BusinessPlanStore {
   // Income Planning Data
   incomePlanning: IncomePlanningSection;
@@ -62,6 +74,10 @@ interface BusinessPlanStore {
   // Progress tracking (step-based)
   getProgress: () => number;
   getFilledFieldCount: () => number;
+
+  // Step validation selectors
+  isStepComplete: (step: number) => boolean;
+  getStepMissingFields: (step: number) => string[];
 }
 
 // Default personal expense items from the PDF
@@ -469,6 +485,110 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
         dailyAppointments,
       },
     });
+  },
+
+  // Check if a specific step is complete
+  isStepComplete: (step: number) => {
+    // Step 0 (Overview) and Step 9 (Complete) are always complete
+    if (step === 0 || step === 9) return true;
+
+    const { incomePlanning } = get();
+
+    switch (step) {
+      case 1: // Personal Expenses - at least 1 expense
+        return incomePlanning.personalExpenses.some((e) => e.amount !== null);
+      case 2: // Business Expenses - at least 1 expense
+        return incomePlanning.businessExpenses.some((e) => e.amount !== null);
+      case 3: // Manifest List - at least 1 goal with name + amount
+        const allGoals = [
+          ...incomePlanning.familyGoals,
+          ...incomePlanning.financialGoals,
+          ...incomePlanning.personalGoals,
+          ...incomePlanning.businessGoals,
+        ];
+        return allGoals.some((g) => g.name.trim() && g.amount !== null);
+      case 4: // Tax Calculation - tax rate
+        return incomePlanning.estimatedTaxRate !== null;
+      case 5: // GCI Goal - broker split
+        return incomePlanning.brokerSplitPercentage !== null;
+      case 6: // Transactions - avg sales price + commission rate
+        return incomePlanning.averageSalesPrice !== null && incomePlanning.averageCommissionRate !== null;
+      case 7: // Daily Activities - work days + weeks off
+        return incomePlanning.workDaysPerWeek !== null && incomePlanning.weeksOff !== null;
+      case 8: // Income Commitment - reaching + failing goal texts
+        return incomePlanning.reachingGoalMeans.trim() !== '' && incomePlanning.failingGoalMeans.trim() !== '';
+      default:
+        return true;
+    }
+  },
+
+  // Get missing fields for a specific step with human-readable labels
+  getStepMissingFields: (step: number) => {
+    // Overview and Complete steps have no missing fields
+    if (step === 0 || step === 9) return [];
+
+    const { incomePlanning } = get();
+    const missing: string[] = [];
+
+    switch (step) {
+      case 1:
+        if (!incomePlanning.personalExpenses.some((e) => e.amount !== null)) {
+          missing.push("At least one personal expense");
+        }
+        break;
+      case 2:
+        if (!incomePlanning.businessExpenses.some((e) => e.amount !== null)) {
+          missing.push("At least one business expense");
+        }
+        break;
+      case 3:
+        const allGoals = [
+          ...incomePlanning.familyGoals,
+          ...incomePlanning.financialGoals,
+          ...incomePlanning.personalGoals,
+          ...incomePlanning.businessGoals,
+        ];
+        if (!allGoals.some((g) => g.name.trim() && g.amount !== null)) {
+          missing.push("At least one manifest goal with name and amount");
+        }
+        break;
+      case 4:
+        if (incomePlanning.estimatedTaxRate === null) {
+          missing.push("Estimated tax rate");
+        }
+        break;
+      case 5:
+        if (incomePlanning.brokerSplitPercentage === null) {
+          missing.push("Broker split percentage");
+        }
+        break;
+      case 6:
+        if (incomePlanning.averageSalesPrice === null) {
+          missing.push("Average sales price");
+        }
+        if (incomePlanning.averageCommissionRate === null) {
+          missing.push("Average commission rate");
+        }
+        break;
+      case 7:
+        if (incomePlanning.workDaysPerWeek === null) {
+          missing.push("Work days per week");
+        }
+        if (incomePlanning.weeksOff === null) {
+          missing.push("Weeks off per year");
+        }
+        break;
+      case 8:
+        if (!incomePlanning.reachingGoalMeans.trim()) {
+          missing.push("What reaching your goal means");
+        }
+        if (!incomePlanning.failingGoalMeans.trim()) {
+          missing.push("What failing your goal means");
+        }
+        break;
+    }
+
+    return missing;
   },
     }),
     {

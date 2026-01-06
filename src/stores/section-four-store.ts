@@ -19,6 +19,17 @@ const initialData: MindsetSection = {
   whoINeedToBecome: "",
 };
 
+// Step validation labels for Section 4
+const STEP_VALIDATION_LABELS: Record<number, string[]> = {
+  1: ["At least one affirmation"],
+  2: ["Morning routine", "Evening routine"],
+  3: ["At least one boundary"],
+  4: ["At least one self-care commitment"],
+  5: ["What motivates you"],
+  6: ["At least one support system person"],
+  7: ["Who you need to become"],
+};
+
 interface SectionFourStore {
   data: MindsetSection;
 
@@ -77,6 +88,10 @@ interface SectionFourStore {
   getFilledBoundaries: () => string[];
   getFilledSelfCare: () => string[];
   getFilledSupport: () => string[];
+
+  // Step validation selectors
+  isStepComplete: (step: number) => boolean;
+  getStepMissingFields: (step: number) => string[];
 }
 
 export const useSectionFourStore = create<SectionFourStore>()(
@@ -314,6 +329,85 @@ export const useSectionFourStore = create<SectionFourStore>()(
 
       getFilledSupport: () => {
         return get().data.supportSystem.filter((s) => s.trim());
+      },
+
+      // Check if a specific step is complete
+      isStepComplete: (step: number) => {
+        // Step 0 (Overview) and Step 8 (Complete) are always complete
+        if (step === 0 || step === 8) return true;
+
+        const data = get().data;
+
+        switch (step) {
+          case 1: // Affirmations - at least 1 affirmation
+            return data.affirmations.some((a) => a.trim());
+          case 2: // Routines - morning + evening
+            return data.morningRoutine.trim() !== '' && data.eveningRoutine.trim() !== '';
+          case 3: // Boundaries - at least 1 boundary
+            return data.boundaries.some((b) => b.trim());
+          case 4: // Self-Care - at least 1 self-care commitment
+            return data.selfCareCommitments.some((s) => s.trim());
+          case 5: // Motivation - what motivates me
+            return data.whatMotivatesMe.trim() !== '';
+          case 6: // Support - at least 1 support person
+            return data.supportSystem.some((s) => s.trim());
+          case 7: // Becoming - who I need to become
+            return data.whoINeedToBecome.trim() !== '';
+          default:
+            return true;
+        }
+      },
+
+      // Get missing fields for a specific step with human-readable labels
+      getStepMissingFields: (step: number) => {
+        // Overview and Complete steps have no missing fields
+        if (step === 0 || step === 8) return [];
+
+        const data = get().data;
+        const missing: string[] = [];
+
+        switch (step) {
+          case 1:
+            if (!data.affirmations.some((a) => a.trim())) {
+              missing.push("At least one affirmation");
+            }
+            break;
+          case 2:
+            if (!data.morningRoutine.trim()) {
+              missing.push("Morning routine");
+            }
+            if (!data.eveningRoutine.trim()) {
+              missing.push("Evening routine");
+            }
+            break;
+          case 3:
+            if (!data.boundaries.some((b) => b.trim())) {
+              missing.push("At least one boundary");
+            }
+            break;
+          case 4:
+            if (!data.selfCareCommitments.some((s) => s.trim())) {
+              missing.push("At least one self-care commitment");
+            }
+            break;
+          case 5:
+            if (!data.whatMotivatesMe.trim()) {
+              missing.push("What motivates you");
+            }
+            break;
+          case 6:
+            if (!data.supportSystem.some((s) => s.trim())) {
+              missing.push("At least one support system person");
+            }
+            break;
+          case 7:
+            if (!data.whoINeedToBecome.trim()) {
+              missing.push("Who you need to become");
+            }
+            break;
+        }
+
+        return missing;
       },
     }),
     {

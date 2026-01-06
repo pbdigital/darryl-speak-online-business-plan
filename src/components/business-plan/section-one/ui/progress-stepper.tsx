@@ -23,6 +23,8 @@ interface ProgressStepperProps {
   showPercentage?: boolean;
   className?: string;
   stepLabels?: string[];
+  /** Optional callback to check if a step is complete (based on field validation, not navigation) */
+  isStepComplete?: (step: number) => boolean;
 }
 
 export function ProgressStepper({
@@ -33,9 +35,22 @@ export function ProgressStepper({
   showPercentage = false,
   className,
   stepLabels = DEFAULT_STEP_LABELS,
+  isStepComplete,
 }: ProgressStepperProps) {
   // Calculate progress percentage
   const progressPercentage = Math.round((currentStep / (totalSteps - 1)) * 100);
+
+  // Check if a step should show as complete (with checkmark)
+  // If isStepComplete callback is provided, use field-based validation
+  // Otherwise, fall back to navigation-based (any step before current is "complete")
+  const shouldShowComplete = (stepIndex: number): boolean => {
+    if (isStepComplete) {
+      // Use field-based validation: only show complete if actually filled
+      return isStepComplete(stepIndex);
+    }
+    // Fallback: navigation-based (legacy behavior)
+    return stepIndex < currentStep;
+  };
 
   // Check if a step can be navigated to
   const canNavigateTo = (stepIndex: number) => {
@@ -75,7 +90,8 @@ export function ProgressStepper({
               <div
                 className={cn(
                   "h-0.5 w-6 transition-all duration-500",
-                  i <= currentStep ? "bg-emerald-400" : "bg-slate-200"
+                  // Connector is green if the previous step is complete OR if we're at/past this step
+                  (shouldShowComplete(i - 1) || i <= currentStep) ? "bg-emerald-400" : "bg-slate-200"
                 )}
               />
             )}
@@ -87,18 +103,18 @@ export function ProgressStepper({
                 disabled={!canNavigateTo(i)}
                 className={cn(
                   "relative flex h-3 w-3 items-center justify-center rounded-full transition-all duration-300",
-                  i < currentStep
-                    ? "bg-emerald-400 cursor-pointer hover:scale-125"
-                    : i === currentStep
-                      ? "bg-slate-900 ring-4 ring-slate-900/10"
+                  i === currentStep
+                    ? "bg-slate-900 ring-4 ring-slate-900/10"
+                    : shouldShowComplete(i)
+                      ? "bg-emerald-400 cursor-pointer hover:scale-125"
                       : canNavigateTo(i)
                         ? "bg-slate-200 cursor-pointer hover:bg-slate-300 hover:scale-110"
                         : "bg-slate-200 cursor-not-allowed opacity-50"
                 )}
                 aria-label={`${canNavigateTo(i) ? "Go to " : ""}Step ${i + 1}: ${stepLabels[i] || `Step ${i + 1}`}`}
               >
-                {/* Completed checkmark */}
-                {i < currentStep && (
+                {/* Completed checkmark - shows based on actual field completion */}
+                {i !== currentStep && shouldShowComplete(i) && (
                   <svg
                     className="h-2 w-2 text-white"
                     fill="none"

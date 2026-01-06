@@ -18,6 +18,10 @@ export function StepComplete({ startTime }: StepCompleteProps) {
   // Get data from store
   const filledFieldCount = useSectionOneStore((state) => state.getFilledFieldCount());
   const mantra = useSectionOneStore((state) => state.data.mantra);
+  const isStepComplete = useSectionOneStore((state) => state.isStepComplete);
+
+  // Step 9 is the current step (Complete step)
+  const canContinue = isStepComplete(9);
 
   // Calculate time spent
   const timeSpent = startTime

@@ -26,6 +26,7 @@ import { SaveIndicator } from "../ui/save-indicator";
 import {
   ProgressStepper,
   EncouragementToast,
+  ValidationToast,
 } from "@/components/business-plan/section-one/ui";
 
 import { StepOverview } from "./steps/step-overview";
@@ -56,6 +57,8 @@ export function SectionTwoForm() {
     highestStepReached,
     hydrate,
     getData,
+    isStepComplete,
+    getStepMissingFields,
   } = useSectionTwoStore();
 
   // Hydrate store with server data on mount
@@ -75,6 +78,10 @@ export function SectionTwoForm() {
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [startTime] = useState(() => Date.now());
+
+  // Validation toast state
+  const [showValidationToast, setShowValidationToast] = useState(false);
+  const [validationMissingFields, setValidationMissingFields] = useState<string[]>([]);
 
   // Sync local state with store on mount (in case store has persisted step)
   useEffect(() => {
@@ -148,6 +155,11 @@ export function SectionTwoForm() {
     setToastMessage("");
   }, []);
 
+  const handleHideValidationToast = useCallback(() => {
+    setShowValidationToast(false);
+    setValidationMissingFields([]);
+  }, []);
+
   // Show skeleton while hydrating - must be after all hooks
   if (isHydrating) {
     return <SectionSkeleton />;
@@ -155,6 +167,13 @@ export function SectionTwoForm() {
 
   const handleNext = () => {
     if (activeStep < TOTAL_STEPS - 1) {
+      // Check if current step is incomplete and show validation feedback
+      const missingFields = getStepMissingFields(activeStep);
+      if (missingFields.length > 0) {
+        setValidationMissingFields(missingFields);
+        setShowValidationToast(true);
+      }
+
       // Start exit transition
       setIsTransitioning(true);
 
@@ -164,9 +183,9 @@ export function SectionTwoForm() {
         setActiveStep(nextStep);
         window.scrollTo({ top: 0, behavior: "smooth" });
 
-        // Show encouragement toast for milestone steps
+        // Show encouragement toast for milestone steps (only if step was complete)
         const message = ENCOURAGEMENT_MESSAGES[activeStep];
-        if (message) {
+        if (message && missingFields.length === 0) {
           setTimeout(() => {
             setToastMessage(message);
             setShowToast(true);
@@ -236,6 +255,7 @@ export function SectionTwoForm() {
           onStepClick={handleStepNavigation}
           showPercentage={activeStep > 0}
           className="mx-6 flex-1"
+          isStepComplete={isStepComplete}
         />
 
         <div className="flex items-center gap-2">
@@ -285,6 +305,13 @@ export function SectionTwoForm() {
         message={toastMessage}
         show={showToast}
         onHide={handleHideToast}
+      />
+
+      {/* Validation Toast */}
+      <ValidationToast
+        missingFields={validationMissingFields}
+        show={showValidationToast}
+        onHide={handleHideValidationToast}
       />
 
       {/* Floating Navigation Footer */}

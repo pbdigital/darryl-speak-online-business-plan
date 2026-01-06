@@ -51,6 +51,15 @@ const initialData: SectionTwoData = {
   threats: createEmptyThreats(),
 };
 
+// Step validation configuration for Section 2 (SWOT Analysis)
+// Step 0 = Overview (always complete), Step 5 = Complete
+const STEP_VALIDATION_LABELS: Record<number, string> = {
+  1: "At least one strength",
+  2: "At least one weakness with an action",
+  3: "At least one opportunity with action steps",
+  4: "At least one threat with action steps",
+};
+
 interface SectionTwoStore {
   data: SectionTwoData;
 
@@ -95,6 +104,10 @@ interface SectionTwoStore {
   getFilledWeaknesses: () => WeaknessItem[];
   getFilledOpportunities: () => OpportunityItem[];
   getFilledThreats: () => ThreatItem[];
+
+  // Step validation selectors
+  isStepComplete: (step: number) => boolean;
+  getStepMissingFields: (step: number) => string[];
 }
 
 export const useSectionTwoStore = create<SectionTwoStore>()(
@@ -282,6 +295,39 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
 
       getFilledThreats: () => {
         return get().data.threats.filter((t) => t.threat.trim());
+      },
+
+      // Check if a specific step is complete
+      isStepComplete: (step: number) => {
+        // Step 0 (Overview) and Step 5 (Complete) are always complete
+        if (step === 0 || step === 5) return true;
+
+        const data = get().data;
+
+        switch (step) {
+          case 1: // Strengths - at least 1 strength with text
+            return data.strengths.some((s) => s.strength.trim());
+          case 2: // Weaknesses - at least 1 weakness with text + action
+            return data.weaknesses.some((w) => w.weakness.trim() && w.action !== null);
+          case 3: // Opportunities - at least 1 with possibility + actionSteps
+            return data.opportunities.some((o) => o.possibility.trim() && o.actionSteps.trim());
+          case 4: // Threats - at least 1 with threat + actionSteps
+            return data.threats.some((t) => t.threat.trim() && t.actionSteps.trim());
+          default:
+            return true;
+        }
+      },
+
+      // Get missing fields for a specific step with human-readable labels
+      getStepMissingFields: (step: number) => {
+        // Overview and Complete steps have no missing fields
+        if (step === 0 || step === 5) return [];
+
+        const isComplete = get().isStepComplete(step);
+        if (isComplete) return [];
+
+        const label = STEP_VALIDATION_LABELS[step];
+        return label ? [label] : [];
       },
     }),
     {

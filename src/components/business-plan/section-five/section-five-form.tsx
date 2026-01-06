@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ProgressStepper } from "@/components/business-plan/section-one/ui";
+import { ProgressStepper, ValidationToast } from "@/components/business-plan/section-one/ui";
 import { useSectionFiveStore } from "@/stores/section-five-store";
 import { useAutoSave } from "@/hooks/use-auto-save";
 import { useHydrateSection } from "@/hooks/use-hydrate-section";
@@ -42,7 +42,7 @@ const STEP_LABELS = [
 ];
 
 export function SectionFiveForm() {
-  const { currentStep, setCurrentStep, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData } = useSectionFiveStore();
+  const { currentStep, setCurrentStep, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData, isStepComplete, getStepMissingFields } = useSectionFiveStore();
 
   // Hydrate store with server data on mount
   const { isHydrating } = useHydrateSection<AccountabilitySection>("accountability", hydrate);
@@ -58,6 +58,10 @@ export function SectionFiveForm() {
   // Local state for UI - initialized from store
   const [activeStep, setActiveStep] = useState(currentStep);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Validation toast state
+  const [showValidationToast, setShowValidationToast] = useState(false);
+  const [validationMissingFields, setValidationMissingFields] = useState<string[]>([]);
 
   // Sync local state with store on mount (in case store has persisted step)
   useEffect(() => {
@@ -101,6 +105,11 @@ export function SectionFiveForm() {
     }
   }, [highestStepReached, activeStep]);
 
+  const handleHideValidationToast = useCallback(() => {
+    setShowValidationToast(false);
+    setValidationMissingFields([]);
+  }, []);
+
   // Show skeleton while hydrating - must be after all hooks
   if (isHydrating) {
     return <SectionSkeleton />;
@@ -108,6 +117,13 @@ export function SectionFiveForm() {
 
   const handleNext = () => {
     if (activeStep < TOTAL_STEPS - 1) {
+      // Check if current step is incomplete and show validation feedback
+      const missingFields = getStepMissingFields(activeStep);
+      if (missingFields.length > 0) {
+        setValidationMissingFields(missingFields);
+        setShowValidationToast(true);
+      }
+
       setIsTransitioning(true);
       setTimeout(() => {
         setActiveStep(activeStep + 1);
@@ -181,6 +197,7 @@ export function SectionFiveForm() {
           onStepClick={handleStepNavigation}
           showPercentage={activeStep > 0}
           className="mx-6 flex-1"
+          isStepComplete={isStepComplete}
         />
 
         <div className="flex items-center gap-2">
@@ -216,6 +233,13 @@ export function SectionFiveForm() {
       >
         {renderStep()}
       </div>
+
+      {/* Validation Toast */}
+      <ValidationToast
+        missingFields={validationMissingFields}
+        show={showValidationToast}
+        onHide={handleHideValidationToast}
+      />
 
       {/* Floating Navigation Footer */}
       {activeStep > 0 && (

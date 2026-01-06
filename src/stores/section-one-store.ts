@@ -150,6 +150,98 @@ const initialData: SectionOneData = {
 // GoalBuilder sub-step type
 export type GoalBuilderSubStep = "list" | "breakdown" | "summary";
 
+// Step validation configuration
+// Maps step number to required fields and their human-readable labels
+// Step 0 = Overview (always complete), Step 9 = Complete (special handling)
+const STEP_VALIDATION: Record<number, { fields: (keyof SectionOneData)[]; labels: Record<string, string> }> = {
+  1: {
+    fields: ["listingsTaken", "sellerSidesClosed", "buyerSidesClosed", "renterTransactions", "grossClosedCommissions", "didAchieveGoals", "biggestStruggles", "biggestAccomplishment", "prospectingMethods", "wantToContinue"],
+    labels: {
+      listingsTaken: "Listings Taken",
+      sellerSidesClosed: "Seller Sides Closed",
+      buyerSidesClosed: "Buyer Sides Closed",
+      renterTransactions: "Renter Transactions",
+      grossClosedCommissions: "Gross Closed Commissions",
+      didAchieveGoals: "Did you achieve your goals?",
+      biggestStruggles: "Biggest struggles",
+      biggestAccomplishment: "Biggest accomplishment",
+      prospectingMethods: "Prospecting methods",
+      wantToContinue: "What you want to continue",
+    },
+  },
+  2: {
+    fields: ["significantAchievements", "challengesAndOvercoming", "learnedAboutSelf"],
+    labels: {
+      significantAchievements: "Significant achievements",
+      challengesAndOvercoming: "Challenges and how you overcame them",
+      learnedAboutSelf: "What you learned about yourself",
+    },
+  },
+  3: {
+    fields: ["gratefulFor", "gratefulPeople", "joyfulMoments"],
+    labels: {
+      gratefulFor: "What you're grateful for",
+      gratefulPeople: "People you're grateful for",
+      joyfulMoments: "Joyful moments",
+    },
+  },
+  4: {
+    fields: ["mostFulfilled", "leastSatisfied", "overallWellbeing", "coreValuesAlignment", "valuePrioritiesShift"],
+    labels: {
+      mostFulfilled: "When you felt most fulfilled",
+      leastSatisfied: "Areas of least satisfaction",
+      overallWellbeing: "Overall wellbeing assessment",
+      coreValuesAlignment: "Core values alignment",
+      valuePrioritiesShift: "How priorities have shifted",
+    },
+  },
+  5: {
+    fields: ["goals"],
+    labels: {
+      goals: "At least one complete goal",
+    },
+  },
+  6: {
+    fields: ["selfCarePriorities", "nurturingWellbeing", "selfCareMethods", "skillsToImprove", "learningCommitment", "giveBackCommunity", "positiveImpact"],
+    labels: {
+      selfCarePriorities: "Self-care priorities",
+      nurturingWellbeing: "How you'll nurture wellbeing",
+      selfCareMethods: "Self-care methods",
+      skillsToImprove: "Skills to improve",
+      learningCommitment: "Learning commitment",
+      giveBackCommunity: "How you'll give back",
+      positiveImpact: "Positive impact goals",
+    },
+  },
+  7: {
+    fields: ["mantra", "accountabilityMethod", "accountabilityPartner", "progressTrackingTools"],
+    labels: {
+      mantra: "Your mantra",
+      accountabilityMethod: "Accountability method",
+      accountabilityPartner: "Accountability partner",
+      progressTrackingTools: "Progress tracking tools",
+    },
+  },
+  8: {
+    fields: ["celebrationMilestones", "reflectionFrequency", "improvementsAndChanges", "coreImportance"],
+    labels: {
+      celebrationMilestones: "Celebration milestones",
+      reflectionFrequency: "Reflection frequency",
+      improvementsAndChanges: "Improvements and changes",
+      coreImportance: "What's most important",
+    },
+  },
+  9: {
+    fields: ["celebrationMethod", "encouragementMessage", "signature", "completionDate"],
+    labels: {
+      celebrationMethod: "How you'll celebrate",
+      encouragementMessage: "Encouragement message",
+      signature: "Your signature",
+      completionDate: "Completion date",
+    },
+  },
+};
+
 interface SectionOneStore {
   data: SectionOneData;
 
@@ -203,6 +295,10 @@ interface SectionOneStore {
   getMantra: () => string;
   getGoals: () => Goal[];
   getMissingFields: () => string[];
+
+  // Step validation selectors
+  isStepComplete: (step: number) => boolean;
+  getStepMissingFields: (step: number) => string[];
 }
 
 export const useSectionOneStore = create<SectionOneStore>()(
@@ -563,6 +659,85 @@ export const useSectionOneStore = create<SectionOneStore>()(
         if (!data.encouragementMessage.trim()) missing.push("encouragementMessage");
         if (!data.signature.trim()) missing.push("signature");
         if (!data.completionDate.trim()) missing.push("completionDate");
+
+        return missing;
+      },
+
+      // Check if a specific step is complete
+      isStepComplete: (step: number) => {
+        // Step 0 (Overview) is always complete
+        if (step === 0) return true;
+
+        const data = get().data;
+        const validation = STEP_VALIDATION[step];
+        if (!validation) return true; // Unknown step considered complete
+
+        // Special handling for goals step (step 5)
+        if (step === 5) {
+          const hasCompleteGoal = (data.goals ?? []).some(
+            (goal) =>
+              goal.title.trim() &&
+              goal.whyImportant.trim() &&
+              goal.howToAchieve.trim() &&
+              goal.immediateSteps.some((s) => s.trim())
+          );
+          return hasCompleteGoal;
+        }
+
+        // Check all fields for this step
+        const numericFields = ["listingsTaken", "sellerSidesClosed", "buyerSidesClosed", "renterTransactions", "grossClosedCommissions"];
+
+        for (const field of validation.fields) {
+          const value = data[field];
+          if (numericFields.includes(field)) {
+            if (value === null || value === undefined) return false;
+          } else if (typeof value === "string") {
+            if (!value.trim()) return false;
+          }
+        }
+
+        return true;
+      },
+
+      // Get missing fields for a specific step with human-readable labels
+      getStepMissingFields: (step: number) => {
+        // Step 0 (Overview) has no missing fields
+        if (step === 0) return [];
+
+        const data = get().data;
+        const validation = STEP_VALIDATION[step];
+        if (!validation) return [];
+
+        const missing: string[] = [];
+        const numericFields = ["listingsTaken", "sellerSidesClosed", "buyerSidesClosed", "renterTransactions", "grossClosedCommissions"];
+
+        // Special handling for goals step (step 5)
+        if (step === 5) {
+          const hasCompleteGoal = (data.goals ?? []).some(
+            (goal) =>
+              goal.title.trim() &&
+              goal.whyImportant.trim() &&
+              goal.howToAchieve.trim() &&
+              goal.immediateSteps.some((s) => s.trim())
+          );
+          if (!hasCompleteGoal) {
+            missing.push(validation.labels.goals);
+          }
+          return missing;
+        }
+
+        for (const field of validation.fields) {
+          const value = data[field];
+          if (numericFields.includes(field)) {
+            if (value === null || value === undefined) {
+              missing.push(validation.labels[field]);
+            }
+          } else if (typeof value === "string") {
+            if (!value.trim()) {
+              missing.push(validation.labels[field]);
+            }
+          }
+        }
 
         return missing;
       },

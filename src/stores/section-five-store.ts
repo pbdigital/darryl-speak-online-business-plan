@@ -85,6 +85,17 @@ const initialData: AccountabilitySection = {
   commitmentContract: createEmptyCommitmentContract(),
 };
 
+// Step validation labels for Section 5
+const STEP_VALIDATION_LABELS: Record<number, string[]> = {
+  1: ["At least one project with one task"],
+  2: ["At least one current resource", "At least one needed resource"],
+  3: ["At least one ideal client profile"],
+  4: ["At least one prospecting activity"],
+  5: ["At least one marketing activity"],
+  6: ["At least one strategy for Q1", "At least one strategy for Q2", "At least one strategy for Q3", "At least one strategy for Q4"],
+  7: ["Agent name", "Transaction goal", "Agent signature date"],
+};
+
 interface SectionFiveStore {
   data: AccountabilitySection;
 
@@ -159,6 +170,10 @@ interface SectionFiveStore {
   getFilledFieldCount: () => number;
   getFilledProjectNames: () => string[];
   getFilledResources: () => { current: string[]; needed: string[] };
+
+  // Step validation selectors
+  isStepComplete: (step: number) => boolean;
+  getStepMissingFields: (step: number) => string[];
 }
 
 export const useSectionFiveStore = create<SectionFiveStore>()(
@@ -610,6 +625,173 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
           current: data.currentResources.filter((r) => r.trim()),
           needed: data.neededResources.filter((r) => r.trim()),
         };
+      },
+
+      // Check if a specific step is complete
+      isStepComplete: (step: number) => {
+        // Step 0 (Overview) and Step 8 (Complete) are always complete
+        if (step === 0 || step === 8) return true;
+
+        const data = get().data;
+
+        switch (step) {
+          case 1: // Project Matrix - at least 1 project with 1 task
+            return data.projectMatrix.projectNames.some((name, idx) => {
+              if (!name.trim()) return false;
+              return data.projectMatrix.tasks[idx].some((task) => task.trim());
+            });
+          case 2: // Resources - at least 1 current + 1 needed
+            return data.currentResources.some((r) => r.trim()) && data.neededResources.some((r) => r.trim());
+          case 3: // Ideal Client - at least 1 client profile with name + 1 other field
+            return data.idealClients.some((client) => {
+              if (!client.name.trim()) return false;
+              return !!(
+                client.whoAreThey.trim() ||
+                client.whatMotivatesThem.trim() ||
+                client.whereAreThey.trim() ||
+                client.howToReachThem.trim()
+              );
+            });
+          case 4: // Prospecting - at least 1 activity with activity name + 1 detail
+            return data.prospectingActivities.some((act) => {
+              if (!act.activity.trim()) return false;
+              return !!(
+                act.how.trim() ||
+                act.who.trim() ||
+                act.when.trim() ||
+                act.farmArea.trim() ||
+                act.cost !== null ||
+                act.followUpPlan.trim()
+              );
+            });
+          case 5: // Marketing - at least 1 activity with activity name + 1 detail
+            return data.marketingActivities.some((act) => {
+              if (!act.activity.trim()) return false;
+              return !!(
+                act.how.trim() ||
+                act.who.trim() ||
+                act.when.trim() ||
+                act.farmArea.trim() ||
+                act.cost !== null
+              );
+            });
+          case 6: // Quarterly Marketing - at least 1 strategy per quarter
+            const qm = data.quarterlyMarketing;
+            return (
+              !!(qm.q1Strategy1.trim() || qm.q1Strategy2.trim()) &&
+              !!(qm.q2Strategy1.trim() || qm.q2Strategy2.trim()) &&
+              !!(qm.q3Strategy1.trim() || qm.q3Strategy2.trim()) &&
+              !!(qm.q4Strategy1.trim() || qm.q4Strategy2.trim())
+            );
+          case 7: // Commitment Contract - name, goal, signature
+            const cc = data.commitmentContract;
+            return cc.agentName.trim() !== '' && cc.transactionGoal !== null && cc.agentSignatureDate.trim() !== '';
+          default:
+            return true;
+        }
+      },
+
+      // Get missing fields for a specific step with human-readable labels
+      getStepMissingFields: (step: number) => {
+        // Overview and Complete steps have no missing fields
+        if (step === 0 || step === 8) return [];
+
+        const data = get().data;
+        const missing: string[] = [];
+
+        switch (step) {
+          case 1:
+            const hasProject = data.projectMatrix.projectNames.some((name, idx) => {
+              if (!name.trim()) return false;
+              return data.projectMatrix.tasks[idx].some((task) => task.trim());
+            });
+            if (!hasProject) {
+              missing.push("At least one project with one task");
+            }
+            break;
+          case 2:
+            if (!data.currentResources.some((r) => r.trim())) {
+              missing.push("At least one current resource");
+            }
+            if (!data.neededResources.some((r) => r.trim())) {
+              missing.push("At least one needed resource");
+            }
+            break;
+          case 3:
+            const hasIdealClient = data.idealClients.some((client) => {
+              if (!client.name.trim()) return false;
+              return (
+                client.whoAreThey.trim() ||
+                client.whatMotivatesThem.trim() ||
+                client.whereAreThey.trim() ||
+                client.howToReachThem.trim()
+              );
+            });
+            if (!hasIdealClient) {
+              missing.push("At least one ideal client profile");
+            }
+            break;
+          case 4:
+            const hasProspecting = data.prospectingActivities.some((act) => {
+              if (!act.activity.trim()) return false;
+              return (
+                act.how.trim() ||
+                act.who.trim() ||
+                act.when.trim() ||
+                act.farmArea.trim() ||
+                act.cost !== null ||
+                act.followUpPlan.trim()
+              );
+            });
+            if (!hasProspecting) {
+              missing.push("At least one prospecting activity");
+            }
+            break;
+          case 5:
+            const hasMarketing = data.marketingActivities.some((act) => {
+              if (!act.activity.trim()) return false;
+              return (
+                act.how.trim() ||
+                act.who.trim() ||
+                act.when.trim() ||
+                act.farmArea.trim() ||
+                act.cost !== null
+              );
+            });
+            if (!hasMarketing) {
+              missing.push("At least one marketing activity");
+            }
+            break;
+          case 6:
+            const qm = data.quarterlyMarketing;
+            if (!qm.q1Strategy1.trim() && !qm.q1Strategy2.trim()) {
+              missing.push("At least one strategy for Q1");
+            }
+            if (!qm.q2Strategy1.trim() && !qm.q2Strategy2.trim()) {
+              missing.push("At least one strategy for Q2");
+            }
+            if (!qm.q3Strategy1.trim() && !qm.q3Strategy2.trim()) {
+              missing.push("At least one strategy for Q3");
+            }
+            if (!qm.q4Strategy1.trim() && !qm.q4Strategy2.trim()) {
+              missing.push("At least one strategy for Q4");
+            }
+            break;
+          case 7:
+            const cc = data.commitmentContract;
+            if (!cc.agentName.trim()) {
+              missing.push("Agent name");
+            }
+            if (cc.transactionGoal === null) {
+              missing.push("Transaction goal");
+            }
+            if (!cc.agentSignatureDate.trim()) {
+              missing.push("Agent signature date");
+            }
+            break;
+        }
+
+        return missing;
       },
     }),
     {
