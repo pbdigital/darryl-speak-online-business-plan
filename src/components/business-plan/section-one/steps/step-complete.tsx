@@ -234,14 +234,29 @@ export function StepComplete({ startTime }: StepCompleteProps) {
       {/* Continue to Section 2 CTA */}
       <footer className="mt-12 rounded-2xl bg-gradient-to-r from-[#e8f4f8] to-white p-8 text-center">
         <p className="mb-4 text-sm font-medium text-slate-500">Ready for the next step?</p>
-        <Link
-          href="/plan/section-2"
-          className="group inline-flex items-center gap-2 rounded-full bg-[#1a2744] px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
-        >
-          Continue to Section 2: SWOT Analysis
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </Link>
+        {canContinue ? (
+          <Link
+            href="/plan/section-2"
+            className="group inline-flex items-center gap-2 rounded-full bg-[#1a2744] px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:scale-[1.02] hover:bg-slate-700 hover:shadow-xl active:scale-[0.98]"
+          >
+            Continue to Section 2: SWOT Analysis
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        ) : (
+          <button
+            disabled
+            className="inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-slate-200 px-8 py-4 text-sm font-bold uppercase tracking-wider text-slate-400 shadow-lg"
+          >
+            Continue to Section 2: SWOT Analysis
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        )}
         <p className="mt-4 text-sm text-slate-400">
+          {!canContinue && (
+            <span className="mb-2 block text-amber-600">
+              Complete the fields above to continue
+            </span>
+          )}
           Or return to the{" "}
           <Link href="/plan" className="text-slate-600 underline hover:text-slate-800">
             dashboard
