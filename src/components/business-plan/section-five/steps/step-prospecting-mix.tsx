@@ -10,7 +10,6 @@ import {
 } from "@/components/business-plan/ui";
 import { ActivityCard } from "../ui/activity-card";
 import type { ProspectingActivity } from "@/types/business-plan";
-import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function StepProspectingMix() {
   const prospectingActivities = useSectionFiveStore(
@@ -26,7 +25,7 @@ export function StepProspectingMix() {
         part="Part 5D"
         title="Your Prospecting Mix"
         highlightWord="Prospecting"
-        subtitle="Prospecting is proactive outreach—you're going to them. Define 3 prospecting activities you'll commit to this year."
+        subtitle="Prospecting is proactive outreach—you're going to them. Define 3 prospecting activities you'll commit to over the next 12 months."
         icon={Phone}
       />
 
@@ -66,7 +65,7 @@ export function StepProspectingMix() {
       {/* Prospecting Activities */}
       <div className="mb-8 space-y-6">
         <h3 className="text-sm font-bold uppercase tracking-wide text-slate-900">
-          My {CURRENT_PLAN_YEAR} Prospecting Plan
+          My Prospecting Plan
         </h3>
         {prospectingActivities.map((activity, index) => (
           <ActivityCard

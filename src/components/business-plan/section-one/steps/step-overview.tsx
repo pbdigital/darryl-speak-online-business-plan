@@ -2,7 +2,6 @@
 
 import { BookOpen, Sparkles, Heart, Target } from "lucide-react";
 import { StepContainer, StepHeader } from "@/components/business-plan/ui";
-import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface StepOverviewProps {
   onStart: () => void;
@@ -15,7 +14,7 @@ export function StepOverview({ onStart }: StepOverviewProps) {
         part="Section 1"
         title="Annual Reflection & Intention Setting"
         highlightWord="Reflection"
-        subtitle={`The foundation of your ${CURRENT_PLAN_YEAR} success starts with understanding your ${CURRENT_PLAN_YEAR - 1} journey.`}
+        subtitle="The foundation of your success starts with understanding where you've been over the past 12 months."
         icon={BookOpen}
       />
 
@@ -28,7 +27,7 @@ export function StepOverview({ onStart }: StepOverviewProps) {
           <div>
             <p className="font-semibold text-slate-900">What It Is</p>
             <p className="text-sm text-slate-600">
-              This section is your opportunity to thoughtfully (and honestly) reflect on the past year and set goals for the year ahead with intentionality and purpose.
+              This section is your opportunity to thoughtfully (and honestly) reflect on the past 12 months and set goals for the next 12 months with intentionality and purpose.
             </p>
           </div>
         </div>
@@ -70,7 +69,7 @@ export function StepOverview({ onStart }: StepOverviewProps) {
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#1a2744] text-xs font-bold text-white">
               1A
             </span>
-            <p className="text-sm font-medium text-slate-700">Last Year in Review</p>
+            <p className="text-sm font-medium text-slate-700">Past 12 Months in Review</p>
           </div>
           <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-3">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#1a2744] text-xs font-bold text-white">

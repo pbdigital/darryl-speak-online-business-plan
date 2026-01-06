@@ -4,7 +4,6 @@ import { Target, Plus, X } from "lucide-react";
 import { useSectionOneStore } from "@/stores/section-one-store";
 import { StepContainer, StepHeader } from "../../ui";
 import { DarrylTip } from "@/components/business-plan/ui/darryl-tip";
-import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 export function GoalListStep() {
   const goals = useSectionOneStore((state) => state.data.goals) ?? [];
@@ -34,9 +33,9 @@ export function GoalListStep() {
     <StepContainer>
       <StepHeader
         part="Part 1E"
-        title={`Your Goals for ${CURRENT_PLAN_YEAR}`}
+        title="Your Goals for the Next 12 Months"
         highlightWord="Goals"
-        subtitle="What do you want to achieve this year? List your top goals—personal, professional, health, or relationships."
+        subtitle="What do you want to achieve in the next 12 months? List your top goals—personal, professional, health, or relationships."
         icon={Target}
       />
 
@@ -47,7 +46,7 @@ export function GoalListStep() {
 
       <div className="mb-8">
         <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-600">
-          What are your top goals for {CURRENT_PLAN_YEAR}?
+          What are your top goals for the next 12 months?
         </h3>
 
         <div className="space-y-3">

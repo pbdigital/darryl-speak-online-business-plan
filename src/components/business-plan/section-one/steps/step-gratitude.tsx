@@ -23,9 +23,9 @@ export function StepGratitude() {
       <div className="space-y-6">
         <WorkbookTextarea
           number={1}
-          label="What are you most grateful for from the past year?"
+          label="What are you most grateful for from the past 12 months?"
           fieldName="gratefulFor"
-          placeholder="I'm grateful for the opportunity to help 12 families find their dream homes this year..."
+          placeholder="I'm grateful for the opportunity to help 12 families find their dream homes over the past 12 months..."
         />
         <WorkbookTextarea
           number={2}

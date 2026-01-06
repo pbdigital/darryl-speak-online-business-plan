@@ -35,7 +35,7 @@ export function StepWellness() {
         <div className="space-y-6">
           <WorkbookTextarea
             number={1}
-            label="What self-care practices or habits do you want to prioritize in the coming year?"
+            label="What self-care practices or habits do you want to prioritize in the next 12 months?"
             fieldName="selfCarePriorities"
             placeholder="Morning walks before calls. No work emails after 7pm. One day off per week - no exceptions..."
           />
@@ -69,7 +69,7 @@ export function StepWellness() {
         <div className="space-y-6">
           <WorkbookTextarea
             number={4}
-            label="What skills or knowledge do you want to acquire or improve upon in the next year?"
+            label="What skills or knowledge do you want to acquire or improve upon in the next 12 months?"
             fieldName="skillsToImprove"
             placeholder="Master video marketing for listings. Improve my listing presentation close rate. Learn to delegate better..."
           />
@@ -97,7 +97,7 @@ export function StepWellness() {
         <div className="space-y-6">
           <WorkbookTextarea
             number={6}
-            label="In what ways do you want to give back or contribute to your community or causes you care about in the next year?"
+            label="In what ways do you want to give back or contribute to your community or causes you care about in the next 12 months?"
             fieldName="giveBackCommunity"
             placeholder="Mentor 2 new agents. Volunteer at Habitat for Humanity builds. Sponsor a Little League team..."
           />

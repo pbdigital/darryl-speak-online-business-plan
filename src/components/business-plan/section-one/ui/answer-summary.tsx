@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useSectionOneStore, SectionOneData } from "@/stores/section-one-store";
 import { cn } from "@/lib/utils";
-import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface SummaryField {
   label: string;
@@ -18,7 +17,7 @@ interface SummarySection {
 
 const SUMMARY_SECTIONS: SummarySection[] = [
   {
-    title: "Production & Last Year",
+    title: "Production & Past 12 Months",
     fields: [
       { label: "Listings Taken", fieldName: "listingsTaken" },
       { label: "Seller Sides Closed", fieldName: "sellerSidesClosed" },
@@ -54,7 +53,7 @@ const SUMMARY_SECTIONS: SummarySection[] = [
   {
     title: "Mantra & Accountability",
     fields: [
-      { label: `${CURRENT_PLAN_YEAR} Mantra`, fieldName: "mantra" },
+      { label: "Your Mantra", fieldName: "mantra" },
       { label: "Accountability Method", fieldName: "accountabilityMethod" },
       { label: "Accountability Partner", fieldName: "accountabilityPartner" },
     ],

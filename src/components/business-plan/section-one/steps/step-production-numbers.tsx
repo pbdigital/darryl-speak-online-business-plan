@@ -187,7 +187,7 @@ export function StepProductionNumbers() {
 
           {/* Title */}
           <h1 className="relative z-10 mb-3 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
-            Last Year in{" "}
+            Past 12 Months in{" "}
             <span className="relative">
               <span className="relative z-10">Review</span>
               <span className="absolute bottom-1 left-0 -z-0 h-3 w-full bg-[#e8f4f8]" />
@@ -286,7 +286,7 @@ export function StepProductionNumbers() {
               Reflection Questions
             </h2>
             <p className="text-slate-600">
-              Take a moment to reflect honestly on your performance last year.
+              Take a moment to reflect honestly on your performance over the past 12 months.
             </p>
           </div>
 
@@ -294,7 +294,7 @@ export function StepProductionNumbers() {
           <div className="space-y-6">
             <PremiumReflection
               number={1}
-              question="Did you achieve your goals last year? Why or why not?"
+              question="Did you achieve your goals over the past 12 months? Why or why not?"
               fieldName="didAchieveGoals"
               placeholder="I hit 80% of my transaction goal. I fell short because I didn't prospect consistently in Q2..."
             />
@@ -312,7 +312,7 @@ export function StepProductionNumbers() {
             />
             <PremiumReflection
               number={4}
-              question="How did you prospect last year?"
+              question="How did you prospect over the past 12 months?"
               fieldName="prospectingMethods"
               placeholder="Mostly sphere calls and open houses. I tried door knocking in Q3 but wasn't consistent..."
             />

@@ -22,7 +22,7 @@ export function StepResources() {
         part="Part 5B"
         title="Exploring Your Resources"
         highlightWord="Resources"
-        subtitle="Take inventory of what you already have, then identify the gaps—what resources would accelerate your progress this year?"
+        subtitle="Take inventory of what you already have, then identify the gaps—what resources would accelerate your progress over the next 12 months?"
         icon={Package}
       />
 

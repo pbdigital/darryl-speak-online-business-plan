@@ -1,5 +1,5 @@
 // Business Plan Types
-// Based on the 2026 Real Estate Business Plan PDF structure
+// Based on the Real Estate Business Plan PDF structure
 
 export interface BusinessPlan {
   id: string;
@@ -11,7 +11,7 @@ export interface BusinessPlan {
 
 // Section 1: Annual Reflection & Intention Setting
 export interface ReflectionSection {
-  // Last Year in Review - Production Numbers
+  // Past 12 Months in Review - Production Numbers
   listingsTaken: number | null;
   sellerSidesClosed: number | null;
   buyerSidesClosed: number | null;

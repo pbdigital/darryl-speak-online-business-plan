@@ -603,7 +603,7 @@ const sections = [
     title: "Annual Reflection",
     subtitle: "& Intention Setting",
     description:
-      "Look back to move forward. Review last year's wins and lessons, then set meaningful intentions for the year ahead. This is where clarity begins.",
+      "Look back to move forward. Review the past 12 months—wins and lessons—then set meaningful intentions for the months ahead. This is where clarity begins.",
     icon: ClockIcon,
   },
   {
@@ -793,7 +793,7 @@ const testimonials = [
     name: "Sarah M.",
     role: "RE/MAX Agent, Chicago",
     quote:
-      "The business plan helped me go from scattered goals to a clear daily roadmap. I closed 30% more transactions this year.",
+      "The business plan helped me go from scattered goals to a clear daily roadmap. I closed 30% more transactions.",
     imageSrc: "/testimonials/testimonial-1.jpg",
   },
   {

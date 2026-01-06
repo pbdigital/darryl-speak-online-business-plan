@@ -69,13 +69,13 @@ export function StepSelfReflection() {
         <div className="space-y-6">
           <WorkbookTextarea
             number={4}
-            label="What are your core values, and how did you align with them in the past year?"
+            label="What are your core values, and how did you align with them over the past 12 months?"
             fieldName="coreValuesAlignment"
-            placeholder="My core values are integrity and family. This year I aligned with them by always being honest with clients, even when it cost me a deal..."
+            placeholder="My core values are integrity and family. Over the past 12 months I aligned with them by always being honest with clients, even when it cost me a deal..."
           />
           <WorkbookTextarea
             number={5}
-            label="Are there any values or priorities you want to shift or focus on in the coming year?"
+            label="Are there any values or priorities you want to shift or focus on in the next 12 months?"
             fieldName="valuePrioritiesShift"
             placeholder="I want to prioritize my health more. I've been neglecting exercise and it's affecting my energy levels..."
           />
