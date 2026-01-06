@@ -158,12 +158,6 @@ const sumAmounts = (items: { amount: number | null }[]): number => {
   return items.reduce((sum, item) => sum + (item.amount || 0), 0);
 };
 
-// Total fields for progress calculation:
-// 20 personal expenses + 14 business expenses + 20 goals (4 categories × 5)
-// + tax rate + broker split + broker cap + avg price + avg commission rate
-// + work days + weeks off + 2 commitment texts = 63 fields
-const TOTAL_FIELDS = 63;
-
 export const useBusinessPlanStore = create<BusinessPlanStore>()(
   persist(
     (set, get) => ({
@@ -331,25 +325,65 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
   },
 
   getProgress: () => {
-    // Step-based progress: highest step reached / total content steps
-    // Steps: 0=Overview, 1-8=Content steps, 9=Complete
-    // Progress is based on content steps (1-8), so reaching step 9 (complete) = 100%
-    const { highestStepReached } = get();
+    // Field-based progress: count filled required fields
+    // Requirements (per Sarah's rules):
+    // - At least 1 personal expense (not null, 0 counts)
+    // - At least 1 business expense (not null, 0 counts)
+    // - At least 1 manifest goal (name + amount filled)
+    // - Tax rate, broker split, market data (not null)
+    // - Work schedule (not null, have defaults)
+    // - Commitment texts (non-empty)
+    const { incomePlanning } = get();
+    let filled = 0;
+    const totalRequirements = 11;
 
-    // If still on overview (step 0), progress is 0%
-    if (highestStepReached === 0) return 0;
+    // At least 1 personal expense (amount not null)
+    const hasPersonalExpense = incomePlanning.personalExpenses.some(
+      (e) => e.amount !== null
+    );
+    if (hasPersonalExpense) filled++;
 
-    // If reached complete step (9), progress is 100%
-    if (highestStepReached >= 9) return 100;
+    // At least 1 business expense (amount not null)
+    const hasBusinessExpense = incomePlanning.businessExpenses.some(
+      (e) => e.amount !== null
+    );
+    if (hasBusinessExpense) filled++;
 
-    // Otherwise, calculate based on content steps completed
-    // Steps 1-8 are content steps, so (highestStepReached - 1) steps are "completed"
-    // Step 1 = first content step = 0% complete (just started)
-    // Step 8 = last content step = 87.5% complete
-    // Step 9 = complete = 100%
-    // Alternative: current step progress = (step - 1) / 8 * 100 for steps 1-8
-    // Or simpler: step / 9 * 100 (treating step 9 as 100%)
-    return Math.round((highestStepReached / 9) * 100);
+    // At least 1 manifest goal (name + amount)
+    const allGoals = [
+      ...incomePlanning.familyGoals,
+      ...incomePlanning.financialGoals,
+      ...incomePlanning.personalGoals,
+      ...incomePlanning.businessGoals,
+    ];
+    const hasManifestGoal = allGoals.some(
+      (g) => g.name.trim() && g.amount !== null
+    );
+    if (hasManifestGoal) filled++;
+
+    // Tax rate (not null)
+    if (incomePlanning.estimatedTaxRate !== null) filled++;
+
+    // Broker split (not null)
+    if (incomePlanning.brokerSplitPercentage !== null) filled++;
+
+    // Average sales price (not null)
+    if (incomePlanning.averageSalesPrice !== null) filled++;
+
+    // Average commission rate (not null)
+    if (incomePlanning.averageCommissionRate !== null) filled++;
+
+    // Work days per week (not null)
+    if (incomePlanning.workDaysPerWeek !== null) filled++;
+
+    // Weeks off (not null)
+    if (incomePlanning.weeksOff !== null) filled++;
+
+    // Commitment texts (non-empty)
+    if (incomePlanning.reachingGoalMeans.trim()) filled++;
+    if (incomePlanning.failingGoalMeans.trim()) filled++;
+
+    return Math.round((filled / totalRequirements) * 100);
   },
 
   recalculate: () => {

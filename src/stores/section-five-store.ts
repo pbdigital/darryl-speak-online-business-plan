@@ -10,9 +10,6 @@ import type {
   CommitmentContract,
 } from "@/types/business-plan";
 
-// Total steps in Section 5 (0=Overview, 1-7=Content steps, 8=Complete)
-const TOTAL_STEPS = 9;
-
 // Helper functions to create empty data structures
 const createEmptyProjectMatrix = (): ProjectMatrixData => ({
   projectNames: Array.from({ length: 5 }, () => ""),
@@ -450,12 +447,87 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
         return get().data;
       },
 
-      // Progress calculation (step-based)
+      // Progress calculation (field-based)
       getProgress: () => {
-        const { highestStepReached } = get();
-        if (highestStepReached === 0) return 0;
-        if (highestStepReached >= TOTAL_STEPS - 1) return 100;
-        return Math.round((highestStepReached / (TOTAL_STEPS - 1)) * 100);
+        // Requirements (per Sarah's rules):
+        // - Project matrix: at least 1 project name with at least 1 task
+        // - At least 1 current resource
+        // - At least 1 needed resource
+        // - At least 1 ideal client profile (name + at least 1 other field)
+        // - At least 1 prospecting activity (activity + at least 1 detail)
+        // - At least 1 marketing activity (activity + at least 1 detail)
+        // - Quarterly marketing: at least 1 strategy per quarter (4 requirements)
+        // - Commitment contract: name, goal, and signature
+        const data = get().data;
+        let filled = 0;
+        const totalRequirements = 13;
+
+        // At least 1 project with at least 1 task
+        const hasProject = data.projectMatrix.projectNames.some((name, idx) => {
+          if (!name.trim()) return false;
+          return data.projectMatrix.tasks[idx].some((task) => task.trim());
+        });
+        if (hasProject) filled++;
+
+        // At least 1 current resource
+        if (data.currentResources.some((r) => r.trim())) filled++;
+
+        // At least 1 needed resource
+        if (data.neededResources.some((r) => r.trim())) filled++;
+
+        // At least 1 ideal client profile (name + at least 1 other field)
+        const hasIdealClient = data.idealClients.some((client) => {
+          if (!client.name.trim()) return false;
+          return (
+            client.whoAreThey.trim() ||
+            client.whatMotivatesThem.trim() ||
+            client.whereAreThey.trim() ||
+            client.howToReachThem.trim()
+          );
+        });
+        if (hasIdealClient) filled++;
+
+        // At least 1 prospecting activity (activity + at least 1 detail)
+        const hasProspecting = data.prospectingActivities.some((act) => {
+          if (!act.activity.trim()) return false;
+          return (
+            act.how.trim() ||
+            act.who.trim() ||
+            act.when.trim() ||
+            act.farmArea.trim() ||
+            act.cost !== null ||
+            act.followUpPlan.trim()
+          );
+        });
+        if (hasProspecting) filled++;
+
+        // At least 1 marketing activity (activity + at least 1 detail)
+        const hasMarketing = data.marketingActivities.some((act) => {
+          if (!act.activity.trim()) return false;
+          return (
+            act.how.trim() ||
+            act.who.trim() ||
+            act.when.trim() ||
+            act.farmArea.trim() ||
+            act.cost !== null
+          );
+        });
+        if (hasMarketing) filled++;
+
+        // Quarterly marketing: at least 1 strategy per quarter
+        const qm = data.quarterlyMarketing;
+        if (qm.q1Strategy1.trim() || qm.q1Strategy2.trim()) filled++;
+        if (qm.q2Strategy1.trim() || qm.q2Strategy2.trim()) filled++;
+        if (qm.q3Strategy1.trim() || qm.q3Strategy2.trim()) filled++;
+        if (qm.q4Strategy1.trim() || qm.q4Strategy2.trim()) filled++;
+
+        // Commitment contract: name, goal, and signature
+        const cc = data.commitmentContract;
+        if (cc.agentName.trim()) filled++;
+        if (cc.transactionGoal !== null) filled++;
+        if (cc.agentSignatureDate.trim()) filled++;
+
+        return Math.round((filled / totalRequirements) * 100);
       },
 
       // Count filled fields

@@ -51,12 +51,6 @@ const initialData: SectionTwoData = {
   threats: createEmptyThreats(),
 };
 
-// Total fields: 8 strengths x 2 + 8 weaknesses x 2 + 8 opportunities x 2 + 8 threats x 2 = 64
-const TOTAL_FIELDS = 64;
-
-// Total steps in Section 2 (0=Overview, 1-4=Content steps, 5=Complete)
-const TOTAL_STEPS = 6;
-
 interface SectionTwoStore {
   data: SectionTwoData;
 
@@ -212,11 +206,39 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
       },
 
       getProgress: () => {
-        // Step-based progress: highest step reached / total steps
-        const { highestStepReached } = get();
-        if (highestStepReached === 0) return 0;
-        if (highestStepReached >= TOTAL_STEPS - 1) return 100;
-        return Math.round((highestStepReached / (TOTAL_STEPS - 1)) * 100);
+        // Field-based progress: count filled required fields
+        // Requirements (per Sarah's rules - only 1 entry required per category):
+        // - At least 1 strength with content filled
+        // - At least 1 weakness with content filled + action selected
+        // - At least 1 opportunity with content + action filled
+        // - At least 1 threat with content + action filled
+        const data = get().data;
+        let filled = 0;
+        const totalRequirements = 4;
+
+        // At least 1 complete strength (strength text filled)
+        const hasStrength = data.strengths.some((s) => s.strength.trim());
+        if (hasStrength) filled++;
+
+        // At least 1 complete weakness (weakness text + action selected)
+        const hasWeakness = data.weaknesses.some(
+          (w) => w.weakness.trim() && w.action !== null
+        );
+        if (hasWeakness) filled++;
+
+        // At least 1 complete opportunity (possibility + actionSteps)
+        const hasOpportunity = data.opportunities.some(
+          (o) => o.possibility.trim() && o.actionSteps.trim()
+        );
+        if (hasOpportunity) filled++;
+
+        // At least 1 complete threat (threat + actionSteps)
+        const hasThreat = data.threats.some(
+          (t) => t.threat.trim() && t.actionSteps.trim()
+        );
+        if (hasThreat) filled++;
+
+        return Math.round((filled / totalRequirements) * 100);
       },
 
       getFilledFieldCount: () => {

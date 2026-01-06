@@ -2,13 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { MindsetSection } from "@/types/business-plan";
 
-// Total steps in Section 4 (0=Overview, 1-7=Content steps, 8=Complete)
-const TOTAL_STEPS = 9;
-
-// Total fields for counting filled entries
-// 5 affirmations + 2 routines + 4 boundaries + 4 self-care + 1 motivation + 4 support + 1 becoming = 21
-const TOTAL_FIELDS = 21;
-
 // Initialize arrays with empty strings
 const createEmptyAffirmations = (): string[] => Array.from({ length: 5 }, () => "");
 const createEmptyBoundaries = (): string[] => Array.from({ length: 4 }, () => "");
@@ -234,12 +227,46 @@ export const useSectionFourStore = create<SectionFourStore>()(
         return get().data;
       },
 
-      // Progress calculation (step-based)
+      // Progress calculation (field-based)
       getProgress: () => {
-        const { highestStepReached } = get();
-        if (highestStepReached === 0) return 0;
-        if (highestStepReached >= TOTAL_STEPS - 1) return 100;
-        return Math.round((highestStepReached / (TOTAL_STEPS - 1)) * 100);
+        // Requirements (per Sarah's rules):
+        // - At least 1 affirmation
+        // - Morning routine: non-empty
+        // - Evening routine: non-empty
+        // - At least 1 boundary
+        // - At least 1 self-care commitment
+        // - Motivation: non-empty
+        // - At least 1 support system person
+        // - Who I need to become: non-empty
+        const data = get().data;
+        let filled = 0;
+        const totalRequirements = 8;
+
+        // At least 1 affirmation
+        if (data.affirmations.some((a) => a.trim())) filled++;
+
+        // Morning routine
+        if (data.morningRoutine.trim()) filled++;
+
+        // Evening routine
+        if (data.eveningRoutine.trim()) filled++;
+
+        // At least 1 boundary
+        if (data.boundaries.some((b) => b.trim())) filled++;
+
+        // At least 1 self-care commitment
+        if (data.selfCareCommitments.some((s) => s.trim())) filled++;
+
+        // Motivation
+        if (data.whatMotivatesMe.trim()) filled++;
+
+        // At least 1 support system person
+        if (data.supportSystem.some((s) => s.trim())) filled++;
+
+        // Who I need to become
+        if (data.whoINeedToBecome.trim()) filled++;
+
+        return Math.round((filled / totalRequirements) * 100);
       },
 
       // Count filled fields

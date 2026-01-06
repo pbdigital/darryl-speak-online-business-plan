@@ -147,12 +147,6 @@ const initialData: SectionOneData = {
   completionDate: "",
 };
 
-// Total number of fields for progress calculation
-const TOTAL_FIELDS = 46;
-
-// Total steps in Section 1 (0=Overview, 1-8=Content steps, 9=Complete)
-const TOTAL_STEPS = 10;
-
 // GoalBuilder sub-step type
 export type GoalBuilderSubStep = "list" | "breakdown" | "summary";
 
@@ -208,6 +202,7 @@ interface SectionOneStore {
   getFilledFieldCount: () => number;
   getMantra: () => string;
   getGoals: () => Goal[];
+  getMissingFields: () => string[];
 }
 
 export const useSectionOneStore = create<SectionOneStore>()(
@@ -395,11 +390,91 @@ export const useSectionOneStore = create<SectionOneStore>()(
       },
 
       getProgress: () => {
-        // Step-based progress: highest step reached / total steps
-        const { highestStepReached } = get();
-        if (highestStepReached === 0) return 0;
-        if (highestStepReached >= TOTAL_STEPS - 1) return 100;
-        return Math.round((highestStepReached / (TOTAL_STEPS - 1)) * 100);
+        // Field-based progress: count filled required fields
+        const data = get().data;
+        let filled = 0;
+
+        // Total requirements:
+        // Step 1: 5 numeric + 5 text = 10
+        // Step 2: 3 text
+        // Step 3: 3 text
+        // Step 4: 5 text
+        // Step 5: 1 complete goal
+        // Step 6: 7 text
+        // Step 7: 4 text
+        // Step 8: 4 text
+        // Step 9: 4 text
+        // Total: 41 requirements
+        const totalRequirements = 41;
+
+        // Step 1: Production Numbers (5 numeric + 5 text)
+        if (data.listingsTaken !== null) filled++;
+        if (data.sellerSidesClosed !== null) filled++;
+        if (data.buyerSidesClosed !== null) filled++;
+        if (data.renterTransactions !== null) filled++;
+        if (data.grossClosedCommissions !== null) filled++;
+        if (data.didAchieveGoals.trim()) filled++;
+        if (data.biggestStruggles.trim()) filled++;
+        if (data.biggestAccomplishment.trim()) filled++;
+        if (data.prospectingMethods.trim()) filled++;
+        if (data.wantToContinue.trim()) filled++;
+
+        // Step 2: Reflection (3 text)
+        if (data.significantAchievements.trim()) filled++;
+        if (data.challengesAndOvercoming.trim()) filled++;
+        if (data.learnedAboutSelf.trim()) filled++;
+
+        // Step 3: Gratitude (3 text)
+        if (data.gratefulFor.trim()) filled++;
+        if (data.gratefulPeople.trim()) filled++;
+        if (data.joyfulMoments.trim()) filled++;
+
+        // Step 4: Self-Reflection & Values (5 text)
+        if (data.mostFulfilled.trim()) filled++;
+        if (data.leastSatisfied.trim()) filled++;
+        if (data.overallWellbeing.trim()) filled++;
+        if (data.coreValuesAlignment.trim()) filled++;
+        if (data.valuePrioritiesShift.trim()) filled++;
+
+        // Step 5: Goals - at least 1 complete goal required
+        // Matches UI's isGoalComplete: title, why, how, and at least 1 immediate step
+        const hasCompleteGoal = (data.goals ?? []).some(
+          (goal) =>
+            goal.title.trim() &&
+            goal.whyImportant.trim() &&
+            goal.howToAchieve.trim() &&
+            goal.immediateSteps.some((step) => step.trim())
+        );
+        if (hasCompleteGoal) filled++;
+
+        // Step 6: Self-Care & Growth (7 text)
+        if (data.selfCarePriorities.trim()) filled++;
+        if (data.nurturingWellbeing.trim()) filled++;
+        if (data.selfCareMethods.trim()) filled++;
+        if (data.skillsToImprove.trim()) filled++;
+        if (data.learningCommitment.trim()) filled++;
+        if (data.giveBackCommunity.trim()) filled++;
+        if (data.positiveImpact.trim()) filled++;
+
+        // Step 7: Mantra & Accountability (4 text)
+        if (data.mantra.trim()) filled++;
+        if (data.accountabilityMethod.trim()) filled++;
+        if (data.accountabilityPartner.trim()) filled++;
+        if (data.progressTrackingTools.trim()) filled++;
+
+        // Step 8: Celebration & Reflection (4 text)
+        if (data.celebrationMilestones.trim()) filled++;
+        if (data.reflectionFrequency.trim()) filled++;
+        if (data.improvementsAndChanges.trim()) filled++;
+        if (data.coreImportance.trim()) filled++;
+
+        // Step 9: Completion (4 text)
+        if (data.celebrationMethod.trim()) filled++;
+        if (data.encouragementMessage.trim()) filled++;
+        if (data.signature.trim()) filled++;
+        if (data.completionDate.trim()) filled++;
+
+        return Math.round((filled / totalRequirements) * 100);
       },
 
       getFilledFieldCount: () => {
@@ -416,6 +491,80 @@ export const useSectionOneStore = create<SectionOneStore>()(
 
       getGoals: () => {
         return get().data.goals ?? [];
+      },
+
+      // Diagnostic: returns list of incomplete fields for debugging
+      getMissingFields: () => {
+        const data = get().data;
+        const missing: string[] = [];
+
+        // Step 1: Production Numbers
+        if (data.listingsTaken === null) missing.push("listingsTaken");
+        if (data.sellerSidesClosed === null) missing.push("sellerSidesClosed");
+        if (data.buyerSidesClosed === null) missing.push("buyerSidesClosed");
+        if (data.renterTransactions === null) missing.push("renterTransactions");
+        if (data.grossClosedCommissions === null) missing.push("grossClosedCommissions");
+        if (!data.didAchieveGoals.trim()) missing.push("didAchieveGoals");
+        if (!data.biggestStruggles.trim()) missing.push("biggestStruggles");
+        if (!data.biggestAccomplishment.trim()) missing.push("biggestAccomplishment");
+        if (!data.prospectingMethods.trim()) missing.push("prospectingMethods");
+        if (!data.wantToContinue.trim()) missing.push("wantToContinue");
+
+        // Step 2
+        if (!data.significantAchievements.trim()) missing.push("significantAchievements");
+        if (!data.challengesAndOvercoming.trim()) missing.push("challengesAndOvercoming");
+        if (!data.learnedAboutSelf.trim()) missing.push("learnedAboutSelf");
+
+        // Step 3
+        if (!data.gratefulFor.trim()) missing.push("gratefulFor");
+        if (!data.gratefulPeople.trim()) missing.push("gratefulPeople");
+        if (!data.joyfulMoments.trim()) missing.push("joyfulMoments");
+
+        // Step 4
+        if (!data.mostFulfilled.trim()) missing.push("mostFulfilled");
+        if (!data.leastSatisfied.trim()) missing.push("leastSatisfied");
+        if (!data.overallWellbeing.trim()) missing.push("overallWellbeing");
+        if (!data.coreValuesAlignment.trim()) missing.push("coreValuesAlignment");
+        if (!data.valuePrioritiesShift.trim()) missing.push("valuePrioritiesShift");
+
+        // Step 5: Goals
+        const hasCompleteGoal = (data.goals ?? []).some(
+          (goal) =>
+            goal.title.trim() &&
+            goal.whyImportant.trim() &&
+            goal.howToAchieve.trim() &&
+            goal.immediateSteps.some((step) => step.trim())
+        );
+        if (!hasCompleteGoal) missing.push("goals (need 1 complete goal)");
+
+        // Step 6
+        if (!data.selfCarePriorities.trim()) missing.push("selfCarePriorities");
+        if (!data.nurturingWellbeing.trim()) missing.push("nurturingWellbeing");
+        if (!data.selfCareMethods.trim()) missing.push("selfCareMethods");
+        if (!data.skillsToImprove.trim()) missing.push("skillsToImprove");
+        if (!data.learningCommitment.trim()) missing.push("learningCommitment");
+        if (!data.giveBackCommunity.trim()) missing.push("giveBackCommunity");
+        if (!data.positiveImpact.trim()) missing.push("positiveImpact");
+
+        // Step 7
+        if (!data.mantra.trim()) missing.push("mantra");
+        if (!data.accountabilityMethod.trim()) missing.push("accountabilityMethod");
+        if (!data.accountabilityPartner.trim()) missing.push("accountabilityPartner");
+        if (!data.progressTrackingTools.trim()) missing.push("progressTrackingTools");
+
+        // Step 8
+        if (!data.celebrationMilestones.trim()) missing.push("celebrationMilestones");
+        if (!data.reflectionFrequency.trim()) missing.push("reflectionFrequency");
+        if (!data.improvementsAndChanges.trim()) missing.push("improvementsAndChanges");
+        if (!data.coreImportance.trim()) missing.push("coreImportance");
+
+        // Step 9
+        if (!data.celebrationMethod.trim()) missing.push("celebrationMethod");
+        if (!data.encouragementMessage.trim()) missing.push("encouragementMessage");
+        if (!data.signature.trim()) missing.push("signature");
+        if (!data.completionDate.trim()) missing.push("completionDate");
+
+        return missing;
       },
     }),
     {
