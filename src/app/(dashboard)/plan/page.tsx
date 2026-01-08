@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
-import { LogoutButton } from './logout-button';
 import { PlanHero, SectionCardsGrid } from '@/components/business-plan';
+import { PlanFooter } from './plan-footer';
 
 const sections = [
   {
@@ -83,23 +83,7 @@ export default async function PlanPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white py-8">
-        <div className="mx-auto max-w-7xl px-6 md:px-12">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div className="flex items-center gap-4">
-              <LogoutButton />
-            </div>
-            <div className="text-center sm:text-right">
-              <p className="text-xs text-slate-500">
-                &copy; {new Date().getFullYear()} Darryl Davis Seminars, Inc. All rights reserved.
-              </p>
-              <p className="mt-1 text-xs text-slate-400">
-                631-929-5555 &bull; DarrylSpeaks.com
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <PlanFooter userName={displayName} userEmail={user.email || ''} />
     </div>
   );
 }
