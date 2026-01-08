@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
+import { clearStoreCache } from '@/lib/cache/clear-stores';
 
 export function LogoutButton() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export function LogoutButton() {
   async function handleLogout() {
     const supabase = createClient();
     await supabase.auth.signOut();
+    clearStoreCache();
     router.push('/login');
     router.refresh();
   }

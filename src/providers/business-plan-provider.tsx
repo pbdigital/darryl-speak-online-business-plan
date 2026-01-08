@@ -15,6 +15,7 @@ import {
   PlanSection,
   SectionKey,
 } from '@/lib/api';
+import { clearStoreCache } from '@/lib/cache/clear-stores';
 
 interface BusinessPlanContextType {
   /** The current business plan */
@@ -57,6 +58,9 @@ export function BusinessPlanProvider({
   const loadPlan = useCallback(async () => {
     setIsLoading(true);
     setError(null);
+
+    // Clear any cached store data to ensure fresh data from server
+    clearStoreCache();
 
     try {
       // Get or create business plan for the year
