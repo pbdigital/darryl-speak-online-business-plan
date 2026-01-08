@@ -112,7 +112,7 @@ export function PlanHero({
           {/* Left side - Main content */}
           <div className="max-w-4xl">
             {/* Edition badge */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5">
+            {/* <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5">
               <svg
                 className="h-4 w-4 text-blue-300"
                 viewBox="0 0 24 24"
@@ -130,7 +130,7 @@ export function PlanHero({
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300">
                 {year} Edition
               </span>
-            </div>
+            </div> */}
 
             {/* Main headline - matching PDF typography */}
             <h1 className="text-4xl leading-tight tracking-tight md:text-5xl lg:text-6xl">
