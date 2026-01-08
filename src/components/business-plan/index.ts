@@ -1,5 +1,5 @@
 export { PlanHero } from "./plan-hero";
-export { SectionCard } from "./section-card";
+export { SectionCard, SectionCardSkeleton } from "./section-card";
 export { SectionCardsGrid } from "./section-cards-grid";
 export { SectionOneCardWrapper } from "./section-one-card-wrapper";
 export { SectionTwoCardWrapper } from "./section-two-card-wrapper";

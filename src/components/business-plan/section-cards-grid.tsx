@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { SectionCard } from "@/components/business-plan";
+import { SectionCard, SectionCardSkeleton } from "@/components/business-plan";
 import { useSectionOneStore } from "@/stores/section-one-store";
 import { useSectionTwoStore } from "@/stores/section-two-store";
 import { useBusinessPlanStore } from "@/stores/business-plan-store";
 import { useSectionFourStore } from "@/stores/section-four-store";
 import { useSectionFiveStore } from "@/stores/section-five-store";
+import { useHydrateAllStores } from "@/hooks/use-hydrate-all-stores";
 import { Users } from "lucide-react";
 
 interface SectionData {
@@ -32,6 +33,10 @@ export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
     setMounted(true);
   }, []);
 
+  // Hydrate all stores from server data before reading progress
+  // This ensures stores have correct data from the database
+  const { isHydrated } = useHydrateAllStores();
+
   // Get progress from all section stores
   const section1Progress = useSectionOneStore((state) => state.getProgress());
   const section2Progress = useSectionTwoStore((state) => state.getProgress());
@@ -46,12 +51,15 @@ export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
     return "in_progress";
   };
 
-  // Use default values until mounted to ensure consistent server/client rendering
-  const effectiveSection1Progress = mounted ? section1Progress : 0;
-  const effectiveSection2Progress = mounted ? section2Progress : 0;
-  const effectiveSection3Progress = mounted ? section3Progress : 0;
-  const effectiveSection4Progress = mounted ? section4Progress : 0;
-  const effectiveSection5Progress = mounted ? section5Progress : 0;
+  // Use default values until mounted AND hydrated to ensure:
+  // 1. Consistent server/client rendering (mounted)
+  // 2. Stores have server data before showing progress (isHydrated)
+  const isReady = mounted && isHydrated;
+  const effectiveSection1Progress = isReady ? section1Progress : 0;
+  const effectiveSection2Progress = isReady ? section2Progress : 0;
+  const effectiveSection3Progress = isReady ? section3Progress : 0;
+  const effectiveSection4Progress = isReady ? section4Progress : 0;
+  const effectiveSection5Progress = isReady ? section5Progress : 0;
 
   // Build progress map for all sections
   const sectionProgressMap: Record<number, { status: SectionStatus; progress: number }> = {
@@ -74,20 +82,24 @@ export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {sections.map((section) => {
-        const progressData = sectionProgressMap[section.sectionNumber];
-        const isDimmed = section.sectionNumber > currentSectionNumber;
+      {isReady
+        ? sections.map((section) => {
+            const progressData = sectionProgressMap[section.sectionNumber];
+            const isDimmed = section.sectionNumber > currentSectionNumber;
 
-        return (
-          <SectionCard
-            key={section.sectionNumber}
-            {...section}
-            status={progressData?.status}
-            progress={progressData?.progress}
-            dimmed={isDimmed}
-          />
-        );
-      })}
+            return (
+              <SectionCard
+                key={section.sectionNumber}
+                {...section}
+                status={progressData?.status}
+                progress={progressData?.progress}
+                dimmed={isDimmed}
+              />
+            );
+          })
+        : sections.map((section) => (
+            <SectionCardSkeleton key={section.sectionNumber} />
+          ))}
 
       {/* Digital Coach Card - matches the navy hero aesthetic */}
       <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-[#0F172A] p-8 text-white">

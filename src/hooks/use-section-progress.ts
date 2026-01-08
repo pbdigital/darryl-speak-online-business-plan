@@ -16,6 +16,9 @@ interface SectionProgressResult {
 /**
  * Aggregates progress from all 5 business plan section stores.
  * Returns the count of completed sections (progress === 100) and overall progress percentage.
+ *
+ * Note: Consuming components should handle SSR hydration by checking a `mounted` state
+ * before displaying values to avoid hydration mismatches.
  */
 export function useSectionProgress(): SectionProgressResult {
   const section1Progress = useSectionOneStore((state) => state.getProgress());

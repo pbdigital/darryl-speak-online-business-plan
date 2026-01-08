@@ -63,6 +63,60 @@ const statusLabels: Record<SectionStatus, string> = {
   completed: "Completed",
 };
 
+/**
+ * Skeleton loader for SectionCard during data loading
+ */
+export function SectionCardSkeleton({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-8",
+        className
+      )}
+    >
+      {/* Corner decoration skeleton */}
+      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-bl-[100px] bg-slate-50" />
+
+      {/* Icon skeleton */}
+      <div className="absolute right-5 top-5 h-6 w-6 animate-pulse rounded bg-slate-200" />
+
+      {/* Section label skeleton */}
+      <div className="mb-4">
+        <div className="h-3 w-20 animate-pulse rounded bg-slate-200" />
+      </div>
+
+      {/* Title skeleton */}
+      <div className="space-y-2">
+        <div className="h-7 w-3/4 animate-pulse rounded bg-slate-200" />
+        <div className="h-7 w-1/2 animate-pulse rounded bg-slate-100" />
+      </div>
+
+      {/* Description skeleton */}
+      <div className="mb-8 mt-3 flex-1 space-y-2">
+        <div className="h-4 w-full animate-pulse rounded bg-slate-100" />
+        <div className="h-4 w-5/6 animate-pulse rounded bg-slate-100" />
+        <div className="h-4 w-2/3 animate-pulse rounded bg-slate-100" />
+      </div>
+
+      {/* Progress section skeleton */}
+      <div className="mt-auto w-full">
+        <div className="mb-2 flex items-end justify-between">
+          <div className="h-3 w-20 animate-pulse rounded bg-slate-200" />
+          <div className="h-3 w-8 animate-pulse rounded bg-slate-200" />
+        </div>
+
+        {/* Progress bar skeleton */}
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100" />
+
+        {/* CTA skeleton */}
+        <div className="mt-6 flex items-center">
+          <div className="h-4 w-28 animate-pulse rounded bg-slate-200" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function SectionCard({
   sectionNumber,
   title,

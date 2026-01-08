@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { CURRENT_PLAN_YEAR } from "@/lib/constants";
@@ -23,7 +24,16 @@ export function PlanHero({
   userName,
   className,
 }: PlanHeroProps) {
+  // Local mounted state ensures consistent SSR/client hydration
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const { completedSections, totalSections, progressPercentage } = useSectionProgress();
+
+  // Use 0 during SSR/hydration, real values after mount
+  const displayProgress = mounted ? progressPercentage : 0;
+  const displayCompleted = mounted ? completedSections : 0;
+  const isLoading = !mounted;
 
   // Get a consistent quote based on the day of year (changes daily)
   const dayOfYear = Math.floor(
@@ -166,21 +176,33 @@ export function PlanHero({
                 <p className="mb-1 text-xs font-medium uppercase tracking-wider text-slate-300">
                   {userName ? `Welcome back, ${userName}` : "Total Progress"}
                 </p>
-                <p className="text-3xl font-bold text-white">
-                  {progressPercentage}%
-                </p>
+                {isLoading ? (
+                  <div className="h-9 w-16 animate-pulse rounded bg-white/20" />
+                ) : (
+                  <p className="text-3xl font-bold text-white">
+                    {displayProgress}%
+                  </p>
+                )}
               </div>
               {/* Live indicator dot */}
             </div>
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-700/50">
-              <div
-                className="h-full rounded-full bg-blue-400 transition-all duration-700 ease-out"
-                style={{ width: `${Math.max(progressPercentage, 2)}%` }}
-              />
+              {isLoading ? (
+                <div className="h-full w-1/3 animate-pulse rounded-full bg-white/20" />
+              ) : (
+                <div
+                  className="h-full rounded-full bg-blue-400 transition-all duration-700 ease-out"
+                  style={{ width: `${Math.max(displayProgress, 2)}%` }}
+                />
+              )}
             </div>
-            <p className="mt-3 text-xs text-slate-400">
-              {completedSections} of {totalSections} sections completed
-            </p>
+            {isLoading ? (
+              <div className="mt-3 h-3 w-32 animate-pulse rounded bg-white/10" />
+            ) : (
+              <p className="mt-3 text-xs text-slate-400">
+                {displayCompleted} of {totalSections} sections completed
+              </p>
+            )}
           </div>
         </div>
       </div>
