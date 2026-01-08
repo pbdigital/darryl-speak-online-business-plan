@@ -85,6 +85,26 @@ const initialData: AccountabilitySection = {
   commitmentContract: createEmptyCommitmentContract(),
 };
 
+// Interface for incomplete step info (used by "Almost There" view)
+export interface IncompleteStep {
+  stepNumber: number;
+  stepName: string;
+  missingCount: number;
+}
+
+// Step names for display in UI
+export const STEP_NAMES: Record<number, string> = {
+  0: "Overview",
+  1: "Project Matrix",
+  2: "Resources",
+  3: "Ideal Client",
+  4: "Prospecting Mix",
+  5: "Marketing Mix",
+  6: "Quarterly Marketing",
+  7: "Commitment Contract",
+  8: "Complete",
+};
+
 // Step validation labels for Section 5
 const STEP_VALIDATION_LABELS: Record<number, string[]> = {
   1: ["At least one project with one task"],
@@ -174,6 +194,7 @@ interface SectionFiveStore {
   // Step validation selectors
   isStepComplete: (step: number) => boolean;
   getStepMissingFields: (step: number) => string[];
+  getIncompleteSteps: () => IncompleteStep[];
 }
 
 export const useSectionFiveStore = create<SectionFiveStore>()(
@@ -800,6 +821,26 @@ export const useSectionFiveStore = create<SectionFiveStore>()(
         }
 
         return missing;
+      },
+
+      // Get all incomplete steps (for "Almost There" view)
+      // Checks steps 1-7 (excludes 0=Overview and 8=Complete)
+      getIncompleteSteps: () => {
+        const incomplete: IncompleteStep[] = [];
+
+        // Check steps 1-7 (not 0=Overview, not 8=Complete)
+        for (let step = 1; step <= 7; step++) {
+          if (!get().isStepComplete(step)) {
+            const missingFields = get().getStepMissingFields(step);
+            incomplete.push({
+              stepNumber: step,
+              stepName: STEP_NAMES[step] || `Step ${step}`,
+              missingCount: missingFields.length,
+            });
+          }
+        }
+
+        return incomplete;
       },
     }),
     {

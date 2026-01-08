@@ -252,7 +252,7 @@ export function SectionOneForm() {
       case 8:
         return <StepCelebration />;
       case 9:
-        return <StepComplete startTime={startTime} />;
+        return <StepComplete startTime={startTime} onNavigateToStep={setActiveStep} />;
       default:
         return null;
     }

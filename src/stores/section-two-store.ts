@@ -51,6 +51,23 @@ const initialData: SectionTwoData = {
   threats: createEmptyThreats(),
 };
 
+// Interface for incomplete step info (used by "Almost There" view)
+export interface IncompleteStep {
+  stepNumber: number;
+  stepName: string;
+  missingCount: number;
+}
+
+// Step names for display in UI
+export const STEP_NAMES: Record<number, string> = {
+  0: "Overview",
+  1: "Strengths",
+  2: "Weaknesses",
+  3: "Opportunities",
+  4: "Threats",
+  5: "Complete",
+};
+
 // Step validation configuration for Section 2 (SWOT Analysis)
 // Step 0 = Overview (always complete), Step 5 = Complete
 const STEP_VALIDATION_LABELS: Record<number, string> = {
@@ -108,6 +125,7 @@ interface SectionTwoStore {
   // Step validation selectors
   isStepComplete: (step: number) => boolean;
   getStepMissingFields: (step: number) => string[];
+  getIncompleteSteps: () => IncompleteStep[];
 }
 
 export const useSectionTwoStore = create<SectionTwoStore>()(
@@ -336,6 +354,26 @@ export const useSectionTwoStore = create<SectionTwoStore>()(
 
         const label = STEP_VALIDATION_LABELS[step];
         return label ? [label] : [];
+      },
+
+      // Get all incomplete steps (for "Almost There" view)
+      // Checks steps 1-4 (excludes 0=Overview and 5=Complete)
+      getIncompleteSteps: () => {
+        const incomplete: IncompleteStep[] = [];
+
+        // Check steps 1-4 (not 0=Overview, not 5=Complete)
+        for (let step = 1; step <= 4; step++) {
+          if (!get().isStepComplete(step)) {
+            const missingFields = get().getStepMissingFields(step);
+            incomplete.push({
+              stepNumber: step,
+              stepName: STEP_NAMES[step] || `Step ${step}`,
+              missingCount: missingFields.length,
+            });
+          }
+        }
+
+        return incomplete;
       },
     }),
     {

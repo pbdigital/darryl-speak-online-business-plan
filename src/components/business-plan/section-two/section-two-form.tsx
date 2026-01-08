@@ -229,7 +229,7 @@ export function SectionTwoForm() {
       case 4:
         return <StepThreats />;
       case 5:
-        return <StepComplete startTime={startTime} />;
+        return <StepComplete startTime={startTime} onNavigateToStep={setActiveStep} />;
       default:
         return null;
     }

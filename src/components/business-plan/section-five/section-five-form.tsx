@@ -170,7 +170,7 @@ export function SectionFiveForm() {
       case 7:
         return <StepCommitmentContract />;
       case 8:
-        return <StepComplete />;
+        return <StepComplete onNavigateToStep={setActiveStep} />;
       default:
         return null;
     }

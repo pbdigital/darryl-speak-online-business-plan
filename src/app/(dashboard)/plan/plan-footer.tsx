@@ -34,9 +34,7 @@ export function PlanFooter({ userName, userEmail }: PlanFooterProps) {
                 <p className="text-xs text-slate-500">
                   &copy; {new Date().getFullYear()} Darryl Davis Seminars, Inc. All rights reserved.
                 </p>
-                <p className="mt-1 text-xs text-slate-400">
-                  631-929-5555 &bull; DarrylSpeaks.com
-                </p>
+                
               </div>
             </div>
           </div>

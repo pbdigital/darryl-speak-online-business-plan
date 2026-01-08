@@ -166,7 +166,7 @@ export function SectionFourForm() {
       case 7:
         return <StepBecoming />;
       case 8:
-        return <StepComplete />;
+        return <StepComplete onNavigateToStep={setActiveStep} />;
       default:
         return null;
     }

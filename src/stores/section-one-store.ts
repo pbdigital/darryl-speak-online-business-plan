@@ -150,6 +150,27 @@ const initialData: SectionOneData = {
 // GoalBuilder sub-step type
 export type GoalBuilderSubStep = "list" | "breakdown" | "summary";
 
+// Interface for incomplete step info (used by "Almost There" view)
+export interface IncompleteStep {
+  stepNumber: number;
+  stepName: string;
+  missingCount: number;
+}
+
+// Step names for display in UI
+export const STEP_NAMES: Record<number, string> = {
+  0: "Overview",
+  1: "Production Numbers",
+  2: "Looking Back",
+  3: "Gratitude",
+  4: "Self-Reflection & Values",
+  5: "Goals & Intentions",
+  6: "Self-Care & Growth",
+  7: "Mantra & Accountability",
+  8: "Celebration & Reflection",
+  9: "Your Commitment",
+};
+
 // Step validation configuration
 // Maps step number to required fields and their human-readable labels
 // Step 0 = Overview (always complete), Step 9 = Complete (special handling)
@@ -299,6 +320,7 @@ interface SectionOneStore {
   // Step validation selectors
   isStepComplete: (step: number) => boolean;
   getStepMissingFields: (step: number) => string[];
+  getIncompleteSteps: () => IncompleteStep[];
 }
 
 export const useSectionOneStore = create<SectionOneStore>()(
@@ -740,6 +762,26 @@ export const useSectionOneStore = create<SectionOneStore>()(
         }
 
         return missing;
+      },
+
+      // Get all incomplete steps (for "Almost There" view)
+      // Checks steps 1-8 (excludes 0=Overview and 9=Completion)
+      getIncompleteSteps: () => {
+        const incomplete: IncompleteStep[] = [];
+
+        // Check steps 1-8 (not 0=Overview, not 9=Completion)
+        for (let step = 1; step <= 8; step++) {
+          if (!get().isStepComplete(step)) {
+            const missingFields = get().getStepMissingFields(step);
+            incomplete.push({
+              stepNumber: step,
+              stepName: STEP_NAMES[step] || `Step ${step}`,
+              missingCount: missingFields.length,
+            });
+          }
+        }
+
+        return incomplete;
       },
     }),
     {

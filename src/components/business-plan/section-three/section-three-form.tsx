@@ -172,7 +172,7 @@ export function SectionThreeForm() {
       case 8:
         return <StepIncomeCommitment />;
       case 9:
-        return <StepComplete />;
+        return <StepComplete onNavigateToStep={setActiveStep} />;
       default:
         return null;
     }

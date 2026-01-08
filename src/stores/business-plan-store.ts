@@ -14,6 +14,27 @@ const WEEKS_PER_YEAR = 52;
 // Total steps in Section 3 (excluding overview at 0, content steps 1-8, complete at 9)
 const TOTAL_CONTENT_STEPS = 8;
 
+// Interface for incomplete step info (used by "Almost There" view)
+export interface IncompleteStep {
+  stepNumber: number;
+  stepName: string;
+  missingCount: number;
+}
+
+// Step names for display in UI
+export const STEP_NAMES: Record<number, string> = {
+  0: "Overview",
+  1: "Personal Expenses",
+  2: "Business Expenses",
+  3: "Manifest List",
+  4: "Tax Calculation",
+  5: "GCI Goal",
+  6: "Transactions Needed",
+  7: "Daily Activities",
+  8: "Income Commitment",
+  9: "Complete",
+};
+
 // Step validation labels for Section 3
 const STEP_VALIDATION_LABELS: Record<number, string[]> = {
   1: ["At least one personal expense"],
@@ -78,6 +99,7 @@ interface BusinessPlanStore {
   // Step validation selectors
   isStepComplete: (step: number) => boolean;
   getStepMissingFields: (step: number) => string[];
+  getIncompleteSteps: () => IncompleteStep[];
 }
 
 // Default personal expense items from the PDF
@@ -597,6 +619,26 @@ export const useBusinessPlanStore = create<BusinessPlanStore>()(
     }
 
     return missing;
+  },
+
+  // Get all incomplete steps (for "Almost There" view)
+  // Checks steps 1-8 (excludes 0=Overview and 9=Complete)
+  getIncompleteSteps: () => {
+    const incomplete: IncompleteStep[] = [];
+
+    // Check steps 1-8 (not 0=Overview, not 9=Complete)
+    for (let step = 1; step <= 8; step++) {
+      if (!get().isStepComplete(step)) {
+        const missingFields = get().getStepMissingFields(step);
+        incomplete.push({
+          stepNumber: step,
+          stepName: STEP_NAMES[step] || `Step ${step}`,
+          missingCount: missingFields.length,
+        });
+      }
+    }
+
+    return incomplete;
   },
     }),
     {

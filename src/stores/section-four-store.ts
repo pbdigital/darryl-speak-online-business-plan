@@ -19,6 +19,26 @@ const initialData: MindsetSection = {
   whoINeedToBecome: "",
 };
 
+// Interface for incomplete step info (used by "Almost There" view)
+export interface IncompleteStep {
+  stepNumber: number;
+  stepName: string;
+  missingCount: number;
+}
+
+// Step names for display in UI
+export const STEP_NAMES: Record<number, string> = {
+  0: "Overview",
+  1: "Affirmations",
+  2: "Grounding Rituals",
+  3: "Boundaries",
+  4: "Self-Care",
+  5: "Motivation",
+  6: "Support System",
+  7: "Who You Need to Become",
+  8: "Complete",
+};
+
 // Step validation labels for Section 4
 const STEP_VALIDATION_LABELS: Record<number, string[]> = {
   1: ["At least one affirmation"],
@@ -92,6 +112,7 @@ interface SectionFourStore {
   // Step validation selectors
   isStepComplete: (step: number) => boolean;
   getStepMissingFields: (step: number) => string[];
+  getIncompleteSteps: () => IncompleteStep[];
 }
 
 export const useSectionFourStore = create<SectionFourStore>()(
@@ -416,6 +437,26 @@ export const useSectionFourStore = create<SectionFourStore>()(
         }
 
         return missing;
+      },
+
+      // Get all incomplete steps (for "Almost There" view)
+      // Checks steps 1-7 (excludes 0=Overview and 8=Complete)
+      getIncompleteSteps: () => {
+        const incomplete: IncompleteStep[] = [];
+
+        // Check steps 1-7 (not 0=Overview, not 8=Complete)
+        for (let step = 1; step <= 7; step++) {
+          if (!get().isStepComplete(step)) {
+            const missingFields = get().getStepMissingFields(step);
+            incomplete.push({
+              stepNumber: step,
+              stepName: STEP_NAMES[step] || `Step ${step}`,
+              missingCount: missingFields.length,
+            });
+          }
+        }
+
+        return incomplete;
       },
     }),
     {
