@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, MoreHorizontal, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, MoreHorizontal, Trash2, Bug } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProgressStepper, ValidationToast } from "@/components/business-plan/section-one/ui";
@@ -15,6 +16,8 @@ import { useAutoSave } from "@/hooks/use-auto-save";
 import { useHydrateSection } from "@/hooks/use-hydrate-section";
 import { SectionSkeleton } from "../ui/section-skeleton";
 import { SaveIndicator } from "../ui/save-indicator";
+import { BugReportDialog } from "@/components/bug-report-dialog";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import type { MindsetSection } from "@/types/business-plan";
 
 import { StepOverview } from "./steps/step-overview";
@@ -43,6 +46,8 @@ const STEP_LABELS = [
 
 export function SectionFourForm() {
   const { currentStep, setCurrentStep, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData, isStepComplete, getStepMissingFields } = useSectionFourStore();
+  const { user } = useCurrentUser();
+  const [bugDialogOpen, setBugDialogOpen] = useState(false);
 
   // Hydrate store with server data on mount
   const { isHydrating } = useHydrateSection<MindsetSection>("mindset", hydrate);
@@ -212,6 +217,14 @@ export function SectionFourForm() {
                 <Trash2 className="mr-2 h-4 w-4" />
                 Clear All Data
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => setBugDialogOpen(true)}
+                className="cursor-pointer"
+              >
+                <Bug className="mr-2 h-4 w-4" />
+                Report an Issue
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -268,6 +281,13 @@ export function SectionFourForm() {
           </div>
         </div>
       )}
+
+      <BugReportDialog
+        open={bugDialogOpen}
+        onOpenChange={setBugDialogOpen}
+        defaultName={user?.name}
+        defaultEmail={user?.email}
+      />
     </div>
   );
 }

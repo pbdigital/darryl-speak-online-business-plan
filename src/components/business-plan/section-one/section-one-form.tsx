@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, MoreHorizontal, Trash2, FileX } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, MoreHorizontal, Trash2, FileX, Bug } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,8 @@ import { useAutoSave } from "@/hooks/use-auto-save";
 import { useHydrateSection } from "@/hooks/use-hydrate-section";
 import { SectionSkeleton } from "../ui/section-skeleton";
 import { SaveIndicator } from "../ui/save-indicator";
+import { BugReportDialog } from "@/components/bug-report-dialog";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 import { StepOverview } from "./steps/step-overview";
 import { StepProductionNumbers } from "./steps/step-production-numbers";
@@ -55,6 +57,8 @@ const STEP_FIELDS: Record<number, (keyof SectionOneData)[]> = {
 
 export function SectionOneForm() {
   const { currentStep, setCurrentStep, updateField, resetSection, isDirty, markSaved, highestStepReached, hydrate, getData, advanceGoalBuilder, retreatGoalBuilder, goalBuilderSubStep, data, isStepComplete, getStepMissingFields } = useSectionOneStore();
+  const { user } = useCurrentUser();
+  const [bugDialogOpen, setBugDialogOpen] = useState(false);
 
   // Hydrate store with server data on mount
   const { isHydrating } = useHydrateSection<SectionOneData>("reflection", hydrate);
@@ -308,6 +312,14 @@ export function SectionOneForm() {
                 <Trash2 className="mr-2 h-4 w-4" />
                 Clear All Data
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => setBugDialogOpen(true)}
+                className="cursor-pointer"
+              >
+                <Bug className="mr-2 h-4 w-4" />
+                Report an Issue
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -384,6 +396,13 @@ export function SectionOneForm() {
           </div>
         </div>
       )}
+
+      <BugReportDialog
+        open={bugDialogOpen}
+        onOpenChange={setBugDialogOpen}
+        defaultName={user?.name}
+        defaultEmail={user?.email}
+      />
     </div>
   );
 }

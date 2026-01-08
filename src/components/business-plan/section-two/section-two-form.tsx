@@ -10,6 +10,7 @@ import {
   MoreHorizontal,
   Trash2,
   FileX,
+  Bug,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -23,6 +24,8 @@ import { useAutoSave } from "@/hooks/use-auto-save";
 import { useHydrateSection } from "@/hooks/use-hydrate-section";
 import { SectionSkeleton } from "../ui/section-skeleton";
 import { SaveIndicator } from "../ui/save-indicator";
+import { BugReportDialog } from "@/components/bug-report-dialog";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   ProgressStepper,
   EncouragementToast,
@@ -60,6 +63,8 @@ export function SectionTwoForm() {
     isStepComplete,
     getStepMissingFields,
   } = useSectionTwoStore();
+  const { user } = useCurrentUser();
+  const [bugDialogOpen, setBugDialogOpen] = useState(false);
 
   // Hydrate store with server data on mount
   const { isHydrating } = useHydrateSection<SectionTwoData>("swot", hydrate);
@@ -283,6 +288,14 @@ export function SectionTwoForm() {
                 <Trash2 className="mr-2 h-4 w-4" />
                 Clear All Data
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => setBugDialogOpen(true)}
+                className="cursor-pointer"
+              >
+                <Bug className="mr-2 h-4 w-4" />
+                Report an Issue
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -346,6 +359,13 @@ export function SectionTwoForm() {
           </div>
         </div>
       )}
+
+      <BugReportDialog
+        open={bugDialogOpen}
+        onOpenChange={setBugDialogOpen}
+        defaultName={user?.name}
+        defaultEmail={user?.email}
+      />
     </div>
   );
 }
