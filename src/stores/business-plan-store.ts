@@ -142,8 +142,8 @@ const initialIncomePlanning: IncomePlanningSection = {
   brokerCapAmount: null,
   averageSalesPrice: null,
   averageCommissionRate: null,
-  workDaysPerWeek: 5,
-  weeksOff: 2,
+  workDaysPerWeek: null,
+  weeksOff: null,
   reachingGoalMeans: '',
   failingGoalMeans: '',
 };
