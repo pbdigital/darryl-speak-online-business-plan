@@ -117,7 +117,7 @@ export async function POST(request: Request) {
 
     try {
       await resend.emails.send({
-        from: 'My Plan For Success <support@myplanforsuccess.pbdigital.com.au>',
+        from: 'My Plan For Success <support@myplanforsuccess.com>',
         to: bugReportEmails.length > 0 ? bugReportEmails : ['paul@pbdigital.com.au'],
         replyTo: email,
         subject: `[Bug Report] ${sectionLabel} - ${name}`,
