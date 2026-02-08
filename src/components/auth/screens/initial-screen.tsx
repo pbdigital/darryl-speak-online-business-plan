@@ -26,7 +26,6 @@ import {
 
 interface InitialScreenProps {
   onLoginRoute: (email: string) => void;
-  onSignupRoute: (email: string) => void;
   onPowerAgentSso?: () => void;
   externalError?: string | null;
   onClearError?: () => void;
@@ -34,7 +33,6 @@ interface InitialScreenProps {
 
 export function InitialScreen({
   onLoginRoute,
-  onSignupRoute,
   onPowerAgentSso,
   externalError,
   onClearError,
@@ -86,7 +84,10 @@ export function InitialScreen({
         if (result.data.exists) {
           onLoginRoute(data.email);
         } else {
-          onSignupRoute(data.email);
+          setError(
+            'This platform is exclusive to Power Agents. Please use the "Continue with POWER AGENT®" button above to sign in.'
+          );
+          return;
         }
       } else {
         setError(result.errors?.[0]?.message || 'An error occurred');
@@ -100,7 +101,7 @@ export function InitialScreen({
 
   return (
     <div className="space-y-8">
-      <AuthHeader title="Log in or sign up" />
+      <AuthHeader title="Log in" />
 
       {/* Error Message */}
       {error && (

@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { InitialScreen, LoginScreen, SignupScreen } from './screens';
+import { InitialScreen, LoginScreen } from './screens';
 
-type AuthScreen = 'initial' | 'login' | 'signup';
+type AuthScreen = 'initial' | 'login';
 
 interface AuthState {
   screen: AuthScreen;
@@ -38,9 +38,6 @@ export function UnifiedAuthPage() {
   const goToLogin = (email: string) =>
     setState({ screen: 'login', email, error: null });
 
-  const goToSignup = (email: string) =>
-    setState({ screen: 'signup', email, error: null });
-
   const goToInitial = () =>
     setState({ screen: 'initial', email: '', error: null });
 
@@ -66,13 +63,10 @@ export function UnifiedAuthPage() {
     switch (state.screen) {
       case 'login':
         return <LoginScreen email={state.email} onBack={goToInitial} />;
-      case 'signup':
-        return <SignupScreen email={state.email} onBack={goToInitial} />;
       default:
         return (
           <InitialScreen
             onLoginRoute={goToLogin}
-            onSignupRoute={goToSignup}
             onPowerAgentSso={handlePowerAgentSso}
             externalError={state.error}
             onClearError={clearError}
