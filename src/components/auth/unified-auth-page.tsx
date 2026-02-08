@@ -3,76 +3,35 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { InitialScreen, LoginScreen } from './screens';
-
-type AuthScreen = 'initial' | 'login';
-
-interface AuthState {
-  screen: AuthScreen;
-  email: string;
-  error: string | null;
-}
+import { InitialScreen } from './screens';
 
 export function UnifiedAuthPage() {
   const searchParams = useSearchParams();
 
-  const [state, setState] = useState<AuthState>({
-    screen: 'initial',
-    email: '',
-    error: null,
-  });
+  const [error, setError] = useState<string | null>(null);
 
   // Check for error parameter from SSO callback
   useEffect(() => {
     const errorParam = searchParams.get('error');
     if (errorParam) {
-      setState((prev) => ({
-        ...prev,
-        error: decodeURIComponent(errorParam),
-      }));
+      setError(decodeURIComponent(errorParam));
       // Clear the error from URL without triggering a navigation
       window.history.replaceState({}, '', '/login');
     }
   }, [searchParams]);
 
-  const goToLogin = (email: string) =>
-    setState({ screen: 'login', email, error: null });
-
-  const goToInitial = () =>
-    setState({ screen: 'initial', email: '', error: null });
-
-  const clearError = () =>
-    setState((prev) => ({ ...prev, error: null }));
+  const clearError = () => setError(null);
 
   const handlePowerAgentSso = () => {
     const ssoUrl = process.env.NEXT_PUBLIC_POWER_AGENT_SSO_URL;
 
     if (!ssoUrl) {
-      setState((prev) => ({
-        ...prev,
-        error: 'POWER AGENT® SSO is not configured.',
-      }));
+      setError('POWER AGENT® SSO is not configured.');
       return;
     }
 
     const redirectUri = `${window.location.origin}/api/auth/callback/power-agent`;
     window.location.href = `${ssoUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
-  };
-
-  const renderScreen = () => {
-    switch (state.screen) {
-      case 'login':
-        return <LoginScreen email={state.email} onBack={goToInitial} />;
-      default:
-        return (
-          <InitialScreen
-            onLoginRoute={goToLogin}
-            onPowerAgentSso={handlePowerAgentSso}
-            externalError={state.error}
-            onClearError={clearError}
-          />
-        );
-    }
   };
 
   return (
@@ -90,11 +49,12 @@ export function UnifiedAuthPage() {
         </div>
 
         <div className="rounded-2xl bg-white px-10 py-10 shadow-sm border border-gray-100">
-          <div
-            key={state.screen}
-            className="animate-in fade-in slide-in-from-bottom-4 duration-300"
-          >
-            {renderScreen()}
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <InitialScreen
+              onPowerAgentSso={handlePowerAgentSso}
+              externalError={error}
+              onClearError={clearError}
+            />
           </div>
         </div>
       </div>
