@@ -101,8 +101,13 @@ export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
             <SectionCardSkeleton key={section.sectionNumber} />
           ))}
 
-      {/* Digital Coach Card - matches the navy hero aesthetic */}
-      <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-[#0F172A] p-8 text-white">
+      {/* Digital Darryl™ Card - matches the navy hero aesthetic */}
+      <a
+        href="https://darrylspeaks.com/digital-darryl-2"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-[#0F172A] p-8 text-white transition-shadow hover:shadow-lg"
+      >
         {/* Corner decoration to match section cards */}
         <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-bl-[100px] bg-white/5" />
 
@@ -111,16 +116,16 @@ export function SectionCardsGrid({ sections }: SectionCardsGridProps) {
             <Users className="h-6 w-6 text-white/80" />
           </div>
 
-          <h3 className="text-2xl font-bold">Digital Coach</h3>
+          <h3 className="text-2xl font-bold">Digital Darryl™</h3>
           <p className="mt-2 text-sm leading-relaxed text-slate-400">
             Stuck on your SWOT analysis? Need help calculating GCI? Ask your AI assistant.
           </p>
         </div>
 
-        <div className="relative z-10 mt-6 w-full rounded-lg border border-slate-700 bg-slate-800/50 py-3 text-center text-sm font-medium text-slate-400">
-          Coming Soon
+        <div className="relative z-10 mt-6 w-full rounded-lg border border-slate-700 bg-slate-800/50 py-3 text-center text-sm font-medium text-slate-300 transition-colors group-hover:bg-slate-700/50 group-hover:text-white">
+          Try Digital Darryl™ →
         </div>
-      </div>
+      </a>
     </div>
   );
 }
