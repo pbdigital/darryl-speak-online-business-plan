@@ -1,27 +1,17 @@
-import { createClient } from '@/lib/supabase/server';
+import { getAdminUsers } from '@/lib/api/admin-users-server';
 import { UsersTable } from '@/components/admin/users-table';
 import { AdminUser } from '@/types/admin';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-async function getUsers(): Promise<AdminUser[]> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from('admin_users_view')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching users:', error);
-    return [];
-  }
-
-  return data as AdminUser[];
-}
-
 export default async function AdminUsersPage() {
-  const users = await getUsers();
+  let users: AdminUser[] = [];
+
+  try {
+    users = await getAdminUsers();
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  }
 
   return (
     <div className="space-y-6">

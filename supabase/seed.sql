@@ -1,0 +1,1 @@
+-- No seed data is required. Keep this file so local database resets are reliable.
