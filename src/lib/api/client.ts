@@ -8,9 +8,10 @@ const FUNCTIONS_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1`;
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
-  data?: T;
-  errors?: Array<{ field?: string; message: string }>;
-  meta?: { timestamp: string };
+  view: string;
+  data: T | null;
+  errors: Array<{ field?: string; message: string }>;
+  meta: { timestamp: string };
 }
 
 /**
@@ -52,7 +53,10 @@ export async function apiRequest<T>(
   if (!json.success && !json.errors) {
     return {
       success: false,
+      view: 'unknown',
+      data: null,
       errors: [{ message: json.message || 'Request failed' }],
+      meta: { timestamp: new Date().toISOString() },
     };
   }
 

@@ -1,41 +1,8 @@
-import { createClient } from '@/lib/supabase/server';
 import { checkAdminAccess } from '@/lib/admin';
+import { getAdminUsers } from '@/lib/api/admin-users-server';
 import { redirect } from 'next/navigation';
 import { AdminTeamTable } from '@/components/admin/admin-team-table';
 import { AdminTeamMember } from '@/types/admin';
-
-async function getAdmins(): Promise<AdminTeamMember[]> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from('admin_users_view')
-    .select('id, first_name, last_name, email, admin_granted_at, granted_by_name')
-    .eq('is_admin', true)
-    .order('admin_granted_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching admins:', error);
-    return [];
-  }
-
-  return data as AdminTeamMember[];
-}
-
-async function getAllUsers(): Promise<Array<{ id: string; first_name: string | null; last_name: string | null; email: string | null }>> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from('admin_users_view')
-    .select('id, first_name, last_name, email')
-    .order('first_name', { ascending: true });
-
-  if (error) {
-    console.error('Error fetching users:', error);
-    return [];
-  }
-
-  return data;
-}
 
 export default async function AdminTeamPage() {
   const { isAdmin, userId } = await checkAdminAccess();
@@ -48,10 +15,42 @@ export default async function AdminTeamPage() {
     redirect('/plan');
   }
 
-  const [admins, allUsers] = await Promise.all([
-    getAdmins(),
-    getAllUsers(),
-  ]);
+  let admins: AdminTeamMember[] = [];
+  let allUsers: Array<{
+    id: string;
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+  }> = [];
+
+  try {
+    const users = await getAdminUsers();
+    admins = users
+      .filter((user) => user.is_admin)
+      .map((user) => ({
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        admin_granted_at: user.admin_granted_at,
+        granted_by_name: user.granted_by_name,
+      }))
+      .sort((a, b) =>
+        (b.admin_granted_at ?? '').localeCompare(a.admin_granted_at ?? '')
+      );
+    allUsers = users
+      .map(({ id, first_name, last_name, email }) => ({
+        id,
+        first_name,
+        last_name,
+        email,
+      }))
+      .sort((a, b) =>
+        (a.first_name ?? '').localeCompare(b.first_name ?? '')
+      );
+  } catch (error) {
+    console.error('Error fetching admin team:', error);
+  }
 
   return (
     <div className="space-y-6">

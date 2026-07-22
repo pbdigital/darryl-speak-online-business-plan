@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { checkAdminAccess, getAdminProfile } from '@/lib/admin';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 interface AdminLayoutProps {
   children: React.ReactNode;
 }

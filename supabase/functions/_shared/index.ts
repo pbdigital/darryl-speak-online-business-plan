@@ -7,6 +7,7 @@ export {
   success,
   error,
   unauthorized,
+  forbidden,
   notFound,
   methodNotAllowed,
   conflict,

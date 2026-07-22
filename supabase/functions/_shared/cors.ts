@@ -14,7 +14,18 @@ export const corsHeaders = {
  */
 export function handleCors(req: Request): Response | null {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response(
+      JSON.stringify({
+        success: true,
+        view: 'preflight',
+        data: {},
+        errors: [],
+        meta: { timestamp: new Date().toISOString() },
+      }),
+      {
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      }
+    );
   }
   return null;
 }

@@ -74,7 +74,13 @@ export async function getOrCreateBusinessPlan(
   if (plansResult.success && plansResult.data) {
     const existingPlan = plansResult.data.find((p) => p.year === year);
     if (existingPlan) {
-      return { success: true, data: existingPlan };
+      return {
+        success: true,
+        view: 'business-plans',
+        data: existingPlan,
+        errors: [],
+        meta: { timestamp: new Date().toISOString() },
+      };
     }
   }
 
