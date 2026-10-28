@@ -13,6 +13,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useSectionTwoStore, STEP_NAMES, type IncompleteStep } from "@/stores/section-two-store";
+import { PrintPlanLink } from "@/components/business-plan/print/print-plan-link";
+import { useSectionDoneEvent } from "@/lib/keap/track";
 import { SwotGridSummary } from "../ui";
 import { StepContainer } from "@/components/business-plan/ui";
 
@@ -290,12 +292,18 @@ function SectionCompleteView({ startTime }: { startTime?: number }) {
             dashboard
           </Link>
         </p>
+        <div className="mt-4">
+          <PrintPlanLink />
+        </div>
       </footer>
     </StepContainer>
   );
 }
 
 export function StepComplete({ startTime, onNavigateToStep }: StepCompleteProps) {
+  // Report the section as done once it's complete and saved (fire-and-forget).
+  const sectionDone = useSectionTwoStore((state) => state.getProgress() === 100 && !state.isDirty);
+  useSectionDoneEvent("swot", sectionDone);
   const [showReveal, setShowReveal] = useState(true);
   const [revealPhase, setRevealPhase] = useState(0);
 

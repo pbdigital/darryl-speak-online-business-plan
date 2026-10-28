@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock, FileText, Trophy, Star, PenLine, AlertCircle, ChevronRight } from "lucide-react";
 import { WorkbookTextarea, WorkbookInput, AnswerSummary, StepContainer } from "../ui";
 import { useSectionOneStore, STEP_NAMES, type IncompleteStep } from "@/stores/section-one-store";
+import { PrintPlanLink } from "@/components/business-plan/print/print-plan-link";
+import { useSectionDoneEvent } from "@/lib/keap/track";
 import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 interface StepCompleteProps {
@@ -289,12 +291,18 @@ function SectionCompleteView({
             dashboard
           </Link>
         </p>
+        <div className="mt-4">
+          <PrintPlanLink />
+        </div>
       </footer>
     </StepContainer>
   );
 }
 
 export function StepComplete({ startTime, onNavigateToStep }: StepCompleteProps) {
+  // Report the section as done once it's complete and saved (fire-and-forget).
+  const sectionDone = useSectionOneStore((state) => state.getProgress() === 100 && !state.isDirty);
+  useSectionDoneEvent("reflection", sectionDone);
   const [showReveal, setShowReveal] = useState(true);
   const [revealPhase, setRevealPhase] = useState(0);
 

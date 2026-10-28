@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 import { useSectionProgress } from "@/hooks/use-section-progress";
@@ -203,6 +205,13 @@ export function PlanHero({
                 {displayCompleted} of {totalSections} sections completed
               </p>
             )}
+            <Link
+              href="/plan/print"
+              className="mt-5 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-white/20"
+            >
+              <Printer className="h-3.5 w-3.5" />
+              View and print your plan
+            </Link>
           </div>
         </div>
       </div>

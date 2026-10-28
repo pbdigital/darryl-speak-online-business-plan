@@ -1,0 +1,19 @@
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+
+/**
+ * Supabase client with the service role, for server-only work that users
+ * can't do themselves (writing plan_events and profiles.keap_contact_id).
+ * Never import this from client code.
+ */
+export function createServiceClient(): SupabaseClient {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !serviceKey) {
+    throw new Error('NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set');
+  }
+
+  return createClient(url, serviceKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}

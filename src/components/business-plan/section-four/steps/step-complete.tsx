@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Smile, Check, Clock, FileText, Trophy, AlertCircle, ChevronRight } from "lucide-react";
 import { useSectionFourStore, STEP_NAMES, type IncompleteStep } from "@/stores/section-four-store";
+import { PrintPlanLink } from "@/components/business-plan/print/print-plan-link";
+import { useSectionDoneEvent } from "@/lib/keap/track";
 import { StepContainer } from "@/components/business-plan/ui";
 import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
@@ -285,12 +287,18 @@ function SectionCompleteView({ startTime }: { startTime?: number }) {
             dashboard
           </Link>
         </p>
+        <div className="mt-4">
+          <PrintPlanLink />
+        </div>
       </footer>
     </StepContainer>
   );
 }
 
 export function StepComplete({ startTime, onNavigateToStep }: StepCompleteProps) {
+  // Report the section as done once it's complete and saved (fire-and-forget).
+  const sectionDone = useSectionFourStore((state) => state.getProgress() === 100 && !state.isDirty);
+  useSectionDoneEvent("mindset", sectionDone);
   const [showReveal, setShowReveal] = useState(true);
   const [revealPhase, setRevealPhase] = useState(0);
 

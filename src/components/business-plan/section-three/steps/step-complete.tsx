@@ -15,6 +15,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useBusinessPlanStore, STEP_NAMES, type IncompleteStep } from "@/stores/business-plan-store";
+import { PrintPlanLink } from "@/components/business-plan/print/print-plan-link";
+import { useSectionDoneEvent } from "@/lib/keap/track";
+import { createClient } from "@/lib/supabase/client";
+import { COACHING_CALL_URL, joinUrl } from "@/config/power-agent-offer";
 import { StepContainer } from "@/components/business-plan/ui";
 import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
@@ -108,6 +112,55 @@ function AlmostThereView({
         </p>
       </div>
     </StepContainer>
+  );
+}
+
+// "Now get help hitting it": free users are invited to coaching (or to join),
+// members get the coaching-call link when one is set.
+function CoachingCard({ transactions }: { transactions: number }) {
+  const [viewer, setViewer] = useState<{ isMember: boolean; email: string } | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("account_type")
+        .eq("id", user.id)
+        .single();
+      setViewer({ isMember: profile?.account_type === "member", email: user.email ?? "" });
+    });
+  }, []);
+
+  if (!viewer) return null;
+  if (viewer.isMember && !COACHING_CALL_URL) return null;
+
+  const href = COACHING_CALL_URL || joinUrl({ email: viewer.email, placement: "section-3" });
+  const goal =
+    transactions > 0
+      ? `You've set a goal of ${transactions} ${transactions === 1 ? "transaction" : "transactions"}.`
+      : "You've set your goal.";
+
+  return (
+    <section className="mb-10 overflow-hidden rounded-3xl bg-[#1a2744] p-8 text-white shadow-lg">
+      <p className="mb-2 text-xs font-bold uppercase tracking-widest text-blue-200">Now get help hitting it</p>
+      <h2 className="mb-3 text-2xl font-bold">{goal}</h2>
+      <p className="mb-6 max-w-xl text-slate-300">
+        {viewer.isMember
+          ? "Bring your numbers to a live coaching call with Darryl and leave with a plan for this week."
+          : "Darryl coaches POWER AGENTS live every week on exactly this."}
+      </p>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold uppercase tracking-wider text-[#1a2744] transition-colors hover:bg-[#e8f4f8]"
+      >
+        {COACHING_CALL_URL ? "Join a live coaching call" : "Become a POWER AGENT"}
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </a>
+    </section>
   );
 }
 
@@ -294,6 +347,8 @@ function SectionCompleteView({ startTime }: { startTime?: number }) {
         </div>
       </section>
 
+      <CoachingCard transactions={calculated.totalTransactionsNeeded} />
+
       {/* Continue to Section 4 CTA */}
       <footer className="mt-12 rounded-2xl bg-gradient-to-r from-[#e8f4f8] to-white p-8 text-center">
         <p className="mb-4 text-sm font-medium text-slate-500">Ready for the next step?</p>
@@ -310,12 +365,18 @@ function SectionCompleteView({ startTime }: { startTime?: number }) {
             dashboard
           </Link>
         </p>
+        <div className="mt-4">
+          <PrintPlanLink />
+        </div>
       </footer>
     </StepContainer>
   );
 }
 
 export function StepComplete({ startTime, onNavigateToStep }: StepCompleteProps) {
+  // Report the section as done once it's complete and saved (fire-and-forget).
+  const sectionDone = useBusinessPlanStore((state) => state.getProgress() === 100 && !state.isDirty);
+  useSectionDoneEvent("income-planning", sectionDone);
   const [showReveal, setShowReveal] = useState(true);
   const [revealPhase, setRevealPhase] = useState(0);
 
