@@ -85,5 +85,20 @@ export async function getOrCreateBusinessPlan(
   }
 
   // No existing plan, create a new one
-  return createBusinessPlan(year);
+  const created = await createBusinessPlan(year);
+  if (created.success) return created;
+
+  // Another tab or a double render may have created it first: use that one
+  const retry = await getBusinessPlans();
+  const raced = retry.success ? retry.data?.find((p) => p.year === year) : undefined;
+  if (raced) {
+    return {
+      success: true,
+      view: 'business-plans',
+      data: raced,
+      errors: [],
+      meta: { timestamp: new Date().toISOString() },
+    };
+  }
+  return created;
 }

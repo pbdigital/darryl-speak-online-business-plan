@@ -59,7 +59,9 @@ export function PlanLockedScreen({ firstName }: PlanLockedScreenProps) {
       <section className="bg-[#0F172A] px-6 pb-32 pt-12 text-white md:px-12">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <Image src="/logo-white.svg" alt="Darryl Davis Seminars" width={140} height={40} />
-          <LogoutButton />
+          <div className="text-slate-900">
+            <LogoutButton />
+          </div>
         </div>
       </section>
 
