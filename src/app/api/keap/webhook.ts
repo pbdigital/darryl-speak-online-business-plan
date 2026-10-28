@@ -94,7 +94,6 @@ export async function handleKeapLockWebhook(
   const fields = await readFields(request);
   const givenSecret =
     request.headers.get('x-webhook-secret') ??
-    new URL(request.url).searchParams.get('key') ??
     fields.get('secret') ??
     '';
 

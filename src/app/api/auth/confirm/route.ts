@@ -70,7 +70,9 @@ async function recordSignUp(supabase: Awaited<ReturnType<typeof createClient>>) 
 
 // Only allow same-site paths, so the link cannot send people elsewhere.
 function safeNext(next: string | null): string {
-  if (next && next.startsWith('/') && !next.startsWith('//') && !next.includes('\\')) {
+  // Same-site paths only: a plain path with optional query, nothing that a
+  // URL parser could turn into another host (tabs, newlines, //, backslashes)
+  if (next && /^\/(?!\/)[A-Za-z0-9\-._~\/?=&%]*$/.test(next)) {
     return next;
   }
   return '/plan';

@@ -13,7 +13,7 @@ DDS's Keap campaigns lock a free user's plan when their 30 days are up and unloc
 2. **Name/value pair:** name `secret`, value the `KEAP_WEBHOOK_SECRET` from the app's environment.
 3. Keap sends the contact's fields automatically. The app finds the user by the contact's **Email** and saves the Keap contact **Id** on their profile.
 
-The secret can also be sent as `?key=...` on the URL or an `X-Webhook-Secret` header, but the name/value pair is the simplest in Keap.
+The secret can also be sent as an `X-Webhook-Secret` header, but the name/value pair is the simplest in Keap. It is never accepted in the URL, so it can't end up in access logs.
 
 ## What happens
 
