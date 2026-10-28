@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { recordPlanEvent, SECTION_KEYS, type PlanEventKey, type SectionKey } from '@/lib/keap/events';
@@ -52,7 +52,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: 'Unknown event' }, { status: 400 });
   }
 
-  const result = await recordPlanEvent(user.id, eventKey);
+  // The row is recorded now; the Keap sync runs after the response is sent.
+  const result = await recordPlanEvent(user.id, eventKey, { defer: after });
   if (!result.recorded && result.error) {
     return NextResponse.json({ success: false, error: 'Could not record event' }, { status: 500 });
   }

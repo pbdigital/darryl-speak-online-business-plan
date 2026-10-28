@@ -8,13 +8,29 @@ Only **free** accounts are sent to Keap. POWER AGENT members (`profiles.account_
 
 | Variable | Purpose |
 | --- | --- |
-| `KEAP_MODE` | `fake` logs what would be sent and calls nothing. `live` calls Keap. Defaults to `fake` when `KEAP_API_KEY` is empty, otherwise `live`. |
-| `KEAP_API_KEY` | A Keap Service Account Key, sent as the `X-Keap-API-Key` header. |
+| `KEAP_MODE` | Set to `fake` only for local testing: it logs what would be sent, calls nothing and marks events synced. Otherwise the app calls Keap whenever `KEAP_API_KEY` is set. With no key, nothing is sent and events are marked `not sent: Keap not configured` (see below). |
+| `KEAP_API_KEY` | A Keap Service Account Key, sent as the `X-Keap-API-Key` header to the REST v1 API (`https://api.infusionsoft.com/crm/rest/v1`). |
 | `KEAP_TAG_*` | The numeric Keap tag ID for each event (see below). |
 | `KEAP_FIELD_*` | The numeric Keap custom field ID for each plan number (see below). |
 | `SUPABASE_SERVICE_ROLE_KEY` | Used server-side to write `plan_events` and `profiles.keap_contact_id`. |
 
-In live mode the app finds the contact by email (or creates one with the user's first and last name), stores its ID in `profiles.keap_contact_id`, then applies the tag. If anything fails, the error is written to `plan_events.keap_error` and logged; the user never sees it. A successful sync sets `plan_events.keap_synced_at`. A missing tag ID in live mode is recorded as an error, so it shows up when checking the table.
+In live mode the app finds the contact by email (or creates one with the user's first and last name) and stores its ID in `profiles.keap_contact_id`, then applies the tag. Contact lookups for one user run one at a time, and the ID is only stored if none is stored yet, which keeps duplicate contacts down. The user never waits on Keap: the event row is written during the request and the Keap calls run after the response is sent.
+
+### Sync status and retries
+
+| `keap_synced_at` | `keap_error` | Meaning |
+| --- | --- | --- |
+| set | empty | Sent to Keap (or logged, with `KEAP_MODE=fake`). |
+| empty | `skipped: member` | POWER AGENT member. Never sent and never retried. |
+| empty | `not sent: Keap not configured` | No `KEAP_API_KEY` when it ran. Retried once the key is set. In production the app also logs a warning once per process. |
+| empty | any other text | Keap call failed (or a tag ID is missing); the text is Keap's error. Retried. |
+| empty | empty | Recorded, sync not finished yet. |
+
+Retries happen two ways. Whenever any event is recorded for a user, that user's unsynced rows (up to 10, oldest first) are synced again. For users who never come back, `retryUnsyncedPlanEvents(limit)` in `src/lib/keap/events.ts` retries the oldest unsynced rows across everyone; it is ready to call from a scheduled job, which isn't wired up yet.
+
+### Auth header
+
+Keap's developer forum says Service Account Keys and Personal Access Tokens are sent in the `X-Keap-API-Key` header ([API Authentication thread](https://integration.keap.com/t/api-authentication/91017)). Keap's [PAT and SAK page](https://developer.keap.com/pat-and-sak) shows a v2 example using `Authorization: Bearer` instead. The app uses `X-Keap-API-Key` with v1. This hasn't been tested against a live Keap account yet; if Keap returns 401, try the Bearer header.
 
 ## Tags
 

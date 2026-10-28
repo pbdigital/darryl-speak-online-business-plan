@@ -2,23 +2,34 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { PlanNumbers } from './plan-data';
 
 /**
- * Applies Keap tags to a user's contact.
+ * Applies Keap tags and plan fields to a user's contact.
  *
- * KEAP_MODE=fake (the default when KEAP_API_KEY is empty) logs what it would
- * send and calls nothing. KEAP_MODE=live calls Keap's REST API with a Service
- * Account Key. Tag and custom field IDs come from env variables, see
- * docs/keap-tags.md.
+ * Modes:
+ * - KEAP_MODE=fake: logs what it would send, calls nothing, and counts as
+ *   synced. For local testing only.
+ * - KEAP_MODE=live, or KEAP_MODE unset with KEAP_API_KEY set: calls Keap's
+ *   REST v1 API with a Service Account Key in the X-Keap-API-Key header.
+ * - Anything else (no key): "unconfigured". Nothing is sent and the event
+ *   stays unsynced so it is retried once the key exists.
+ * Tag and custom field IDs come from env variables, see docs/keap-tags.md.
  */
 
 const KEAP_API_BASE = 'https://api.infusionsoft.com/crm/rest/v1';
 const KEAP_TIMEOUT_MS = 10_000;
 
-export type KeapMode = 'fake' | 'live';
+export type KeapMode = 'fake' | 'live' | 'unconfigured';
+
+let warnedUnconfigured = false;
 
 export function getKeapMode(): KeapMode {
-  const mode = process.env.KEAP_MODE;
-  if (mode === 'fake' || mode === 'live') return mode;
-  return process.env.KEAP_API_KEY ? 'live' : 'fake';
+  if (process.env.KEAP_MODE === 'fake') return 'fake';
+  if (process.env.KEAP_API_KEY) return 'live';
+
+  if (process.env.NODE_ENV === 'production' && !warnedUnconfigured) {
+    warnedUnconfigured = true;
+    console.warn('[keap] KEAP_API_KEY is not set: plan events are recorded but not sent to Keap.');
+  }
+  return 'unconfigured';
 }
 
 /** Env variable holding the tag ID for an event, e.g. section_done:swot -> KEAP_TAG_SECTION_DONE_SWOT. */
@@ -28,7 +39,8 @@ export function tagEnvName(eventKey: string): string {
 
 /**
  * Applies the event's tag to the user's Keap contact, finding or creating the
- * contact first. Returns null on success or an error message. Never throws.
+ * contact first. Call only in fake or live mode.
+ * Returns null on success or an error message. Never throws.
  */
 export async function applyKeapTag(
   supabase: SupabaseClient,
@@ -46,15 +58,12 @@ export async function applyKeapTag(
     return null;
   }
 
-  if (!process.env.KEAP_API_KEY) {
-    return 'KEAP_MODE is live but KEAP_API_KEY is not set';
-  }
   if (!tagId || !/^\d+$/.test(tagId)) {
     return `No Keap tag ID set in ${envName}`;
   }
 
   try {
-    const contactId = await findOrCreateContact(supabase, userId);
+    const contactId = await getContactId(supabase, userId);
     await keapRequest('POST', `/contacts/${contactId}/tags`, {
       tagIds: [Number(tagId)],
     });
@@ -74,7 +83,8 @@ const PLAN_FIELD_ENV: Record<keyof PlanNumbers | 'planYear', string> = {
 
 /**
  * Writes the plan's key numbers to the contact's custom fields. Fields whose
- * env variable isn't set are skipped; with none set this does nothing.
+ * env variable isn't set are skipped; with none set this does nothing. Call
+ * only in fake or live mode.
  * Returns null on success or an error message. Never throws.
  */
 export async function setKeapPlanFields(
@@ -96,12 +106,8 @@ export async function setKeapPlanFields(
     return null;
   }
 
-  if (!process.env.KEAP_API_KEY) {
-    return 'KEAP_MODE is live but KEAP_API_KEY is not set';
-  }
-
   try {
-    const contactId = await findOrCreateContact(supabase, userId);
+    const contactId = await getContactId(supabase, userId);
     await keapRequest('PATCH', `/contacts/${contactId}?update_mask=custom_fields`, {
       custom_fields: customFields,
     });
@@ -111,9 +117,23 @@ export async function setKeapPlanFields(
   }
 }
 
+// One contact lookup at a time per user in this process, so two events for
+// the same user can't both create a Keap contact.
+const contactLookups = new Map<string, Promise<number>>();
+
+function getContactId(supabase: SupabaseClient, userId: string): Promise<number> {
+  const running = contactLookups.get(userId);
+  if (running) return running;
+
+  const lookup = findOrCreateContact(supabase, userId).finally(() => contactLookups.delete(userId));
+  contactLookups.set(userId, lookup);
+  return lookup;
+}
+
 /**
  * Returns the user's Keap contact ID: the stored one, an existing contact
- * with the same email, or a new contact. Stores the ID on the profile.
+ * with the same email, or a new contact. Stores the ID on the profile only if
+ * none is stored yet; if another process stored one first, that one wins.
  */
 async function findOrCreateContact(
   supabase: SupabaseClient,
@@ -149,12 +169,30 @@ async function findOrCreateContact(
     contactId = created.id;
   }
 
-  const { error: updateError } = await supabase
+  const { data: stored, error: updateError } = await supabase
     .from('profiles')
     .update({ keap_contact_id: String(contactId) })
-    .eq('id', userId);
+    .eq('id', userId)
+    .is('keap_contact_id', null)
+    .select('keap_contact_id');
   if (updateError) {
     console.error(`[keap] Could not store contact ${contactId} for user ${userId}:`, updateError.message);
+    return contactId;
+  }
+
+  if (!stored || stored.length === 0) {
+    // Another process stored a contact first: use that one.
+    const { data: current } = await supabase
+      .from('profiles')
+      .select('keap_contact_id')
+      .eq('id', userId)
+      .single();
+    if (current?.keap_contact_id && Number(current.keap_contact_id) !== contactId) {
+      console.warn(
+        `[keap] User ${userId} already has contact ${current.keap_contact_id}; contact ${contactId} may be a duplicate.`
+      );
+      return Number(current.keap_contact_id);
+    }
   }
 
   return contactId;

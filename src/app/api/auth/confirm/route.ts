@@ -1,5 +1,5 @@
 import { type EmailOtpType } from '@supabase/supabase-js';
-import { NextResponse, type NextRequest } from 'next/server';
+import { after, NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { recordPlanEvent } from '@/lib/keap/events';
 
@@ -62,7 +62,7 @@ async function recordSignUp(supabase: Awaited<ReturnType<typeof createClient>>) 
       .maybeSingle();
     if (profile?.account_type !== 'free') return;
 
-    await recordPlanEvent(user.id, 'signed_up');
+    await recordPlanEvent(user.id, 'signed_up', { defer: after });
   } catch (err) {
     console.error('Failed to record signed_up plan event:', err);
   }
