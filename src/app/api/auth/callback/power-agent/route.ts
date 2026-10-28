@@ -64,8 +64,10 @@ export async function GET(request: NextRequest) {
     return redirectWithError(request, 'Failed to create session. Please try again.');
   }
 
-  // Redirect to plan page with session cookies
-  const response = NextResponse.redirect(new URL('/plan', request.url));
+  // Redirect to plan page with session cookies. A free user who has just
+  // become a member gets a welcome on their existing plan.
+  const destination = linkResult.upgradedFromFree ? '/plan?welcome=power-agent' : '/plan';
+  const response = NextResponse.redirect(new URL(destination, request.url));
 
   // Copy cookies from session creation
   if (sessionResult.cookies) {

@@ -33,6 +33,7 @@ export function UnifiedAuthPage() {
 
     if (!ssoUrl) {
       setError('POWER AGENT® SSO is not configured.');
+      setScreen('initial');
       return;
     }
 
@@ -57,7 +58,10 @@ export function UnifiedAuthPage() {
         <div className="rounded-2xl bg-white px-10 py-10 shadow-sm border border-gray-100">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
             {screen === 'signup' && (
-              <SignupScreen onBack={() => setScreen('initial')} />
+              <SignupScreen
+                onBack={() => setScreen('initial')}
+                onPowerAgentSso={handlePowerAgentSso}
+              />
             )}
             {screen === 'login' && (
               <LoginScreen onBack={() => setScreen('initial')} />

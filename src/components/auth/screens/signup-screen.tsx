@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Check } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,12 +24,22 @@ import {
   type SignupFormValues,
 } from '@/components/auth/schemas/auth-schemas';
 
+const PRIVACY_URL =
+  process.env.NEXT_PUBLIC_PRIVACY_URL || 'https://darrylspeaks.com/privacy-policy/';
+
+const BENEFITS = [
+  "Darryl's step-by-step plan",
+  'Your numbers worked out for you',
+  'Print it and keep it',
+];
+
 interface SignupScreenProps {
   email?: string;
   onBack: () => void;
+  onPowerAgentSso?: () => void;
 }
 
-export function SignupScreen({ email = '', onBack }: SignupScreenProps) {
+export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScreenProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,11 +114,19 @@ export function SignupScreen({ email = '', onBack }: SignupScreenProps) {
   return (
     <div className="space-y-8">
       <AuthHeader
-        title="Start your free plan"
-        subtitle="Free for any real estate agent. You can start straight after confirming your email."
+        title="Build your 2027 business plan with Darryl, free"
         showBackButton
         onBack={onBack}
       />
+
+      <ul className="space-y-2">
+        {BENEFITS.map((benefit) => (
+          <li key={benefit} className="flex items-center gap-3 text-sm text-gray-700">
+            <Check className="h-4 w-4 shrink-0 text-green-600" aria-hidden="true" />
+            {benefit}
+          </li>
+        ))}
+      </ul>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -235,8 +254,33 @@ export function SignupScreen({ email = '', onBack }: SignupScreenProps) {
           <Button type="submit" size="xl" className="w-full" disabled={isLoading}>
             {isLoading ? 'Creating your plan...' : 'Agree and start my plan'}
           </Button>
+
+          <p className="text-center text-xs text-gray-500">
+            We&apos;ll email you tips to put your plan to work. Unsubscribe anytime.{' '}
+            <a
+              href={PRIVACY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-700"
+            >
+              Privacy Policy
+            </a>
+          </p>
         </form>
       </Form>
+
+      {onPowerAgentSso && (
+        <p className="text-center text-sm text-gray-600">
+          Already a POWER AGENT®?{' '}
+          <button
+            type="button"
+            onClick={onPowerAgentSso}
+            className="font-medium text-gray-900 hover:underline"
+          >
+            Sign in here
+          </button>
+        </p>
+      )}
     </div>
   );
 }

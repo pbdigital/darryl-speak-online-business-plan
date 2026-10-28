@@ -5,6 +5,7 @@ import type { PowerAgentJwtPayload } from './jwt';
 export interface AccountLinkingResult {
   success: boolean;
   userId?: string;
+  upgradedFromFree?: boolean; // a free account just became a member
   error?: string;
   errorCode?: 'CONFLICT' | 'DB_ERROR' | 'AUTH_ERROR';
 }
@@ -184,7 +185,9 @@ export async function linkPowerAgentAccount(
       // Continue anyway - the user was created successfully
     }
 
-    return markAsMember(supabase, newUser.user.id);
+    // GoTrue saves app_metadata after the insert trigger runs, so the new
+    // profile starts as free. markAsMember fixes that; it is not an upgrade.
+    return { ...(await markAsMember(supabase, newUser.user.id)), upgradedFromFree: false };
   } catch (error) {
     console.error('Account linking error:', error);
     return {
@@ -227,6 +230,17 @@ async function markAsMember(
     return { success: false, error: 'Database error', errorCode: 'DB_ERROR' };
   }
 
+  const { data: before, error: readError } = await supabase
+    .from('profiles')
+    .select('account_type')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (readError) {
+    console.error('Error reading profile before marking as member:', readError);
+    return { success: false, error: 'Database error', errorCode: 'DB_ERROR' };
+  }
+
   const { error: profileError } = await supabase
     .from('profiles')
     .update({ account_type: 'member', locked_at: null, lock_source: null })
@@ -237,5 +251,5 @@ async function markAsMember(
     return { success: false, error: 'Database error', errorCode: 'DB_ERROR' };
   }
 
-  return { success: true, userId };
+  return { success: true, userId, upgradedFromFree: before?.account_type === 'free' };
 }
