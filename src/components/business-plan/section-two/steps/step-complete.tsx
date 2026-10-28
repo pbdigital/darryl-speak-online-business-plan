@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { SectionsCompleteCount } from "@/components/business-plan/sections-complete-count";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -209,7 +210,7 @@ function SectionCompleteView({ startTime }: { startTime?: number }) {
               <CheckCircle2 className="h-5 w-5 text-[#1a2744]" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-slate-900">2 of 5</div>
+              <div className="text-2xl font-bold text-slate-900"><SectionsCompleteCount /></div>
               <div className="text-xs text-slate-500">Sections Complete</div>
             </div>
           </div>
