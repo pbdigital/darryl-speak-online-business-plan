@@ -45,6 +45,12 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
                   Users
                 </Link>
                 <Link
+                  href="/admin/free-plan"
+                  className="text-sm text-gray-300 hover:text-white transition-colors"
+                >
+                  Free Plan
+                </Link>
+                <Link
                   href="/admin/team"
                   className="text-sm text-gray-300 hover:text-white transition-colors"
                 >

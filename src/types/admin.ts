@@ -22,6 +22,38 @@ export interface AdminUser {
   has_plan: boolean;
 }
 
+export interface FreePlanFunnel {
+  signed_up: number;
+  started: number;
+  finished_section_3: number;
+  finished_plan: number;
+  printed: number;
+  locked: number;
+  became_member: number;
+}
+
+export interface FreePlanUser {
+  id: string;
+  email: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  signed_up_at: string;
+  sections_done: number;
+  printed: boolean;
+  locked: boolean;
+  joined: boolean;
+  last_sign_in_at: string | null;
+}
+
+export interface FreePlanReport {
+  funnel: {
+    all: FreePlanFunnel;
+    last_30_days: FreePlanFunnel;
+    last_7_days: FreePlanFunnel;
+  };
+  users: FreePlanUser[];
+}
+
 export interface AdminTeamMember {
   id: string;
   first_name: string | null;

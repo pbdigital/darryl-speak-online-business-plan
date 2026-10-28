@@ -7,6 +7,8 @@ import { PlanLockedScreen } from './plan-locked-screen';
 
 interface PlanLockGateProps {
   locked: boolean;
+  email: string;
+  firstName: string | null;
   children: React.ReactNode;
 }
 
@@ -15,7 +17,7 @@ interface PlanLockGateProps {
  * plan is locked. The print page stays reachable. Also switches to the locked
  * screen if the server refuses a save because the plan was locked mid-session.
  */
-export function PlanLockGate({ locked, children }: PlanLockGateProps) {
+export function PlanLockGate({ locked, email, firstName, children }: PlanLockGateProps) {
   const pathname = usePathname();
   const [lockedLive, setLockedLive] = useState(false);
 
@@ -30,7 +32,7 @@ export function PlanLockGate({ locked, children }: PlanLockGateProps) {
     !pathname.startsWith('/plan/print');
 
   if ((locked || lockedLive) && isEditPath) {
-    return <PlanLockedScreen />;
+    return <PlanLockedScreen email={email} firstName={firstName} />;
   }
 
   return <>{children}</>;

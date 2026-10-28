@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { createClient } from '@/lib/supabase/server';
-import type { AdminUser } from '@/types/admin';
+import type { AdminUser, FreePlanReport } from '@/types/admin';
 
 interface UserPlanSection {
   id: string;
@@ -94,4 +94,8 @@ export async function getAdminUser(
   const params = new URLSearchParams({ id: userId });
   if (includePlanSections) params.set('include', 'plan-sections');
   return requestAdminUsers<AdminUserDetailData>(`?${params.toString()}`);
+}
+
+export async function getFreePlanReport(): Promise<FreePlanReport> {
+  return requestAdminUsers<FreePlanReport>('?report=free-plan');
 }

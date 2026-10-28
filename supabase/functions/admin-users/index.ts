@@ -12,6 +12,7 @@ import {
   getLatestPlanSections,
   setPlanLock,
 } from '../_shared/admin-users-data.ts';
+import { getFreePlanReport } from '../_shared/admin-free-plan-data.ts';
 import { handleAdminUsersRequest } from './handler.ts';
 
 Deno.serve(async (req) => {
@@ -31,5 +32,6 @@ Deno.serve(async (req) => {
     },
     setPlanLock: ({ serviceClient }, userId, locked) =>
       setPlanLock(serviceClient, userId, locked),
+    getFreePlanReport: ({ serviceClient }) => getFreePlanReport(serviceClient),
   });
 });

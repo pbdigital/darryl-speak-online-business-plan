@@ -111,9 +111,9 @@ Deno.serve(async (req) => {
     // POST /business-plans - Create new plan
     if (req.method === 'POST') {
       const body = await req.json();
-      const year = body.year ?? new Date().getFullYear() + 1;
+      const year = body.year;
 
-      // Validate year
+      // Validate year (required: guessing it from the clock creates the wrong plan)
       if (typeof year !== 'number' || year < 2024 || year > 2100) {
         return error([{ field: 'year', message: 'Year must be between 2024 and 2100' }]);
       }

@@ -51,6 +51,9 @@ function createDependencies(
     getPlanSections: async () => [],
     sendPasswordReset: async () => undefined,
     setPlanLock: async () => undefined,
+    getFreePlanReport: async () => {
+      throw new Error('not expected');
+    },
     ...overrides,
   };
 }

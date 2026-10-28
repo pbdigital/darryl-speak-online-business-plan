@@ -2,10 +2,12 @@ import type { SupabaseClient, User } from 'jsr:@supabase/supabase-js@2';
 
 const AUTH_PAGE_SIZE = 1000;
 const DATA_PAGE_SIZE = 1000;
+// Mirrors CURRENT_PLAN_YEAR in src/lib/constants.ts. Keep them in step.
+export const CURRENT_PLAN_YEAR = 2027;
 const PROFILE_COLUMNS =
   'id, first_name, last_name, is_admin, admin_granted_at, admin_granted_by, admin_revoked_at, admin_revoked_by, account_type, locked_at, lock_source, created_at, updated_at';
 
-interface ProfileRow {
+export interface ProfileRow {
   id: string;
   first_name: string | null;
   last_name: string | null;
@@ -21,13 +23,13 @@ interface ProfileRow {
   updated_at: string;
 }
 
-interface BusinessPlanRow {
+export interface BusinessPlanRow {
   id: string;
   user_id: string;
   year: number;
 }
 
-interface PlanSectionRow {
+export interface PlanSectionRow {
   id: string;
   business_plan_id: string;
   section_key: string;
@@ -66,7 +68,7 @@ export interface AdminPlanSection {
   updated_at: string;
 }
 
-async function listAuthUsers(serviceClient: SupabaseClient): Promise<User[]> {
+export async function listAuthUsers(serviceClient: SupabaseClient): Promise<User[]> {
   const users: User[] = [];
   let page = 1;
 
@@ -87,7 +89,7 @@ async function listAuthUsers(serviceClient: SupabaseClient): Promise<User[]> {
   return users;
 }
 
-async function listProfiles(
+export async function listProfiles(
   serviceClient: SupabaseClient
 ): Promise<ProfileRow[]> {
   const rows: ProfileRow[] = [];
@@ -112,7 +114,7 @@ async function listProfiles(
   return rows;
 }
 
-async function listBusinessPlans(
+export async function listBusinessPlans(
   serviceClient: SupabaseClient
 ): Promise<BusinessPlanRow[]> {
   const rows: BusinessPlanRow[] = [];
@@ -137,7 +139,7 @@ async function listBusinessPlans(
   return rows;
 }
 
-async function listPlanSections(
+export async function listPlanSections(
   serviceClient: SupabaseClient
 ): Promise<PlanSectionRow[]> {
   const rows: PlanSectionRow[] = [];
@@ -162,7 +164,7 @@ async function listPlanSections(
   return rows;
 }
 
-function hasCompletedData(data: Record<string, unknown>): boolean {
+export function hasCompletedData(data: Record<string, unknown>): boolean {
   return (
     data !== null &&
     typeof data === 'object' &&
@@ -179,12 +181,13 @@ function mapAdminUser(
   sectionsByPlanId: Map<string, PlanSectionRow[]>
 ): AdminUserRecord {
   const userPlans = plans.filter((plan) => plan.user_id === authUser.id);
-  const sectionsCompleted = userPlans.reduce((total, plan) => {
-    const completedForPlan = (sectionsByPlanId.get(plan.id) ?? []).filter(
-      (section) => hasCompletedData(section.data)
-    ).length;
-    return total + completedForPlan;
-  }, 0);
+  // Count only the current year's plan, so a copied-forward plan isn't counted twice.
+  const currentPlan = userPlans.find((plan) => plan.year === CURRENT_PLAN_YEAR);
+  const sectionsCompleted = currentPlan
+    ? (sectionsByPlanId.get(currentPlan.id) ?? []).filter((section) =>
+        hasCompletedData(section.data)
+      ).length
+    : 0;
   const granter = profile?.admin_granted_by
     ? profilesById.get(profile.admin_granted_by)
     : undefined;

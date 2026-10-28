@@ -3,6 +3,11 @@ import { createClient } from '@/lib/supabase/server';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { PlanHero, SectionCardsGrid } from '@/components/business-plan';
 import { PlanFooter } from './plan-footer';
+import {
+  BroughtForwardBanner,
+  FreeAccessLine,
+  JoinedBanner,
+} from '@/components/plan-lock/plan-notices';
 
 const sections = [
   {
@@ -47,7 +52,13 @@ const sections = [
   },
 ];
 
-export default async function PlanPage() {
+interface PlanPageProps {
+  searchParams: Promise<{ welcome?: string | string[] }>;
+}
+
+export default async function PlanPage({ searchParams }: PlanPageProps) {
+  const { welcome } = await searchParams;
+
   const supabase = await createClient();
 
   const {
@@ -61,9 +72,21 @@ export default async function PlanPage() {
   // Get profile data
   const { data: profile } = await supabase
     .from('profiles')
-    .select('first_name, last_name')
+    .select('first_name, last_name, account_type, created_at')
     .eq('id', user.id)
     .single();
+
+  const isFree = profile?.account_type === 'free';
+  let broughtForward = false;
+
+  if (profile?.account_type === 'member') {
+    const { data: plans } = await supabase
+      .from('business_plans')
+      .select('year')
+      .eq('user_id', user.id)
+      .in('year', [CURRENT_PLAN_YEAR - 1, CURRENT_PLAN_YEAR]);
+    broughtForward = (plans ?? []).length === 2;
+  }
 
   const displayName = profile?.first_name
     ? `${profile.first_name} ${profile.last_name || ''}`.trim()
@@ -71,6 +94,10 @@ export default async function PlanPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      {isFree && profile?.created_at && (
+        <FreeAccessLine signedUpAt={profile.created_at} email={user.email || ''} />
+      )}
+
       {/* Hero Section */}
       <PlanHero
         year={CURRENT_PLAN_YEAR}
@@ -79,6 +106,10 @@ export default async function PlanPage() {
 
       {/* Main Content - overlaps the hero */}
       <main className="relative z-20 mx-auto -mt-20 max-w-7xl px-6 pb-20 md:px-12">
+        {welcome === 'power-agent' && <JoinedBanner />}
+        {broughtForward && welcome !== 'power-agent' && (
+          <BroughtForwardBanner userId={user.id} />
+        )}
         <SectionCardsGrid sections={sections} />
       </main>
 

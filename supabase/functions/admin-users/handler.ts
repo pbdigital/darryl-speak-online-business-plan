@@ -6,6 +6,7 @@ import type {
   AdminPlanSection,
   AdminUserRecord,
 } from '../_shared/admin-users-data.ts';
+import type { FreePlanReport } from '../_shared/admin-free-plan-data.ts';
 import {
   error,
   methodNotAllowed,
@@ -40,12 +41,14 @@ export interface AdminUsersDependencies {
     userId: string,
     locked: boolean
   ) => Promise<void>;
+  getFreePlanReport: (context: AdminContext) => Promise<FreePlanReport>;
 }
 
 function getView(req: Request): string {
   if (req.method !== 'GET') return 'admin-user-detail';
 
   const url = new URL(req.url);
+  if (url.searchParams.get('report') === 'free-plan') return 'admin-free-plan';
   if (!url.searchParams.get('id')) return 'admin-users-list';
   return url.searchParams.get('include') === 'plan-sections'
     ? 'admin-user-plan'
@@ -74,6 +77,19 @@ export async function handleAdminUsersRequest(
 
     const { context } = authorization;
     const url = new URL(req.url);
+
+    if (req.method === 'GET' && url.searchParams.has('report')) {
+      if (url.searchParams.get('report') !== 'free-plan') {
+        return error(
+          [{ field: 'report', message: 'Unsupported report' }],
+          400,
+          view
+        );
+      }
+
+      const report = await dependencies.getFreePlanReport(context);
+      return success(report, 200, view);
+    }
 
     if (req.method === 'GET') {
       const userId = url.searchParams.get('id');
