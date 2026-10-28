@@ -35,6 +35,11 @@ export interface AdminUsersDependencies {
     context: AdminContext,
     email: string
   ) => Promise<void>;
+  setPlanLock: (
+    context: AdminContext,
+    userId: string,
+    locked: boolean
+  ) => Promise<void>;
 }
 
 function getView(req: Request): string {
@@ -132,7 +137,7 @@ export async function handleAdminUsersRequest(
         );
       }
 
-      if (action !== 'reset-access') {
+      if (action !== 'reset-access' && action !== 'lock' && action !== 'unlock') {
         return error(
           [{ field: 'action', message: 'Invalid action' }],
           400,
@@ -142,6 +147,25 @@ export async function handleAdminUsersRequest(
 
       const user = await dependencies.getUser(context, userId);
       if (!user) return notFound('User not found', view);
+
+      if (action === 'lock' || action === 'unlock') {
+        const lock = action === 'lock';
+
+        if (lock && user.account_type !== 'free') {
+          return error(
+            [{ message: 'POWER AGENT members are never locked.' }],
+            400,
+            view
+          );
+        }
+
+        // Re-locking keeps the original locked_at.
+        if (lock !== !!user.locked_at) {
+          await dependencies.setPlanLock(context, userId, lock);
+        }
+
+        return success({ userId, locked: lock }, 200, view);
+      }
 
       if (user.auth_provider === 'wordpress') {
         return error(

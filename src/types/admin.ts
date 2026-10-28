@@ -9,6 +9,9 @@ export interface AdminUser {
   admin_revoked_at: string | null;
   admin_revoked_by: string | null;
   granted_by_name: string | null;
+  account_type: 'member' | 'free';
+  locked_at: string | null;
+  lock_source: string | null;
   created_at: string;
   updated_at: string;
   last_sign_in_at: string | null;

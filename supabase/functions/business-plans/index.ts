@@ -5,6 +5,9 @@
  * - GET /business-plans - List user's business plans
  * - GET /business-plans?id=xxx - Get single plan with sections
  * - POST /business-plans - Create new business plan
+ *
+ * GET responses carry the user's lock state in meta.account. Writes return
+ * 423 PLAN_LOCKED while the user's plan is locked.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import {
@@ -16,6 +19,8 @@ import {
   methodNotAllowed,
   conflict,
   serverError,
+  planLocked,
+  getPlanAccess,
 } from '../_shared/index.ts';
 
 interface BusinessPlan {
@@ -53,6 +58,13 @@ Deno.serve(async (req) => {
       return unauthorized();
     }
 
+    const access = await getPlanAccess(supabase, user.id);
+    const meta = { account: access };
+
+    if (access.locked && (req.method === 'POST' || req.method === 'DELETE')) {
+      return planLocked();
+    }
+
     const url = new URL(req.url);
     const planId = url.searchParams.get('id');
 
@@ -69,7 +81,7 @@ Deno.serve(async (req) => {
         return serverError(dbError.message);
       }
 
-      return success(data);
+      return success(data, 200, undefined, meta);
     }
 
     // GET /business-plans?id=xxx - Get single plan with sections
@@ -93,7 +105,7 @@ Deno.serve(async (req) => {
         return serverError(planError.message);
       }
 
-      return success(plan);
+      return success(plan, 200, undefined, meta);
     }
 
     // POST /business-plans - Create new plan

@@ -20,6 +20,9 @@ const adminUser: AdminUserRecord = {
   admin_revoked_at: null,
   admin_revoked_by: null,
   granted_by_name: null,
+  account_type: 'member',
+  locked_at: null,
+  lock_source: null,
   created_at: '2026-01-01T00:00:00.000Z',
   updated_at: '2026-01-01T00:00:00.000Z',
   last_sign_in_at: null,
@@ -47,6 +50,7 @@ function createDependencies(
     getUser: async () => adminUser,
     getPlanSections: async () => [],
     sendPasswordReset: async () => undefined,
+    setPlanLock: async () => undefined,
     ...overrides,
   };
 }
@@ -131,4 +135,67 @@ Deno.test('returns plan sections only for an authorized admin', async () => {
   assertEquals(response.status, 200);
   assertEquals(body.view, 'admin-user-plan');
   assertEquals(body.data, { user: adminUser, planSections });
+});
+
+function postAction(action: string): Request {
+  return new Request('http://localhost/admin-users', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: USER_ID, action }),
+  });
+}
+
+Deno.test('locks a free user', async () => {
+  const calls: boolean[] = [];
+  const response = await handleAdminUsersRequest(
+    postAction('lock'),
+    createDependencies({
+      getUser: async () => ({ ...adminUser, account_type: 'free' }),
+      setPlanLock: async (_context, _userId, locked) => {
+        calls.push(locked);
+      },
+    })
+  );
+  const body = await response.json();
+
+  assertEquals(response.status, 200);
+  assertEquals(body.data, { userId: USER_ID, locked: true });
+  assertEquals(calls, [true]);
+});
+
+Deno.test('refuses to lock a member', async () => {
+  const calls: boolean[] = [];
+  const response = await handleAdminUsersRequest(
+    postAction('lock'),
+    createDependencies({
+      setPlanLock: async (_context, _userId, locked) => {
+        calls.push(locked);
+      },
+    })
+  );
+
+  assertEquals(response.status, 400);
+  assertEquals(calls, []);
+});
+
+Deno.test('unlocks a locked member', async () => {
+  const calls: boolean[] = [];
+  const response = await handleAdminUsersRequest(
+    postAction('unlock'),
+    createDependencies({
+      getUser: async () => ({
+        ...adminUser,
+        locked_at: '2026-01-03T00:00:00.000Z',
+        lock_source: 'keap',
+      }),
+      setPlanLock: async (_context, _userId, locked) => {
+        calls.push(locked);
+      },
+    })
+  );
+  const body = await response.json();
+
+  assertEquals(response.status, 200);
+  assertEquals(body.data, { userId: USER_ID, locked: false });
+  assertEquals(calls, [false]);
 });

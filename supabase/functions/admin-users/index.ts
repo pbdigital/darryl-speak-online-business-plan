@@ -10,6 +10,7 @@ import {
   getAdminUser,
   getAdminUsers,
   getLatestPlanSections,
+  setPlanLock,
 } from '../_shared/admin-users-data.ts';
 import { handleAdminUsersRequest } from './handler.ts';
 
@@ -28,5 +29,7 @@ Deno.serve(async (req) => {
       const { error } = await serviceClient.auth.resetPasswordForEmail(email);
       if (error) throw error;
     },
+    setPlanLock: ({ serviceClient }, userId, locked) =>
+      setPlanLock(serviceClient, userId, locked),
   });
 });

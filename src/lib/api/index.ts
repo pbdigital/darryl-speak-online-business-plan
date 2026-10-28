@@ -2,8 +2,13 @@
  * API module exports
  * Import from '@/lib/api' for convenience
  */
-export { apiRequest, isAuthenticated } from './client';
-export type { ApiResponse } from './client';
+export {
+  apiRequest,
+  isAuthenticated,
+  isPlanLocked,
+  PLAN_LOCKED_EVENT,
+} from './client';
+export type { ApiResponse, PlanAccess } from './client';
 
 export {
   getBusinessPlans,

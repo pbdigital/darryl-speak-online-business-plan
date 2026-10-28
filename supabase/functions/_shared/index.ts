@@ -12,4 +12,6 @@ export {
   methodNotAllowed,
   conflict,
   serverError,
+  planLocked,
 } from './response.ts';
+export { getPlanAccess, type PlanAccess } from './plan-access.ts';

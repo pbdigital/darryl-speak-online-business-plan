@@ -4,6 +4,9 @@
  * Handles section data persistence for business plans:
  * - GET /plan-sections?planId=xxx - Get all sections for a plan
  * - PUT /plan-sections - Upsert section data (auto-save)
+ *
+ * GET responses carry the user's lock state in meta.account. PUT returns
+ * 423 PLAN_LOCKED while the user's plan is locked.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import {
@@ -14,6 +17,8 @@ import {
   notFound,
   methodNotAllowed,
   serverError,
+  planLocked,
+  getPlanAccess,
 } from '../_shared/index.ts';
 
 // Valid section keys matching the 5 business plan sections
@@ -120,6 +125,12 @@ Deno.serve(async (req) => {
       return unauthorized();
     }
 
+    const access = await getPlanAccess(supabase, user.id);
+
+    if (access.locked && req.method === 'PUT') {
+      return planLocked();
+    }
+
     const url = new URL(req.url);
 
     // GET /plan-sections?planId=xxx - Get all sections for a plan
@@ -152,7 +163,7 @@ Deno.serve(async (req) => {
         return serverError(sectionsError.message);
       }
 
-      return success(sections);
+      return success(sections, 200, undefined, { account: access });
     }
 
     // PUT /plan-sections - Upsert section data

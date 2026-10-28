@@ -9,7 +9,7 @@ interface ApiResponse<T = unknown> {
   view: string;
   data: T | null;
   errors: Array<{ field?: string; message: string }>;
-  meta: { timestamp: string };
+  meta: { timestamp: string } & Record<string, unknown>;
 }
 
 /**
@@ -18,14 +18,15 @@ interface ApiResponse<T = unknown> {
 export function success<T>(
   data: T,
   status = 200,
-  view = 'unknown'
+  view = 'unknown',
+  meta: Record<string, unknown> = {}
 ): Response {
   const body: ApiResponse<T> = {
     success: true,
     view,
     data,
     errors: [],
-    meta: { timestamp: new Date().toISOString() },
+    meta: { ...meta, timestamp: new Date().toISOString() },
   };
 
   return new Response(JSON.stringify(body), {
@@ -109,4 +110,23 @@ export function serverError(
   view = 'unknown'
 ): Response {
   return error([{ message }], 500, view);
+}
+
+/**
+ * Create a plan locked response (423). The app reads `error: 'PLAN_LOCKED'`.
+ */
+export function planLocked(view = 'unknown'): Response {
+  const body = {
+    success: false,
+    view,
+    data: null,
+    error: 'PLAN_LOCKED',
+    errors: [{ message: 'Your plan is locked and can no longer be edited.' }],
+    meta: { timestamp: new Date().toISOString() },
+  };
+
+  return new Response(JSON.stringify(body), {
+    status: 423,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  });
 }

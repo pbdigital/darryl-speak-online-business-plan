@@ -21,6 +21,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AdminUser } from '@/types/admin';
+import { setUserPlanLock } from '@/lib/api/admin-users';
 
 interface UsersTableProps {
   users: AdminUser[];
@@ -34,6 +35,8 @@ export function UsersTable({ users }: UsersTableProps) {
   const [authFilter, setAuthFilter] = useState<string>('all');
   const [completionFilter, setCompletionFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [lockPendingId, setLockPendingId] = useState<string | null>(null);
+  const [lockError, setLockError] = useState<string | null>(null);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -108,6 +111,60 @@ export function UsersTable({ users }: UsersTableProps) {
     return <Badge variant="outline">{provider || 'Email'}</Badge>;
   };
 
+  const handleLockChange = async (user: AdminUser, locked: boolean) => {
+    setLockPendingId(user.id);
+    setLockError(null);
+
+    const response = await setUserPlanLock(user.id, locked);
+
+    if (response.success) {
+      router.refresh();
+    } else {
+      setLockError(
+        response.errors?.[0]?.message ||
+          `Failed to ${locked ? 'lock' : 'unlock'} ${user.email || 'user'}`
+      );
+    }
+
+    setLockPendingId(null);
+  };
+
+  const getAccessCell = (user: AdminUser) => {
+    const isPending = lockPendingId === user.id;
+    const canLock = user.account_type === 'free' && !user.locked_at;
+
+    return (
+      <div className="flex items-center gap-2">
+        {user.account_type === 'member' ? (
+          <Badge className="bg-blue-100 text-blue-800">Member</Badge>
+        ) : (
+          <Badge variant="outline">Free</Badge>
+        )}
+        {user.locked_at && (
+          <Badge
+            className="bg-amber-100 text-amber-800"
+            title={`Locked ${formatDate(user.locked_at)}${user.lock_source ? ` by ${user.lock_source}` : ''}`}
+          >
+            Locked
+          </Badge>
+        )}
+        {(user.locked_at || canLock) && (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isPending}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLockChange(user, !user.locked_at);
+            }}
+          >
+            {isPending ? 'Saving...' : user.locked_at ? 'Unlock' : 'Lock'}
+          </Button>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-4">
       {/* Filters */}
@@ -163,6 +220,8 @@ export function UsersTable({ users }: UsersTableProps) {
         {filteredUsers.length !== users.length && ` (filtered from ${users.length})`}
       </p>
 
+      {lockError && <p className="text-sm text-red-600">{lockError}</p>}
+
       {/* Table */}
       <div className="border rounded-lg overflow-hidden">
         <Table>
@@ -174,12 +233,13 @@ export function UsersTable({ users }: UsersTableProps) {
               <TableHead>Last Active</TableHead>
               <TableHead>Provider</TableHead>
               <TableHead>Plan Progress</TableHead>
+              <TableHead>Access</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedUsers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                   No users found
                 </TableCell>
               </TableRow>
@@ -205,6 +265,7 @@ export function UsersTable({ users }: UsersTableProps) {
                   <TableCell>{formatDate(user.last_sign_in_at)}</TableCell>
                   <TableCell>{getProviderBadge(user.auth_provider)}</TableCell>
                   <TableCell>{getCompletionBadge(user)}</TableCell>
+                  <TableCell>{getAccessCell(user)}</TableCell>
                 </TableRow>
               ))
             )}

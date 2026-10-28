@@ -6,12 +6,27 @@ import { createClient } from '@/lib/supabase/client';
 
 const FUNCTIONS_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1`;
 
+export interface PlanAccess {
+  locked: boolean;
+  account_type: 'member' | 'free' | null;
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   view: string;
   data: T | null;
+  /** 'PLAN_LOCKED' when a write was refused because the plan is locked */
+  error?: string;
   errors: Array<{ field?: string; message: string }>;
-  meta: { timestamp: string };
+  /** Plan GET responses include the user's lock state as `account` */
+  meta: { timestamp: string; account?: PlanAccess };
+}
+
+/** Window event fired when the server refuses a write because the plan is locked */
+export const PLAN_LOCKED_EVENT = 'plan-locked';
+
+export function isPlanLocked(response: ApiResponse<unknown>): boolean {
+  return response.error === 'PLAN_LOCKED';
 }
 
 /**
@@ -48,6 +63,14 @@ export async function apiRequest<T>(
   });
 
   const json = await response.json();
+
+  if (
+    response.status === 423 &&
+    json.error === 'PLAN_LOCKED' &&
+    typeof window !== 'undefined'
+  ) {
+    window.dispatchEvent(new Event(PLAN_LOCKED_EVENT));
+  }
 
   // Handle non-JSON error responses from Supabase infrastructure
   if (!json.success && !json.errors) {

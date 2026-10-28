@@ -2,6 +2,8 @@ import type { SupabaseClient, User } from 'jsr:@supabase/supabase-js@2';
 
 const AUTH_PAGE_SIZE = 1000;
 const DATA_PAGE_SIZE = 1000;
+const PROFILE_COLUMNS =
+  'id, first_name, last_name, is_admin, admin_granted_at, admin_granted_by, admin_revoked_at, admin_revoked_by, account_type, locked_at, lock_source, created_at, updated_at';
 
 interface ProfileRow {
   id: string;
@@ -12,6 +14,9 @@ interface ProfileRow {
   admin_granted_by: string | null;
   admin_revoked_at: string | null;
   admin_revoked_by: string | null;
+  account_type: 'member' | 'free';
+  locked_at: string | null;
+  lock_source: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -41,6 +46,9 @@ export interface AdminUserRecord {
   admin_revoked_at: string | null;
   admin_revoked_by: string | null;
   granted_by_name: string | null;
+  account_type: 'member' | 'free';
+  locked_at: string | null;
+  lock_source: string | null;
   created_at: string;
   updated_at: string;
   last_sign_in_at: string | null;
@@ -88,9 +96,7 @@ async function listProfiles(
   while (true) {
     const { data, error } = await serviceClient
       .from('profiles')
-      .select(
-        'id, first_name, last_name, is_admin, admin_granted_at, admin_granted_by, admin_revoked_at, admin_revoked_by, created_at, updated_at'
-      )
+      .select(PROFILE_COLUMNS)
       .order('id')
       .range(from, from + DATA_PAGE_SIZE - 1);
 
@@ -197,6 +203,10 @@ function mapAdminUser(
     admin_revoked_at: profile?.admin_revoked_at ?? null,
     admin_revoked_by: profile?.admin_revoked_by ?? null,
     granted_by_name: grantedByName,
+    // A user without a profile row has never been locked; treat as free.
+    account_type: profile?.account_type ?? 'free',
+    locked_at: profile?.locked_at ?? null,
+    lock_source: profile?.lock_source ?? null,
     created_at: profile?.created_at ?? authUser.created_at,
     updated_at: profile?.updated_at ?? authUser.updated_at ?? authUser.created_at,
     last_sign_in_at: authUser.last_sign_in_at ?? null,
@@ -257,9 +267,7 @@ export async function getAdminUser(
   const [profileResult, profiles, plans, sections] = await Promise.all([
     serviceClient
       .from('profiles')
-      .select(
-        'id, first_name, last_name, is_admin, admin_granted_at, admin_granted_by, admin_revoked_at, admin_revoked_by, created_at, updated_at'
-      )
+      .select(PROFILE_COLUMNS)
       .eq('id', userId)
       .maybeSingle(),
     listProfiles(serviceClient),
@@ -310,4 +318,24 @@ export async function getLatestPlanSections(
 
   if (sectionsError) throw sectionsError;
   return (sections ?? []) as AdminPlanSection[];
+}
+
+/**
+ * Locks or unlocks a user's plan. Callers check the user may be locked.
+ */
+export async function setPlanLock(
+  serviceClient: SupabaseClient,
+  userId: string,
+  locked: boolean
+): Promise<void> {
+  const { error } = await serviceClient
+    .from('profiles')
+    .update(
+      locked
+        ? { locked_at: new Date().toISOString(), lock_source: 'admin' }
+        : { locked_at: null, lock_source: null }
+    )
+    .eq('id', userId);
+
+  if (error) throw error;
 }
