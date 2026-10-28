@@ -7,11 +7,10 @@
  * return 200 so Keap's campaign doesn't retry or error.
  */
 import { createHash, timingSafeEqual } from 'node:crypto';
-import { createClient, type SupabaseClient, type User } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 export type KeapLockAction = 'lock' | 'unlock';
 
-const AUTH_PAGE_SIZE = 1000;
 const EMAIL_FIELDS = ['email', 'email1', 'emailaddress1', 'contact.email'];
 const CONTACT_ID_FIELDS = ['contactid', 'contact_id', 'id', 'contact.id'];
 
@@ -71,22 +70,12 @@ function maskEmail(email: string): string {
 async function findUserByEmail(
   supabase: SupabaseClient,
   email: string
-): Promise<User | null> {
-  const target = email.toLowerCase();
-  let page = 1;
-
-  while (true) {
-    const { data, error } = await supabase.auth.admin.listUsers({
-      page,
-      perPage: AUTH_PAGE_SIZE,
-    });
-    if (error) throw error;
-
-    const match = data.users.find((user) => user.email?.toLowerCase() === target);
-    if (match) return match;
-    if (data.users.length < AUTH_PAGE_SIZE) return null;
-    page += 1;
-  }
+): Promise<{ id: string } | null> {
+  const { data, error } = await supabase.rpc('get_auth_user_id_by_email', {
+    p_email: email,
+  });
+  if (error) throw error;
+  return data ? { id: data as string } : null;
 }
 
 export async function handleKeapLockWebhook(

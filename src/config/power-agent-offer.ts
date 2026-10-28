@@ -10,14 +10,13 @@ export const FREE_ACCESS_DAYS = 30;
 /** Every join link carries this source so DDS can see sign-ups from the free plan. */
 export const JOIN_SOURCE = 'free-business-plan';
 
-export function joinUrl(params: { email?: string; placement: string }): string {
+export function joinUrl(params: { placement: string }): string {
   const base =
     process.env.NEXT_PUBLIC_POWER_AGENT_JOIN_URL || 'https://darrylspeaks.com/';
   const url = new URL(base);
   url.searchParams.set('utm_source', JOIN_SOURCE);
   url.searchParams.set('utm_medium', 'app');
   url.searchParams.set('utm_campaign', params.placement);
-  if (params.email) url.searchParams.set('inf_field_Email', params.email);
   return url.toString();
 }
 

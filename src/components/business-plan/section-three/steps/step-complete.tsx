@@ -136,7 +136,7 @@ function CoachingCard({ transactions }: { transactions: number }) {
   if (!viewer) return null;
   if (viewer.isMember && !COACHING_CALL_URL) return null;
 
-  const href = COACHING_CALL_URL || joinUrl({ email: viewer.email, placement: "section-3" });
+  const href = COACHING_CALL_URL || joinUrl({ placement: "section-3" });
   const goal =
     transactions > 0
       ? `You've set a goal of ${transactions} ${transactions === 1 ? "transaction" : "transactions"}.`
