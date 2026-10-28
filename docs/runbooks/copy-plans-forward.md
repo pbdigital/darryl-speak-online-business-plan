@@ -2,15 +2,23 @@
 
 One-time production run for MYP-83. It gives every user who has a 2026 plan a
 2027 plan with the same sections and answers, using
-`public.copy_plans_forward(from_year, to_year)` from migration
-`20261029000050_copy_plans_forward.sql`.
+`public.copy_plans_forward(from_year, to_year)` from migrations
+`20261029000050_copy_plans_forward.sql` and
+`20261029000060_copy_plans_forward_clear_dates.sql`.
+
+Everything is copied as-is except three signature dates, which are set to an
+empty string so members re-sign for 2027 and the app fills in today's date:
+Section 1 `completionDate` (`reflection`), and Section 5
+`commitmentContract.agentSignatureDate` and `partnerSignatureDate`
+(`accountability`). `public.clear_plan_dates_for_copy(section_key, data)` does
+this, and the checks below use it too.
 
 The function never touches 2026 data and never touches an existing 2027 plan.
 Running it twice is safe: the second run creates nothing.
 
 ## Order of work
 
-1. Apply the migration to production (creates the function only, no data change).
+1. Apply both migrations to production (they create functions only, no data change).
 2. Run the copy (steps below).
 3. Deploy the app build that has `CURRENT_PLAN_YEAR = 2027`.
 
@@ -81,21 +89,22 @@ select
   (select count(*) from plan_sections s join business_plans p on p.id = s.business_plan_id
      where p.year = 2027) as sections_2027;
 
--- Copied plans whose sections differ from the 2026 source. Must return 0.
+-- Copied plans whose sections differ from the 2026 source (with the
+-- signature dates cleared, as the copy does). Must return 0.
 select count(*) as mismatched_plans
 from business_plans new
 join business_plans old on old.user_id = new.user_id and old.year = 2026
 where new.year = 2027 and new.created_at = '<run_at>'
   and (
     exists (
-      select s.section_key, s.data from plan_sections s where s.business_plan_id = old.id
+      select s.section_key, clear_plan_dates_for_copy(s.section_key, s.data) from plan_sections s where s.business_plan_id = old.id
       except
       select s.section_key, s.data from plan_sections s where s.business_plan_id = new.id
     )
     or exists (
       select s.section_key, s.data from plan_sections s where s.business_plan_id = new.id
       except
-      select s.section_key, s.data from plan_sections s where s.business_plan_id = old.id
+      select s.section_key, clear_plan_dates_for_copy(s.section_key, s.data) from plan_sections s where s.business_plan_id = old.id
     )
   );
 ```
@@ -163,7 +172,7 @@ can be refreshed from 2026. This is a production write, so get approval first:
 
 ```sql
 update plan_sections new_s
-set data = old_s.data
+set data = clear_plan_dates_for_copy(old_s.section_key, old_s.data)
 from business_plans new_p, business_plans old_p, plan_sections old_s
 where new_s.business_plan_id = new_p.id
   and new_p.year = 2027 and new_p.created_at = '<run_at>'

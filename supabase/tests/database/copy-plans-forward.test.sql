@@ -3,7 +3,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 
-select plan(22);
+select plan(26);
 
 -- Synthetic years far from real data, so counts are exact whatever else is in
 -- the local database. The function takes the years as arguments, so 2090 to
@@ -18,27 +18,36 @@ values
   ('00000000-0000-0000-0000-0000000000c3', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
    'copy-three@example.test', '{"provider":"email","account_type":"member"}', '{}'),
   ('00000000-0000-0000-0000-0000000000c4', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-   'copy-four@example.test', '{"provider":"email","account_type":"member"}', '{}');
+   'copy-four@example.test', '{"provider":"email","account_type":"member"}', '{}'),
+  ('00000000-0000-0000-0000-0000000000c5', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
+   'copy-five@example.test', '{"provider":"email","account_type":"member"}', '{}');
 
 -- c3 is locked: the copy must still reach locked users.
 update public.profiles set locked_at = now(), lock_source = 'test'
 where id = '00000000-0000-0000-0000-0000000000c3';
 
--- c1: 2090 plan with three sections, no 2091 plan.
+-- c1: 2090 plan with four sections (signature dates set), no 2091 plan.
 -- c2: 2090 plan with two sections and its own 2091 plan (made a day earlier).
 -- c3: 2090 plan with no sections.
 -- c4: only a 2089 plan.
+-- c5: 2090 plan whose reflection and accountability sections have no date keys.
 insert into public.business_plans (id, user_id, year, created_at, updated_at) values
   ('00000000-0000-0000-0000-00000000b101', '00000000-0000-0000-0000-0000000000c1', 2090, now() - interval '300 days', now() - interval '10 days'),
   ('00000000-0000-0000-0000-00000000b201', '00000000-0000-0000-0000-0000000000c2', 2090, now() - interval '300 days', now() - interval '10 days'),
   ('00000000-0000-0000-0000-00000000b202', '00000000-0000-0000-0000-0000000000c2', 2091, now() - interval '1 day', now() - interval '1 day'),
   ('00000000-0000-0000-0000-00000000b301', '00000000-0000-0000-0000-0000000000c3', 2090, now() - interval '300 days', now() - interval '10 days'),
-  ('00000000-0000-0000-0000-00000000b401', '00000000-0000-0000-0000-0000000000c4', 2089, now() - interval '600 days', now() - interval '400 days');
+  ('00000000-0000-0000-0000-00000000b401', '00000000-0000-0000-0000-0000000000c4', 2089, now() - interval '600 days', now() - interval '400 days'),
+  ('00000000-0000-0000-0000-00000000b501', '00000000-0000-0000-0000-0000000000c5', 2090, now() - interval '300 days', now() - interval '10 days');
 
 insert into public.plan_sections (business_plan_id, section_key, data, updated_at) values
   ('00000000-0000-0000-0000-00000000b101', 'reflection', '{"mantra":"Grow","completionDate":"2090-11-02"}', now() - interval '20 days'),
   ('00000000-0000-0000-0000-00000000b101', 'swot', '{"strengths":["Follow up"]}', now() - interval '15 days'),
   ('00000000-0000-0000-0000-00000000b101', 'income-planning', '{"taxRate":25}', now() - interval '10 days'),
+  ('00000000-0000-0000-0000-00000000b101', 'accountability',
+   '{"idealClients":[{"name":"First-time buyers"}],"commitmentContract":{"agentName":"Pat","transactionGoal":24,"agentSignatureDate":"2090-11-05","partnerSignatureDate":"2090-11-06","accountabilityPartnerName":"Sam"}}',
+   now() - interval '10 days'),
+  ('00000000-0000-0000-0000-00000000b501', 'reflection', '{"mantra":"No date yet"}', now() - interval '10 days'),
+  ('00000000-0000-0000-0000-00000000b501', 'accountability', '{"idealClients":[]}', now() - interval '10 days'),
   ('00000000-0000-0000-0000-00000000b201', 'reflection', '{"mantra":"Old"}', now() - interval '20 days'),
   ('00000000-0000-0000-0000-00000000b201', 'swot', '{"strengths":["Old"]}', now() - interval '20 days'),
   ('00000000-0000-0000-0000-00000000b202', 'reflection', '{"mantra":"Already started 2091"}', now() - interval '1 day'),
@@ -109,8 +118,8 @@ create temp table first_run as select * from public.copy_plans_forward(2090, 209
 
 select results_eq(
   $$ select plans_created, sections_copied, users_skipped from first_run $$,
-  $$ values (2, 3, 1) $$,
-  'first run creates 2 plans, copies 3 sections and skips the user who already had 2091'
+  $$ values (3, 6, 1) $$,
+  'first run creates 3 plans, copies 6 sections and skips the user who already had 2091'
 );
 
 select is(
@@ -123,15 +132,52 @@ select set_eq(
   $$ select s.section_key, s.data from public.plan_sections s
      join public.business_plans p on p.id = s.business_plan_id
      where p.user_id = '00000000-0000-0000-0000-0000000000c1' and p.year = 2091 $$,
+  $$ values
+       ('reflection'::text, '{"mantra":"Grow","completionDate":""}'::jsonb),
+       ('swot', '{"strengths":["Follow up"]}'),
+       ('income-planning', '{"taxRate":25}'),
+       ('accountability', '{"idealClients":[{"name":"First-time buyers"}],"commitmentContract":{"agentName":"Pat","transactionGoal":24,"agentSignatureDate":"","partnerSignatureDate":"","accountabilityPartnerName":"Sam"}}') $$,
+  'every section is copied, with the three signature dates cleared to empty strings'
+);
+
+select set_eq(
   $$ select s.section_key, s.data from public.plan_sections s
-     where s.business_plan_id = '00000000-0000-0000-0000-00000000b101' $$,
-  'every section key and its data are copied to the new plan'
+     join public.business_plans p on p.id = s.business_plan_id
+     where p.user_id = '00000000-0000-0000-0000-0000000000c1' and p.year = 2091
+       and s.section_key in ('swot', 'income-planning') $$,
+  $$ select s.section_key, s.data from public.plan_sections s
+     where s.business_plan_id = '00000000-0000-0000-0000-00000000b101'
+       and s.section_key in ('swot', 'income-planning') $$,
+  'sections without signature dates are copied identically'
+);
+
+select set_eq(
+  $$ select s.section_key, s.data from public.plan_sections s
+     join public.business_plans p on p.id = s.business_plan_id
+     where p.user_id = '00000000-0000-0000-0000-0000000000c5' and p.year = 2091 $$,
+  $$ select s.section_key, s.data from public.plan_sections s
+     where s.business_plan_id = '00000000-0000-0000-0000-00000000b501' $$,
+  'reflection and accountability sections without the date keys are copied unchanged (no keys added)'
+);
+
+select is(
+  (select data -> 'commitmentContract' ->> 'agentSignatureDate' from public.plan_sections
+   where business_plan_id = '00000000-0000-0000-0000-00000000b101' and section_key = 'accountability'),
+  '2090-11-05',
+  'the 2090 accountability section keeps its signature date'
+);
+
+select is(
+  (select data ->> 'completionDate' from public.plan_sections
+   where business_plan_id = '00000000-0000-0000-0000-00000000b101' and section_key = 'reflection'),
+  '2090-11-02',
+  'the 2090 reflection section keeps its completion date'
 );
 
 select ok(
   (select bool_and(p.created_at = f.run_at and p.updated_at = f.run_at)
    from public.business_plans p, first_run f
-   where p.year = 2091 and p.user_id in ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000c3')),
+   where p.year = 2091 and p.user_id in ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000c3', '00000000-0000-0000-0000-0000000000c5')),
   'new plans carry created_at and updated_at = run_at'
 );
 
@@ -176,7 +222,7 @@ select is(
 select is(
   (select count(*)::int from public.plan_sections
    where business_plan_id in ('00000000-0000-0000-0000-00000000b101', '00000000-0000-0000-0000-00000000b201')),
-  5,
+  6,
   'the 2090 sections are left in place'
 );
 
@@ -184,16 +230,16 @@ select is(
 
 select results_eq(
   $$ select plans_created, sections_copied, users_skipped from public.copy_plans_forward(2090, 2091) $$,
-  $$ values (0, 0, 3) $$,
-  'a second run creates nothing and skips all three users'
+  $$ values (0, 0, 4) $$,
+  'a second run creates nothing and skips all four users'
 );
 
 select is(
   (select count(*)::int from public.plan_sections s
    join public.business_plans p on p.id = s.business_plan_id
    where p.year = 2091 and p.user_id::text like '00000000-0000-0000-0000-0000000000c%'),
-  4,
-  'after the second run there are still exactly 4 sections on 2091 plans'
+  7,
+  'after the second run there are still exactly 7 sections on 2091 plans'
 );
 
 -- Rollback as the runbook does it: delete the to_year plans created at run_at.
@@ -207,7 +253,7 @@ select is(
   (select count(*)::int from public.plan_sections s
    join public.business_plans p on p.id = s.business_plan_id
    where p.user_id = '00000000-0000-0000-0000-0000000000c1'),
-  3,
+  4,
   'rollback removes the copied sections with their plan (only the 2090 sections remain)'
 );
 
