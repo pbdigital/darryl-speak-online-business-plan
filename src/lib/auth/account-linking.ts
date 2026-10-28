@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { randomBytes } from 'crypto';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { PowerAgentJwtPayload } from './jwt';
 
 export interface AccountLinkingResult {
@@ -16,6 +17,9 @@ export interface AccountLinkingResult {
  * 2. Email exists, no WP ID → Link accounts (update profile with wordpress_user_id)
  * 3. Email exists, different WP ID → Error (contact support)
  * 4. Email doesn't exist → Create new user + profile with wordpress_user_id
+ *
+ * In every successful case the account becomes a member and is unlocked, so a
+ * free user who joins POWER AGENT keeps their existing plan.
  */
 export async function linkPowerAgentAccount(
   payload: PowerAgentJwtPayload
@@ -59,17 +63,17 @@ export async function linkPowerAgentAccount(
 
     // If WordPress ID already linked to an account, return that user
     if (existingWpProfile) {
-      return {
-        success: true,
-        userId: existingWpProfile.id,
-      };
+      return markAsMember(supabase, existingWpProfile.id);
     }
 
     // Step 2: Check if a user with this email already exists (via auth.users)
-    const { data: usersData, error: usersError } = await supabase.auth.admin.listUsers();
+    const { data: existingUserId, error: lookupError } = await supabase.rpc(
+      'get_auth_user_id_by_email',
+      { p_email: payload.email }
+    );
 
-    if (usersError) {
-      console.error('Error listing users:', usersError);
+    if (lookupError) {
+      console.error('Error looking up email:', lookupError);
       return {
         success: false,
         error: 'Database error',
@@ -77,9 +81,7 @@ export async function linkPowerAgentAccount(
       };
     }
 
-    const existingUser = usersData.users.find(
-      (user) => user.email?.toLowerCase() === payload.email.toLowerCase()
-    );
+    const existingUser = existingUserId ? { id: existingUserId as string } : null;
 
     if (existingUser) {
       // User with this email exists - check their profile for WordPress ID
@@ -144,16 +146,14 @@ export async function linkPowerAgentAccount(
         }
       }
 
-      return {
-        success: true,
-        userId: existingUser.id,
-      };
+      return markAsMember(supabase, existingUser.id);
     }
 
     // Step 3: No existing account - create new user
     const { data: newUser, error: createUserError } = await supabase.auth.admin.createUser({
       email: payload.email,
       email_confirm: true, // Auto-confirm since they verified via Power Agent
+      app_metadata: { account_type: 'member' },
       user_metadata: {
         first_name: payload.first_name,
         last_name: payload.last_name,
@@ -184,10 +184,7 @@ export async function linkPowerAgentAccount(
       // Continue anyway - the user was created successfully
     }
 
-    return {
-      success: true,
-      userId: newUser.user.id,
-    };
+    return markAsMember(supabase, newUser.user.id);
   } catch (error) {
     console.error('Account linking error:', error);
     return {
@@ -196,4 +193,49 @@ export async function linkPowerAgentAccount(
       errorCode: 'DB_ERROR',
     };
   }
+}
+
+/**
+ * Makes the account a POWER AGENT member and clears any lock. Signing in
+ * through POWER AGENT always unlocks, whatever Keap did before.
+ *
+ * If the email was never confirmed, someone else may have signed up with this
+ * member's address and chosen the password. The SSO sign-in confirms the
+ * email, so the password is replaced first to shut that person out. The
+ * member can set their own with "Forgotten your password?".
+ */
+async function markAsMember(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<AccountLinkingResult> {
+  const { data: userData, error: getUserError } = await supabase.auth.admin.getUserById(userId);
+
+  if (getUserError || !userData.user) {
+    console.error('Error loading user to mark as member:', getUserError);
+    return { success: false, error: 'Database error', errorCode: 'DB_ERROR' };
+  }
+
+  const { error: authError } = await supabase.auth.admin.updateUserById(userId, {
+    app_metadata: { account_type: 'member' },
+    ...(userData.user.email_confirmed_at
+      ? {}
+      : { email_confirm: true, password: randomBytes(32).toString('base64url') }),
+  });
+
+  if (authError) {
+    console.error('Error marking auth user as member:', authError);
+    return { success: false, error: 'Database error', errorCode: 'DB_ERROR' };
+  }
+
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({ account_type: 'member', locked_at: null, lock_source: null })
+    .eq('id', userId);
+
+  if (profileError) {
+    console.error('Error marking profile as member:', profileError);
+    return { success: false, error: 'Database error', errorCode: 'DB_ERROR' };
+  }
+
+  return { success: true, userId };
 }

@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
@@ -23,12 +24,12 @@ import {
 } from '@/components/auth/schemas/auth-schemas';
 
 interface LoginScreenProps {
-  email: string;
+  email?: string;
   onBack: () => void;
   onSuccess?: () => void;
 }
 
-export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
+export function LoginScreen({ email = '', onBack, onSuccess }: LoginScreenProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,12 +70,16 @@ export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
   }
 
   async function handleForgotPassword() {
+    const isEmailValid = await form.trigger('email');
+    if (!isEmailValid) return;
+
     setIsLoading(true);
     setError(null);
+    setResetEmailSent(false);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+    const { error } = await supabase.auth.resetPasswordForEmail(form.getValues('email'), {
+      redirectTo: `${window.location.origin}/api/auth/confirm?next=/reset-password`,
     });
 
     setIsLoading(false);
@@ -91,7 +96,7 @@ export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
     <div className="space-y-8">
       <AuthHeader
         title="Welcome back"
-        subtitle={`Log in using ${email}`}
+        subtitle="Log in with your email and password"
         showBackButton
         onBack={onBack}
       />
@@ -106,9 +111,30 @@ export function LoginScreen({ email, onBack, onSuccess }: LoginScreenProps) {
 
           {resetEmailSent && (
             <div className="rounded-lg bg-green-50 p-4 text-sm text-green-700 border border-green-100">
-              Check your email for a password reset link.
+              If that email has a plan, we have sent it a link to set a new password.
+              It can take a few minutes to arrive.
             </div>
           )}
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium">Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    className="h-12 text-base"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}

@@ -3,19 +3,25 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { InitialScreen } from './screens';
+import { InitialScreen, LoginScreen, SignupScreen } from './screens';
+
+type Screen = 'initial' | 'signup' | 'login';
 
 export function UnifiedAuthPage() {
   const searchParams = useSearchParams();
 
-  const [error, setError] = useState<string | null>(null);
-
-  // Check for error parameter from SSO callback
-  useEffect(() => {
+  // Error passed back by the SSO callback or an expired email link
+  const [error, setError] = useState<string | null>(() => {
     const errorParam = searchParams.get('error');
-    if (errorParam) {
-      setError(decodeURIComponent(errorParam));
-      // Clear the error from URL without triggering a navigation
+    return errorParam ? decodeURIComponent(errorParam) : null;
+  });
+  const [screen, setScreen] = useState<Screen>(
+    searchParams.get('mode') === 'signup' ? 'signup' : 'initial'
+  );
+
+  // Clear the error from the URL without triggering a navigation
+  useEffect(() => {
+    if (searchParams.get('error')) {
       window.history.replaceState({}, '', '/login');
     }
   }, [searchParams]);
@@ -50,11 +56,21 @@ export function UnifiedAuthPage() {
 
         <div className="rounded-2xl bg-white px-10 py-10 shadow-sm border border-gray-100">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <InitialScreen
-              onPowerAgentSso={handlePowerAgentSso}
-              externalError={error}
-              onClearError={clearError}
-            />
+            {screen === 'signup' && (
+              <SignupScreen onBack={() => setScreen('initial')} />
+            )}
+            {screen === 'login' && (
+              <LoginScreen onBack={() => setScreen('initial')} />
+            )}
+            {screen === 'initial' && (
+              <InitialScreen
+                onPowerAgentSso={handlePowerAgentSso}
+                onSignup={() => setScreen('signup')}
+                onEmailLogin={() => setScreen('login')}
+                externalError={error}
+                onClearError={clearError}
+              />
+            )}
           </div>
         </div>
       </div>
