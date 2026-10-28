@@ -32,7 +32,7 @@ const PERIODS = [
 type PeriodKey = (typeof PERIODS)[number]['key'];
 
 const formatDate = (value: string | null) =>
-  value ? new Date(value).toLocaleDateString() : '-';
+  value ? new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : '-';
 
 const fullName = (user: FreePlanUser) =>
   `${user.first_name || ''} ${user.last_name || ''}`.trim();
