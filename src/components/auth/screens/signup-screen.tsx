@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Check } from 'lucide-react';
+import { ArrowLeft, Check } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -113,11 +114,26 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
 
   return (
     <div className="space-y-8">
-      <AuthHeader
-        title="Build your 2027 business plan with Darryl, free"
-        showBackButton
-        onBack={onBack}
-      />
+      <div className="space-y-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="-ml-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+          onClick={onBack}
+        >
+          <ArrowLeft className="mr-1 h-4 w-4" />
+          Back
+        </Button>
+        <div className="space-y-2">
+          <p className="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+            Free for every real estate agent
+          </p>
+          <h1 className="text-balance text-2xl font-semibold tracking-tight text-gray-900">
+            Build your {CURRENT_PLAN_YEAR} business plan with Darryl
+          </h1>
+        </div>
+      </div>
 
       <ul className="space-y-2">
         {BENEFITS.map((benefit) => (
@@ -225,7 +241,7 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
                   />
                 </FormControl>
                 <div>
-                  <FormLabel className="text-sm font-normal cursor-pointer text-gray-600">
+                  <FormLabel className="block text-sm font-normal leading-snug cursor-pointer text-gray-600">
                     I agree to the{' '}
                     <a
                       href="https://darrylspeaks.com/terms-of-service"
