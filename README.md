@@ -3,6 +3,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Testing
 
 - [Supabase security testing and rollout](docs/testing/supabase-security.md)
+- [Trying the free plan locally](docs/testing/free-plan-local.md)
 
 ## Getting Started
 

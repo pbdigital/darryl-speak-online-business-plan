@@ -2,8 +2,8 @@
  * Keap campaign "HTTP Post" webhooks that lock and unlock a free user's plan.
  *
  * Keap posts form-encoded contact fields (JSON is accepted too). The shared
- * secret KEAP_WEBHOOK_SECRET may arrive as a `secret` field, a `key` query
- * parameter or an `X-Webhook-Secret` header. Unknown contacts and members
+ * secret KEAP_WEBHOOK_SECRET may arrive as a `secret` field or an
+ * `X-Webhook-Secret` header, never in the URL. Unknown contacts and members
  * return 200 so Keap's campaign doesn't retry or error.
  */
 import { createHash, timingSafeEqual } from 'node:crypto';
