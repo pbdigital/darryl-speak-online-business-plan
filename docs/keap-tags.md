@@ -34,22 +34,22 @@ Keap's developer forum says Service Account Keys and Personal Access Tokens are 
 
 ## Tags
 
-| Event | Env variable | Suggested Keap tag name | Fires when |
-| --- | --- | --- | --- |
-| `signed_up` | `KEAP_TAG_SIGNED_UP` | Free Plan: Signed Up | The user creates a free plan account. |
-| `section_done:reflection` | `KEAP_TAG_SECTION_DONE_REFLECTION` | Free Plan: Section 1 Reflection Done | Section 1 (Annual Reflection) is complete and saved. |
-| `section_done:swot` | `KEAP_TAG_SECTION_DONE_SWOT` | Free Plan: Section 2 SWOT Done | Section 2 (SWOT) is complete and saved. |
-| `section_done:income-planning` | `KEAP_TAG_SECTION_DONE_INCOME_PLANNING` | Free Plan: Section 3 Income Plan Done | Section 3 (Income Planning) is complete and saved. |
-| `section_done:mindset` | `KEAP_TAG_SECTION_DONE_MINDSET` | Free Plan: Section 4 Mindset Done | Section 4 (Mindset) is complete and saved. |
-| `section_done:accountability` | `KEAP_TAG_SECTION_DONE_ACCOUNTABILITY` | Free Plan: Section 5 Accountability Done | Section 5 (Accountability) is complete and saved. |
-| `plan_done` | `KEAP_TAG_PLAN_DONE` | Free Plan: Whole Plan Done | All five sections are done. |
-| `printed` | `KEAP_TAG_PRINTED` | Free Plan: Printed | The user prints or saves the plan as PDF from the whole-plan page. |
+| Event | Env variable | Keap tag name | DDS tag ID | Fires when |
+| --- | --- | --- | --- | --- |
+| `signed_up` | `KEAP_TAG_SIGNED_UP` | Free Plan: Signed Up | 15617 | The user creates a free plan account. |
+| `section_done:reflection` | `KEAP_TAG_SECTION_DONE_REFLECTION` | Free Plan: Section 1 Reflection Done | 15619 | Section 1 (Annual Reflection) is complete and saved. |
+| `section_done:swot` | `KEAP_TAG_SECTION_DONE_SWOT` | Free Plan: Section 2 SWOT Done | 15621 | Section 2 (SWOT) is complete and saved. |
+| `section_done:income-planning` | `KEAP_TAG_SECTION_DONE_INCOME_PLANNING` | Free Plan: Section 3 Income Plan Done | 15623 | Section 3 (Income Planning) is complete and saved. |
+| `section_done:mindset` | `KEAP_TAG_SECTION_DONE_MINDSET` | Free Plan: Section 4 Mindset Done | 15625 | Section 4 (Mindset) is complete and saved. |
+| `section_done:accountability` | `KEAP_TAG_SECTION_DONE_ACCOUNTABILITY` | Free Plan: Section 5 Accountability Done | 15627 | Section 5 (Accountability) is complete and saved. |
+| `plan_done` | `KEAP_TAG_PLAN_DONE` | Free Plan: Whole Plan Done | 15629 | All five sections are done. |
+| `printed` | `KEAP_TAG_PRINTED` | Free Plan: Printed | 15631 | The user prints or saves the plan as PDF from the whole-plan page. |
 
 A section counts as done when the user reaches its final step with every required answer filled in (the same rule as the dashboard's progress). The server checks the saved answers before recording it.
 
 ## Custom fields
 
-When Section 3 is done, and again when the whole plan is done, the app writes the plan's key numbers to the contact's custom fields, so DDS can send emails such as "your goal is 24 sales this year". Create these as number fields in Keap (the plan year can be a number or text field). Any field without an ID set is skipped quietly.
+DDS's Keap has no free custom fields (5 Nov 2026), so these are not set in production and the app skips them. When Section 3 is done, and again when the whole plan is done, the app writes the plan's key numbers to the contact's custom fields, so DDS can send emails such as "your goal is 24 sales this year". Create these as number fields in Keap (the plan year can be a number or text field). Any field without an ID set is skipped quietly.
 
 | Env variable | Suggested Keap field name | Value |
 | --- | --- | --- |
