@@ -4,8 +4,8 @@ DDS's Keap campaigns lock a free user's plan when their 30 days are up and unloc
 
 | Purpose | URL |
 | --- | --- |
-| Lock (free trial ended) | `https://myplanforsuccess.com/api/keap/lock` |
-| Unlock (became a POWER AGENT) | `https://myplanforsuccess.com/api/keap/unlock` |
+| Lock (free trial ended) | `https://www.myplanforsuccess.com/api/keap/lock` |
+| Unlock (became a POWER AGENT) | `https://www.myplanforsuccess.com/api/keap/unlock` |
 
 ## What to put in the HTTP Post step
 
