@@ -12,7 +12,10 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { grantAdmin } from '@/lib/api/admin-team';
+import { grantAdmin, grantAdminByEmail } from '@/lib/api/admin-team';
+import { createClient } from '@/lib/supabase/client';
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface User {
   id: string;
@@ -33,6 +36,9 @@ export function GrantAdminDialog({ open, onOpenChange, users }: GrantAdminDialog
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [invited, setInvited] = useState<string | null>(null);
 
   const filteredUsers = useMemo(() => {
     if (!search) return users.slice(0, 10);
@@ -45,6 +51,13 @@ export function GrantAdminDialog({ open, onOpenChange, users }: GrantAdminDialog
       })
       .slice(0, 10);
   }, [users, search]);
+
+  const typedEmail = search.trim().toLowerCase();
+  // Offer to create an account when the search is an email nobody has yet.
+  const canCreate =
+    !selectedUser &&
+    EMAIL_PATTERN.test(typedEmail) &&
+    !users.some((user) => user.email?.toLowerCase() === typedEmail);
 
   const getName = (user: User) => {
     if (user.first_name || user.last_name) {
@@ -73,11 +86,50 @@ export function GrantAdminDialog({ open, onOpenChange, users }: GrantAdminDialog
     setIsLoading(false);
   };
 
+  const handleCreate = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    const response = await grantAdminByEmail({
+      email: typedEmail,
+      firstName: firstName.trim() || undefined,
+      lastName: lastName.trim() || undefined,
+    });
+
+    if (!response.success) {
+      setError(response.errors?.[0]?.message || 'Failed to create the admin account');
+      setIsLoading(false);
+      return;
+    }
+
+    // The same email as "Forgot password", so they choose their own password
+    // and nobody has to send one.
+    const supabase = createClient();
+    const { error: emailError } = await supabase.auth.resetPasswordForEmail(typedEmail, {
+      redirectTo: `${window.location.origin}/api/auth/confirm?next=/reset-password`,
+    });
+
+    setIsLoading(false);
+    if (emailError) {
+      setError(
+        `The admin account was created, but the set-password email failed: ${emailError.message}. They can use "Forgot password" on the log in page.`
+      );
+      router.refresh();
+      return;
+    }
+
+    setInvited(typedEmail);
+    router.refresh();
+  };
+
   const handleClose = () => {
     onOpenChange(false);
     setSelectedUser(null);
     setSearch('');
     setError(null);
+    setFirstName('');
+    setLastName('');
+    setInvited(null);
   };
 
   return (
@@ -86,10 +138,20 @@ export function GrantAdminDialog({ open, onOpenChange, users }: GrantAdminDialog
         <DialogHeader>
           <DialogTitle>Add Admin</DialogTitle>
           <DialogDescription>
-            Search for a user to grant admin access. They will be able to manage users and the admin team.
+            Search for a user, or type the email of someone without an account. Admins can see
+            every user and the free plan report, and manage the admin team.
           </DialogDescription>
         </DialogHeader>
 
+        {invited ? (
+          <div className="space-y-2 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-900">
+            <p className="font-medium">Admin account created for {invited}</p>
+            <p>
+              We&apos;ve emailed them a link to choose their password. Then they log in with
+              email at the usual log in page and open the Admin Dashboard.
+            </p>
+          </div>
+        ) : (
         <div className="space-y-4 py-4">
           <Input
             placeholder="Search by name or email..."
@@ -108,11 +170,11 @@ export function GrantAdminDialog({ open, onOpenChange, users }: GrantAdminDialog
             </div>
           ) : (
             <div className="max-h-[200px] overflow-y-auto border rounded-lg divide-y">
-              {filteredUsers.length === 0 ? (
+              {filteredUsers.length === 0 && !canCreate ? (
                 <p className="p-3 text-sm text-gray-500 text-center">
-                  {search ? 'No users found' : 'Start typing to search users'}
+                  {search ? 'No users found. Type their full email to create an admin account.' : 'Start typing to search users'}
                 </p>
-              ) : (
+              ) : filteredUsers.length === 0 ? null : (
                 filteredUsers.map((user) => (
                   <button
                     key={user.id}
@@ -127,18 +189,54 @@ export function GrantAdminDialog({ open, onOpenChange, users }: GrantAdminDialog
             </div>
           )}
 
+          {canCreate && (
+            <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50 p-3">
+              <p className="text-sm text-gray-700">
+                No account for <span className="font-medium">{typedEmail}</span> yet. Create one
+                as an admin and email them a link to set their password.
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  placeholder="First name"
+                  aria-label="First name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                <Input
+                  placeholder="Last name"
+                  aria-label="Last name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+
           {error && (
             <p className="text-sm text-red-600">{error}</p>
           )}
         </div>
+        )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose} disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button onClick={handleGrant} disabled={!selectedUser || isLoading}>
-            {isLoading ? 'Granting...' : 'Grant Admin Access'}
-          </Button>
+          {invited ? (
+            <Button onClick={handleClose}>Done</Button>
+          ) : (
+            <>
+              <Button variant="outline" onClick={handleClose} disabled={isLoading}>
+                Cancel
+              </Button>
+              {canCreate ? (
+                <Button onClick={handleCreate} disabled={isLoading}>
+                  {isLoading ? 'Creating...' : 'Create Admin Account'}
+                </Button>
+              ) : (
+                <Button onClick={handleGrant} disabled={!selectedUser || isLoading}>
+                  {isLoading ? 'Granting...' : 'Grant Admin Access'}
+                </Button>
+              )}
+            </>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

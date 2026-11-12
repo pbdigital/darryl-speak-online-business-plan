@@ -7,6 +7,8 @@ import { AdminTeamMember } from '@/types/admin';
 
 interface GrantAdminResponse {
   granted: boolean;
+  /** True when the email had no account and one was created. */
+  created?: boolean;
   userId: string;
   userName: string;
 }
@@ -36,6 +38,21 @@ export async function grantAdmin(
   return apiRequest<GrantAdminResponse>('/admin-team', {
     method: 'POST',
     body: JSON.stringify({ userId }),
+  });
+}
+
+/**
+ * Grant admin access by email. Creates a member account first when the email
+ * has none; the new admin then sets their own password from an email.
+ */
+export async function grantAdminByEmail(input: {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+}): Promise<ApiResponse<GrantAdminResponse>> {
+  return apiRequest<GrantAdminResponse>('/admin-team', {
+    method: 'POST',
+    body: JSON.stringify(input),
   });
 }
 

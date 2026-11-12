@@ -24,3 +24,18 @@ node scripts/tryout.mjs member-login <email>  # prints a POWER AGENT sign-in lin
 ```
 
 The lock call skips members. Opening the member sign-in link turns a free user into a member and unlocks their plan. Fake Keap tags show in the dev server log as `[keap:fake]` lines.
+
+## Countdown pop-up and admins
+
+The countdown pop-up shows once a day in the last 7 days of a free user's 30 days. To see it, move a local free account's sign-up date back, for example 25 days for "5 days left":
+
+```bash
+docker exec supabase_db_darryl-speak-online-business-plan psql -U postgres -c \
+  "update profiles set created_at = now() - interval '25 days' where id = (select id from auth.users where email = '<email>');"
+```
+
+Then open `/plan`. It won't show again that day in the same browser, so use a private window to see it twice.
+
+To add an admin, open Admin > Admin Team > Add Admin and type their full email. An email with no account gets a new member account (never free, so no Keap tags, countdown or lock) and a set-password email in Mailpit.
+
+Unit checks for the countdown dates: `npm run test:unit`. Edge function checks: `cd supabase/functions && deno test --allow-all`.
