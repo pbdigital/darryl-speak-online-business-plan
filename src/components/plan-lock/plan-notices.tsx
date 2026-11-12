@@ -3,13 +3,14 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { PartyPopper, X } from 'lucide-react';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
-import { FREE_ACCESS_DAYS, joinUrl } from '@/config/power-agent-offer';
+import { joinUrl } from '@/config/power-agent-offer';
+import { freeAccessEndsAt } from '@/lib/free-access';
 
 // Placeholder copy: DDS will sign off the final wording.
 
 /** Quiet line in the plan header for free users. */
 export function FreeAccessLine({ signedUpAt }: { signedUpAt: string; email?: string }) {
-  const until = new Date(new Date(signedUpAt).getTime() + FREE_ACCESS_DAYS * 24 * 60 * 60 * 1000);
+  const until = freeAccessEndsAt(signedUpAt);
   const untilLabel = until.toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'short',

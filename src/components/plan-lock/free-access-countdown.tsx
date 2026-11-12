@@ -44,8 +44,8 @@ function markSeen(key: string) {
 /**
  * Placeholder copy: DDS will sign off the final wording.
  *
- * In the last 7 days of free online access, a free user sees this once a day
- * when they open their plan: how many days are left and a link to keep it
+ * In the last 7 calendar days of free online access, a free user sees this
+ * once a day (their own calendar day, per browser) when they open their plan: how many days are left and a link to keep it
  * with POWER AGENT. Not on the print page or in admin.
  */
 export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownProps) {
@@ -62,7 +62,7 @@ export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownP
     const now = new Date();
     if (!inCountdown(signedUpAt, now)) return;
     const left = freeDaysLeft(signedUpAt, now);
-    const key = countdownSeenKey(userId, left, signedUpAt);
+    const key = countdownSeenKey(userId, now);
     if (alreadySeen(key)) return;
     markSeen(key);
     // The date and browser storage only exist after mount, so this runs once
@@ -93,8 +93,9 @@ export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownP
           </div>
           <DialogTitle className="text-xl text-slate-900">{title}</DialogTitle>
           <DialogDescription className="text-base text-slate-600">
-            {daysLeft === 1 ? 'Your free online access ends ' : 'Your free online access ends on '}
-            {daysLeft === 1 ? 'today' : endsOn}. After that your plan is read-only, and
+            Your free online access ends{' '}
+            {daysLeft === 1 ? 'today' : daysLeft === 2 ? `tomorrow, ${endsOn}` : `on ${endsOn}`}.
+            After that your plan is read-only, and
             your printed copy is yours to keep. Join POWER AGENT® to keep working on
             your plan online all year, with coaching from Darryl every week.
           </DialogDescription>

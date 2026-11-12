@@ -133,6 +133,8 @@ function countFunnel(users: CohortUser[]): FreePlanFunnel {
  *
  * The cohort is everyone who signed up through the free plan: a 'signed_up'
  * plan event, or a free account (covers anyone from before events existed).
+ * Admins are left out: they are staff, and making someone an admin makes
+ * them a member, which would otherwise count as a POWER AGENT sign-up.
  * "Became member" means a cohort user whose account is now a member.
  * The 7 and 30 day counts are for users who signed up in that window.
  */
@@ -165,6 +167,8 @@ export function buildFreePlanReport(
     const events = eventsByUser.get(authUser.id) ?? new Map<string, string>();
     const signedUpEvent = events.get('signed_up');
     if (!signedUpEvent && profile?.account_type !== 'free') return;
+    // Admins are DDS and PB Digital staff, not agents trying the plan.
+    if (profile?.is_admin) return;
 
     const planId = currentPlanByUser.get(authUser.id);
     const sectionsDone = Array.from(events.keys()).filter((key) =>

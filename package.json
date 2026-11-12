@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:unit": "node --test --experimental-strip-types src/lib/*.test.ts"
+    "test:unit": "TZ=America/New_York node --test --experimental-strip-types src/lib/*.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

@@ -41,7 +41,7 @@ function profile(id: string, overrides: Partial<ProfileRow> = {}): ProfileRow {
 Deno.test('counts the free plan funnel by sign-up window', () => {
   const report = buildFreePlanReport(
     {
-      authUsers: ['a', 'b', 'c', 'old-member'].map(authUser),
+      authUsers: ['a', 'b', 'c', 'old-member', 'staff'].map(authUser),
       profiles: [
         // a: signed up 2 days ago, started, finished section 3 and plan, printed
         profile('a'),
@@ -51,6 +51,8 @@ Deno.test('counts the free plan funnel by sign-up window', () => {
         profile('c', { account_type: 'member' }),
         // old-member: member who never used the free plan, not in the cohort
         profile('old-member', { account_type: 'member' }),
+        // staff: tried the free plan, then made an admin (and so a member)
+        profile('staff', { account_type: 'member', is_admin: true }),
       ],
       plans: [
         { id: 'plan-a', user_id: 'a', year: 2027 },
@@ -67,6 +69,7 @@ Deno.test('counts the free plan funnel by sign-up window', () => {
         { user_id: 'a', event_key: 'printed', created_at: '2026-11-28T00:00:00.000Z' },
         { user_id: 'b', event_key: 'signed_up', created_at: '2026-11-10T00:00:00.000Z' },
         { user_id: 'c', event_key: 'signed_up', created_at: '2026-10-01T00:00:00.000Z' },
+        { user_id: 'staff', event_key: 'signed_up', created_at: '2026-11-27T00:00:00.000Z' },
       ],
     },
     NOW

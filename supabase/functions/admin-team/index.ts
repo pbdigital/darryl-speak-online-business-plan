@@ -84,7 +84,8 @@ Deno.serve(async (req) => {
     // there is none. Admins are always made members, so they are never in the
     // free plan cohort, never tagged in Keap and never locked.
     if (req.method === 'POST') {
-      const body = await req.json().catch(() => ({}));
+      const parsed = await req.json().catch(() => null);
+      const body = parsed && typeof parsed === 'object' ? parsed : {};
       let requestedUserId: string | null =
         typeof body.userId === 'string' && body.userId ? body.userId : null;
       const email =
@@ -134,7 +135,7 @@ Deno.serve(async (req) => {
       // Check if user exists
       const { data: targetUser, error: userError } = await serviceClient
         .from('profiles')
-        .select('id, is_admin, first_name, last_name, account_type')
+        .select('id, is_admin, first_name, last_name')
         .eq('id', requestedUserId)
         .single();
 
@@ -146,17 +147,30 @@ Deno.serve(async (req) => {
         return error([{ message: 'User is already an admin' }], 400, view);
       }
 
-      if (targetUser.account_type !== 'member') {
-        // GoTrue saves app_metadata after the profile trigger runs, so a new
-        // account starts as free in profiles; keep auth and profile in step.
-        const { error: metaError } = await serviceClient.auth.admin.updateUserById(
-          requestedUserId,
-          { app_metadata: { account_type: 'member' } }
-        );
-        if (metaError) {
-          console.error('Mark admin as member error:', metaError);
-          return serverError(metaError.message, view);
+      const { data: authData, error: authLookupError } =
+        await serviceClient.auth.admin.getUserById(requestedUserId);
+      if (authLookupError || !authData.user) {
+        return notFound('User not found', view);
+      }
+
+      // Members are never locked or tagged in Keap. GoTrue saves app_metadata
+      // after the profile trigger runs, so keep auth and profile in step.
+      // An unconfirmed email may have been registered by someone who doesn't
+      // own it, so confirm it and replace the password they chose: the real
+      // owner sets their own from the set-password email (as markAsMember
+      // does for POWER AGENT sign-ins).
+      const { error: metaError } = await serviceClient.auth.admin.updateUserById(
+        requestedUserId,
+        {
+          app_metadata: { account_type: 'member' },
+          ...(authData.user.email_confirmed_at
+            ? {}
+            : { email_confirm: true, password: randomPassword() }),
         }
+      );
+      if (metaError) {
+        console.error('Mark admin as member error:', metaError);
+        return serverError(metaError.message, view);
       }
 
       // Grant admin access

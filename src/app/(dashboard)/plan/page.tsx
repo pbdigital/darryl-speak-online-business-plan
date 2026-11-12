@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { freeAccessStart } from '@/lib/free-access-server';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { PlanHero, SectionCardsGrid } from '@/components/business-plan';
 import { PlanFooter } from './plan-footer';
@@ -88,15 +89,18 @@ export default async function PlanPage({ searchParams }: PlanPageProps) {
     broughtForward = (plans ?? []).length === 2;
   }
 
+  const freeStart =
+    isFree && profile?.created_at
+      ? await freeAccessStart(supabase, user.id, profile.created_at)
+      : null;
+
   const displayName = profile?.first_name
     ? `${profile.first_name} ${profile.last_name || ''}`.trim()
     : user.email?.split('@')[0] || 'there';
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {isFree && profile?.created_at && (
-        <FreeAccessLine signedUpAt={profile.created_at} email={user.email || ''} />
-      )}
+      {freeStart && <FreeAccessLine signedUpAt={freeStart} email={user.email || ''} />}
 
       {/* Hero Section */}
       <PlanHero

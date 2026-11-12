@@ -1,6 +1,7 @@
 import { BusinessPlanProvider } from '@/providers/business-plan-provider';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/server';
+import { freeAccessStart } from '@/lib/free-access-server';
 import { FreeAccessCountdown, PlanLockGate } from '@/components/plan-lock';
 
 interface DashboardLayoutProps {
@@ -26,7 +27,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     locked = !!profile?.locked_at;
     firstName = profile?.first_name ?? null;
     if (profile?.account_type === 'free' && !locked) {
-      freeSignedUpAt = profile.created_at;
+      freeSignedUpAt = await freeAccessStart(supabase, user.id, profile.created_at);
     }
   }
 
