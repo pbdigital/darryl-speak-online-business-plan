@@ -5,7 +5,7 @@
  * code change.
  */
 
-export const FREE_ACCESS_DAYS = 30;
+export { FREE_ACCESS_DAYS } from '@/lib/free-access';
 
 /** Every join link carries this source so DDS can see sign-ups from the free plan. */
 export const JOIN_SOURCE = 'free-business-plan';
