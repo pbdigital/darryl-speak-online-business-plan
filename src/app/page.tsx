@@ -249,8 +249,8 @@ function ShieldCheckIcon({ className }: { className?: string }) {
 
 function Header() {
   return (
-    <header className="flex items-center justify-between w-full max-w-[1180px] mx-auto">
-      <div className="relative h-[25px] w-[200px]">
+    <header className="flex items-center justify-between gap-3 w-full max-w-[1180px] mx-auto">
+      <div className="relative h-[16px] w-[112px] shrink-0 min-[400px]:h-[20px] min-[400px]:w-[150px] sm:h-[25px] sm:w-[200px]">
         <Image
           src="/logo-white.svg"
           alt="Darryl Davis Seminars"
@@ -259,14 +259,24 @@ function Header() {
           priority
         />
       </div>
-      <Link
-        href="/register"
-        className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors"
-      >
-        <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
-          Get Started
-        </span>
-      </Link>
+      <nav aria-label="Account" className="flex items-center gap-2 sm:gap-3">
+        <Link
+          href="/login"
+          className="h-[44px] px-3 min-[400px]:px-4 sm:px-5 py-2.5 rounded-[6px] border border-white/70 flex items-center justify-center hover:bg-white/10 transition-colors"
+        >
+          <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white leading-5 whitespace-nowrap">
+            Log In
+          </span>
+        </Link>
+        <Link
+          href="/register"
+          className="h-[44px] px-3 min-[400px]:px-4 sm:px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors"
+        >
+          <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5 whitespace-nowrap">
+            Get Started
+          </span>
+        </Link>
+      </nav>
     </header>
   );
 }
@@ -287,7 +297,7 @@ function HeroSection() {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#1c4ca1]" />
 
-      <div className="relative z-10 max-w-[1180px] mx-auto pt-[60px] pb-[80px]">
+      <div className="relative z-10 max-w-[1180px] mx-auto px-4 sm:px-6 xl:px-0 pt-[60px] pb-[80px]">
         <Header />
 
         <div className="mt-[80px] flex flex-col lg:flex-row gap-10 lg:gap-[80px] items-center justify-between">
