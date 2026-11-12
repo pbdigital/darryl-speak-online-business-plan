@@ -12,6 +12,19 @@ import {
 } from './admin-users-data.ts';
 
 const DATA_PAGE_SIZE = 1000;
+
+/** The plan's five sections, in order. Matches SECTION_KEYS in src/lib/keap/events.ts. */
+export const FREE_PLAN_SECTIONS = [
+  'reflection',
+  'swot',
+  'income-planning',
+  'mindset',
+  'accountability',
+] as const;
+
+export type FreePlanSectionKey = (typeof FREE_PLAN_SECTIONS)[number];
+
+export type FreePlanSectionCounts = Record<FreePlanSectionKey, number>;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export interface PlanEventRow {
@@ -37,6 +50,8 @@ export interface FreePlanUser {
   last_name: string | null;
   signed_up_at: string;
   sections_done: number;
+  /** Which sections they have finished, in plan order. */
+  sections: FreePlanSectionKey[];
   printed: boolean;
   locked: boolean;
   joined: boolean;
@@ -45,6 +60,12 @@ export interface FreePlanUser {
 
 export interface FreePlanReport {
   funnel: { all: FreePlanFunnel; last_30_days: FreePlanFunnel; last_7_days: FreePlanFunnel };
+  /** How many finished each section, for the same sign-up windows as the funnel. */
+  section_counts: {
+    all: FreePlanSectionCounts;
+    last_30_days: FreePlanSectionCounts;
+    last_7_days: FreePlanSectionCounts;
+  };
   users: FreePlanUser[];
 }
 
@@ -85,6 +106,14 @@ interface CohortUser extends FreePlanUser {
   started: boolean;
   finished_section_3: boolean;
   finished_plan: boolean;
+}
+
+function countSections(users: CohortUser[]): FreePlanSectionCounts {
+  const counts = Object.fromEntries(
+    FREE_PLAN_SECTIONS.map((key) => [key, 0])
+  ) as FreePlanSectionCounts;
+  users.forEach((user) => user.sections.forEach((key) => (counts[key] += 1)));
+  return counts;
 }
 
 function countFunnel(users: CohortUser[]): FreePlanFunnel {
@@ -141,6 +170,7 @@ export function buildFreePlanReport(
     const sectionsDone = Array.from(events.keys()).filter((key) =>
       key.startsWith('section_done:')
     ).length;
+    const sections = FREE_PLAN_SECTIONS.filter((key) => events.has(`section_done:${key}`));
 
     cohort.push({
       id: authUser.id,
@@ -149,6 +179,7 @@ export function buildFreePlanReport(
       last_name: profile?.last_name ?? null,
       signed_up_at: signedUpEvent ?? profile?.created_at ?? authUser.created_at,
       sections_done: sectionsDone,
+      sections,
       printed: events.has('printed'),
       locked: !!profile?.locked_at,
       joined: profile?.account_type === 'member',
@@ -171,6 +202,11 @@ export function buildFreePlanReport(
       all: countFunnel(cohort),
       last_30_days: countFunnel(since(30)),
       last_7_days: countFunnel(since(7)),
+    },
+    section_counts: {
+      all: countSections(cohort),
+      last_30_days: countSections(since(30)),
+      last_7_days: countSections(since(7)),
     },
     users: cohort.map(
       ({ started: _s, finished_section_3: _f3, finished_plan: _fp, ...user }) => user

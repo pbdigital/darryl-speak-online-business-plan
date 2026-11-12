@@ -85,5 +85,15 @@ Deno.test('counts the free plan funnel by sign-up window', () => {
   assertEquals(report.funnel.last_7_days.signed_up, 1);
   assertEquals(report.users.map((u) => u.id), ['a', 'b', 'c']);
   assertEquals(report.users[0].sections_done, 2);
+  assertEquals(report.users[0].sections, ['swot', 'income-planning']);
+  assertEquals(report.users[1].sections, []);
+  assertEquals(report.section_counts.all, {
+    reflection: 0,
+    swot: 1,
+    'income-planning': 1,
+    mindset: 0,
+    accountability: 0,
+  });
+  assertEquals(report.section_counts.last_7_days.swot, 1);
   assertEquals(report.users[2].joined, true);
 });

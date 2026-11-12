@@ -32,6 +32,15 @@ export interface FreePlanFunnel {
   became_member: number;
 }
 
+export type FreePlanSectionKey =
+  | 'reflection'
+  | 'swot'
+  | 'income-planning'
+  | 'mindset'
+  | 'accountability';
+
+export type FreePlanSectionCounts = Record<FreePlanSectionKey, number>;
+
 export interface FreePlanUser {
   id: string;
   email: string | null;
@@ -39,6 +48,8 @@ export interface FreePlanUser {
   last_name: string | null;
   signed_up_at: string;
   sections_done: number;
+  /** Finished sections in plan order. Missing from reports made before Nov 2026. */
+  sections?: FreePlanSectionKey[];
   printed: boolean;
   locked: boolean;
   joined: boolean;
@@ -50,6 +61,12 @@ export interface FreePlanReport {
     all: FreePlanFunnel;
     last_30_days: FreePlanFunnel;
     last_7_days: FreePlanFunnel;
+  };
+  /** Missing from reports made before Nov 2026. */
+  section_counts?: {
+    all: FreePlanSectionCounts;
+    last_30_days: FreePlanSectionCounts;
+    last_7_days: FreePlanSectionCounts;
   };
   users: FreePlanUser[];
 }
