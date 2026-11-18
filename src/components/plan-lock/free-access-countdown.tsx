@@ -42,7 +42,7 @@ function markSeen(key: string) {
 }
 
 /**
- * Placeholder copy: DDS will sign off the final wording.
+ * Wording is Sarah's, from her 17 Nov 2026 email.
  *
  * In the last 7 calendar days of free online access, a free user sees this
  * once a day (their own calendar day, per browser) when they open their plan: how many days are left and a link to keep it
@@ -81,8 +81,8 @@ export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownP
   });
   const title =
     daysLeft === 1
-      ? 'Last day of your free online plan'
-      : `${daysLeft} days left of your free online plan`;
+      ? "Today's the last day to keep your plan online"
+      : `${daysLeft} days left to keep your plan online`;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -93,12 +93,12 @@ export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownP
           </div>
           <DialogTitle className="text-xl text-slate-900">{title}</DialogTitle>
           <DialogDescription className="text-base text-slate-600">
-            Your free online access ends{' '}
-            {daysLeft === 1 ? 'today' : daysLeft === 2 ? `tomorrow, ${endsOn}` : `on ${endsOn}`}.
-            After that your plan is read-only, and
-            your printed copy is yours to keep. Join POWER AGENT® to keep working on
-            your plan online all year, with coaching from Darryl every week.
+            Your online access ends on {endsOn}. After that, your plan becomes
+            read-only, and your printed copy is always yours to keep.
           </DialogDescription>
+          <p className="text-base text-slate-600">
+            Keep your plan online for $37 a month.
+          </p>
         </DialogHeader>
         <DialogFooter className="flex-col gap-2 sm:flex-col sm:space-x-0">
           <a
@@ -108,7 +108,7 @@ export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownP
             onClick={() => setOpen(false)}
             className="inline-flex h-11 w-full items-center justify-center rounded-md bg-[#28afb0] px-5 text-sm font-semibold text-white hover:bg-[#28afb0]/90"
           >
-            Keep my plan with POWER AGENT®
+            Keep My Plan Online
           </a>
           <Link
             href="/plan/print"
@@ -116,7 +116,7 @@ export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownP
             className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md border border-slate-200 px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
           >
             <Printer className="h-4 w-4" aria-hidden="true" />
-            Print my plan
+            Print My Plan
           </Link>
           <button
             type="button"

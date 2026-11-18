@@ -9,7 +9,6 @@ import { useHydrateAllStores } from '@/hooks/use-hydrate-all-stores';
 import { useSectionProgress } from '@/hooks/use-section-progress';
 import { useBusinessPlanStore } from '@/stores/business-plan-store';
 import {
-  FREE_ACCESS_DAYS,
   MEMBER_BENEFITS,
   TESTIMONIALS,
   joinUrl,
@@ -32,8 +31,10 @@ const noopSubscribe = () => () => {};
 const whole = (value: number) =>
   new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value);
 
-// Placeholder copy: DDS will sign off the final wording.
-export function PlanLockedScreen({ firstName }: PlanLockedScreenProps) {
+// Top message and button wording is Sarah's, from her 17 Nov 2026 email.
+// The new wording does not use the name or email, so the props are kept for the gate only.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function PlanLockedScreen(_props: PlanLockedScreenProps) {
   // Store values differ between server and browser, so show them after mount.
   const mounted = useSyncExternalStore(
     noopSubscribe,
@@ -72,12 +73,10 @@ export function PlanLockedScreen({ firstName }: PlanLockedScreenProps) {
           </div>
 
           <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">
-            {firstName ? `${firstName}, your plan is saved` : 'Your plan is saved'}
+            Your plan is safe and saved.
           </h1>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Your {FREE_ACCESS_DAYS} days of free online access have ended, so your
-            plan can no longer be edited. Everything you wrote is safe, and you can
-            view and print it any time.
+            Keep it online for $37 a month to pick up right where you left off.
           </p>
 
           {mounted && completedSections > 0 && (
@@ -139,7 +138,7 @@ export function PlanLockedScreen({ firstName }: PlanLockedScreenProps) {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-lg bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
             >
-              Become a POWER AGENT®
+              Keep My Plan Online
             </a>
             <Link
               href="/plan/print"
