@@ -3,16 +3,12 @@
 import { useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Check, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { LogoutButton } from '@/app/(dashboard)/plan/logout-button';
 import { useHydrateAllStores } from '@/hooks/use-hydrate-all-stores';
 import { useSectionProgress } from '@/hooks/use-section-progress';
 import { useBusinessPlanStore } from '@/stores/business-plan-store';
-import {
-  MEMBER_BENEFITS,
-  TESTIMONIALS,
-  joinUrl,
-} from '@/config/power-agent-offer';
+import { TESTIMONIALS, joinUrl } from '@/config/power-agent-offer';
 
 interface PlanLockedScreenProps {
   email: string;
@@ -113,23 +109,6 @@ export function PlanLockedScreen(_props: PlanLockedScreenProps) {
               </dl>
             </div>
           )}
-
-          <h2 className="mt-10 text-xl font-bold text-slate-900">
-            {hasNumbers
-              ? 'Become a POWER AGENT® to keep your plan and get help hitting these numbers'
-              : 'Become a POWER AGENT® to keep your plan and get help hitting it'}
-          </h2>
-          <ul className="mt-4 space-y-3">
-            {MEMBER_BENEFITS.map((benefit) => (
-              <li key={benefit.title} className="flex gap-3">
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                <span className="text-slate-600">
-                  <span className="font-semibold text-slate-900">{benefit.title}.</span>{' '}
-                  {benefit.detail}
-                </span>
-              </li>
-            ))}
-          </ul>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
