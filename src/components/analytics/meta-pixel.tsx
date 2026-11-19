@@ -18,7 +18,8 @@ export function MetaPixel({ pixelId }: MetaPixelProps) {
   const lastPathname = useRef(pathname);
 
   useEffect(() => {
-    if (lastPathname.current === pathname) return;
+    // /register only redirects to the sign-up form, so it isn't a page view.
+    if (lastPathname.current === pathname || pathname === '/register') return;
     lastPathname.current = pathname;
     window.fbq?.('track', 'PageView');
   }, [pathname]);
