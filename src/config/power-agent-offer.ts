@@ -18,12 +18,12 @@ export interface JoinPerson {
 }
 
 /**
- * Link to the join page. With a person, it carries their email and name as
- * Email, FirstName and LastName, which the Keep My Plan page passes on to the
- * Keap order form and the form fills in. Using the same email means the
- * membership lands on the same account as the free plan. Nothing else
- * personal goes in the link.
+ * Link to the join page. It carries no email or name: the Keep My Plan page
+ * and the order form load ad and analytics tags that would receive the whole
+ * address. A member who upgrades with a different email brings their free
+ * plan over with /plan/bring-over instead.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function joinUrl(params: { placement: string; person?: JoinPerson }): string {
   const base =
     process.env.NEXT_PUBLIC_POWER_AGENT_JOIN_URL || 'https://darrylspeaks.com/';
@@ -31,10 +31,6 @@ export function joinUrl(params: { placement: string; person?: JoinPerson }): str
   url.searchParams.set('utm_source', JOIN_SOURCE);
   url.searchParams.set('utm_medium', 'app');
   url.searchParams.set('utm_campaign', params.placement);
-  const { email, firstName, lastName } = params.person ?? {};
-  if (email?.trim()) url.searchParams.set('Email', email.trim());
-  if (firstName?.trim()) url.searchParams.set('FirstName', firstName.trim());
-  if (lastName?.trim()) url.searchParams.set('LastName', lastName.trim());
   return url.toString();
 }
 
