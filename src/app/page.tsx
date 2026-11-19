@@ -346,7 +346,8 @@ function HeroSection() {
                     : "opacity-0 translate-y-4"
                 )}
               >
-                [[COPY: hero subheadline]]
+                Set your income goal, and your plan does the math for you, all the way
+                down to the conversations you need each week.
               </p>
             </div>
 
@@ -434,13 +435,14 @@ function HeroSection() {
 
 // Example plan, kept in one place so the numbers are easy to change. The app
 // uses 5 appointments per transaction and 16 conversations per appointment,
-// so 16 transactions = 80 appointments = 1,280 conversations, about 25 a week
-// over 52 weeks. Sarah's draft said 48 appointments, which the app won't show.
+// so 16 transactions = 80 appointments = 1,280 conversations, which the app
+// shows as 25 a week (1,280 / 52, rounded up, with no weeks off). Sarah's
+// draft said 48 appointments, which the app won't show.
 const EXAMPLE_PLAN = [
   { label: `Your income goal for ${CURRENT_PLAN_YEAR}`, value: "$120,000" },
-  { label: "[[COPY: transactions tile label]]", value: "16" },
-  { label: "[[COPY: appointments tile label]]", value: "80" },
-  { label: "[[COPY: conversations tile label]]", value: "25" },
+  { label: "Transactions to get you there", value: "16" },
+  { label: "Appointments over the year", value: "80" },
+  { label: "Conversations this week", value: "25" },
 ];
 
 function ShowTheMathSection() {
@@ -449,10 +451,10 @@ function ShowTheMathSection() {
       <div className="max-w-[1180px] mx-auto flex flex-col gap-10 md:gap-[60px] items-center">
         <div className="text-center max-w-[800px]">
           <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] mb-4 md:mb-6">
-            [[COPY: show the math headline]]
+            Your plan turns one big goal into this week&apos;s to-do list.
           </h2>
           <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
-            [[COPY: show the math intro]]
+            Here&apos;s an example of the math your plan does for you.
           </p>
         </div>
 
@@ -462,18 +464,18 @@ function ShowTheMathSection() {
               key={tile.label}
               className="bg-[#0f172a] rounded-[20px] p-5 md:p-[30px] flex flex-col gap-2 text-center"
             >
-              <p className="font-[var(--font-poppins)] text-xs md:text-sm text-[#91aec0] leading-5">
-                {tile.label}
-              </p>
               <p className="font-[var(--font-poppins)] font-bold text-[28px] md:text-[36px] leading-[1.2] text-white">
                 {tile.value}
+              </p>
+              <p className="font-[var(--font-poppins)] text-xs md:text-sm text-[#91aec0] leading-5">
+                {tile.label}
               </p>
             </div>
           ))}
         </div>
 
         <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#0f172a] text-center max-w-[800px]">
-          [[COPY: line under the tiles]]
+          Change one number and the rest of the plan updates for you.
         </p>
       </div>
     </section>
@@ -511,7 +513,7 @@ const benefits = [
     label: "Benefit 4: Access Anywhere",
     title: "Plan on Your Schedule",
     description:
-      "[[COPY: benefit 4 text]]",
+      "Whether you're at your desk, on your phone, or between showings, your business plan is always within reach. Work on it online, any time, from any device, and print a copy whenever you want.",
   },
 ];
 
@@ -594,7 +596,7 @@ const steps = [
     step: 3,
     title: "Take Action Daily",
     description:
-      "[[COPY: step 3 text]]",
+      "Use your personalized numbers as your roadmap. Make your prospecting plan. Have those high-value conversations. Hit your goals.",
   },
 ];
 
@@ -833,9 +835,21 @@ function FiveSectionsOverview() {
 // ============================================================================
 
 const testimonials = [
-  { quote: "[[COPY: testimonial 1 quote]]", name: "[[COPY: name 1]]", brokerage: "[[COPY: brokerage 1]]" },
-  { quote: "[[COPY: testimonial 2 quote]]", name: "[[COPY: name 2]]", brokerage: "[[COPY: brokerage 2]]" },
-  { quote: "[[COPY: testimonial 3 quote]]", name: "[[COPY: name 3]]", brokerage: "[[COPY: brokerage 3]]" },
+  {
+    quote: "I love the business plan template. WOW! The digital version came to life!",
+    name: "Vernell Rixner",
+    brokerage: "Provision Realty Group",
+  },
+  {
+    quote: "I love that I can make my plan around me, not what someone else plans for me!",
+    name: "Debbie McClain",
+    brokerage: "My Real Estate Company",
+  },
+  {
+    quote: "I'm working on my business plan, and I have so much clarity about where I'm headed for the rest of this year.",
+    name: "Denise Watkins",
+    brokerage: "Samson Properties",
+  },
 ];
 
 function TestimonialsSection() {
@@ -843,7 +857,7 @@ function TestimonialsSection() {
     <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
       <div className="max-w-[1180px] mx-auto flex flex-col gap-10 md:gap-[60px] items-center">
         <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] text-center">
-          [[COPY: testimonials headline]]
+          What agents say about their plan
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 w-full">
           {testimonials.map((testimonial) => (
@@ -965,10 +979,24 @@ function AboutSection() {
 // ============================================================================
 
 const faqs = [
-  { question: "[[COPY: FAQ question 1]]", answer: "[[COPY: FAQ answer 1]]" },
-  { question: "[[COPY: FAQ question 2]]", answer: "[[COPY: FAQ answer 2]]" },
-  { question: "[[COPY: FAQ question 3]]", answer: "[[COPY: FAQ answer 3]]" },
-  { question: "[[COPY: FAQ question 4]]", answer: "[[COPY: FAQ answer 4]]" },
+  {
+    question: "Is it really free?",
+    answer: "Yes. Build your plan, use it online and print it, free for 30 days.",
+  },
+  {
+    question: "What happens after 30 days?",
+    answer:
+      "Your plan becomes read-only, and you can still view and print it any time. If you'd like to keep updating it online all year, you can keep it active for $37 a month.",
+  },
+  {
+    question: "Can I print my plan?",
+    answer: "Yes, any time. Your printed plan is yours to keep.",
+  },
+  {
+    question: "I'm already a POWER AGENT®. How do I log in?",
+    answer:
+      'Just click "Log In" and use "Continue with POWER AGENT®." Your plan is included with your membership.',
+  },
 ];
 
 function FaqSection() {
@@ -976,7 +1004,7 @@ function FaqSection() {
     <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
       <div className="max-w-[800px] mx-auto flex flex-col gap-8 md:gap-10">
         <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] text-center">
-          [[COPY: FAQ headline]]
+          Questions you might have
         </h2>
         <div className="divide-y divide-[#e7e9e9] border-y border-[#e7e9e9]">
           {faqs.map((faq) => (
@@ -1011,7 +1039,7 @@ function FinalCTASection() {
             Ready to Make This Your Breakthrough Year?
           </h2>
           <p className="font-[var(--font-poppins)] text-sm md:text-lg leading-6 md:leading-7 text-[#e7e9e9] mb-6 md:mb-8 max-w-[600px] mx-auto">
-            [[COPY: closing paragraph]]
+            Start your {CURRENT_PLAN_YEAR} plan free today, and work through it at your own pace.
           </p>
           <Link
             href="/register"
@@ -1023,7 +1051,7 @@ function FinalCTASection() {
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
           </Link>
           <p className="mt-4 font-[var(--font-poppins)] text-sm text-[#e7e9e9]">
-            [[COPY: line under the closing button]]
+            Free for 30 days. Print your plan any time.
           </p>
         </div>
       </div>

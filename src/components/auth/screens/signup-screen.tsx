@@ -36,9 +36,6 @@ const BENEFITS = [
   'No credit card needed',
 ];
 
-// TODO: paste Sarah's exact "What happens after 30 days?" text from her 19 Nov email - Claude 20 Nov
-const AFTER_30_DAYS_COPY = '[[COPY: after-30-days answer]]';
-
 const TERMS_URL = 'https://darrylspeaks.com/terms-of-service';
 
 interface SignupScreenProps {
@@ -280,7 +277,10 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
 
       <div className="rounded-lg bg-gray-50 p-4 text-sm text-gray-600">
         <p className="font-medium text-gray-900">What happens after 30 days?</p>
-        <p className="mt-1">{AFTER_30_DAYS_COPY}</p>
+        <p className="mt-1">
+          Your plan becomes read-only, and you can still view and print it any time. Want to
+          keep updating it online all year? Keep it active for $37 a month.
+        </p>
       </div>
 
       {onPowerAgentSso && (
