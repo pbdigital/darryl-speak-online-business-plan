@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { LogoutButton } from './logout-button';
 import { BugReportDialog } from '@/components/bug-report-dialog';
 import { Bug } from 'lucide-react';
@@ -8,9 +9,11 @@ import { Bug } from 'lucide-react';
 interface PlanFooterProps {
   userName: string;
   userEmail: string;
+  /** POWER AGENT members get a link to bring over a free plan. */
+  showBringOver?: boolean;
 }
 
-export function PlanFooter({ userName, userEmail }: PlanFooterProps) {
+export function PlanFooter({ userName, userEmail, showBringOver }: PlanFooterProps) {
   const [bugDialogOpen, setBugDialogOpen] = useState(false);
 
   return (
@@ -29,6 +32,17 @@ export function PlanFooter({ userName, userEmail }: PlanFooterProps) {
                 <Bug className="h-3.5 w-3.5" />
                 Report an Issue
               </button>
+              {showBringOver && (
+                <>
+                  <span className="hidden sm:inline text-slate-300">|</span>
+                  <Link
+                    href="/plan/bring-over"
+                    className="text-xs text-slate-500 hover:text-slate-700 transition-colors"
+                  >
+                    Bring over a free plan
+                  </Link>
+                </>
+              )}
               <span className="hidden sm:inline text-slate-300">|</span>
               <div className="text-center sm:text-right">
                 <p className="text-xs text-slate-500">

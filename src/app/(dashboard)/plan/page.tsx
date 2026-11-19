@@ -1,10 +1,12 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { freeAccessStart } from '@/lib/free-access-server';
+import { getPlanClaimStatus } from '@/lib/plan-claim-server';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { PlanHero, SectionCardsGrid } from '@/components/business-plan';
 import { PlanFooter } from './plan-footer';
 import {
+  BringPlanOverBanner,
   BroughtForwardBanner,
   FreeAccessLine,
   JoinedBanner,
@@ -79,6 +81,7 @@ export default async function PlanPage({ searchParams }: PlanPageProps) {
 
   const isFree = profile?.account_type === 'free';
   let broughtForward = false;
+  const claimStatus = profile?.account_type === 'member' ? await getPlanClaimStatus(user.id) : 'not_member';
 
   if (profile?.account_type === 'member') {
     const { data: plans } = await supabase
@@ -100,7 +103,14 @@ export default async function PlanPage({ searchParams }: PlanPageProps) {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {freeStart && <FreeAccessLine signedUpAt={freeStart} email={user.email || ''} />}
+      {freeStart && (
+        <FreeAccessLine
+          signedUpAt={freeStart}
+          email={user.email || ''}
+          firstName={profile?.first_name}
+          lastName={profile?.last_name}
+        />
+      )}
 
       {/* Hero Section */}
       <PlanHero
@@ -111,6 +121,9 @@ export default async function PlanPage({ searchParams }: PlanPageProps) {
       {/* Main Content - overlaps the hero */}
       <main className="relative z-20 mx-auto -mt-20 max-w-7xl px-6 pb-20 md:px-12">
         {welcome === 'power-agent' && <JoinedBanner />}
+        {claimStatus === 'ok' && welcome !== 'power-agent' && (
+          <BringPlanOverBanner userId={user.id} />
+        )}
         {broughtForward && welcome !== 'power-agent' && (
           <BroughtForwardBanner userId={user.id} />
         )}
@@ -118,7 +131,11 @@ export default async function PlanPage({ searchParams }: PlanPageProps) {
       </main>
 
       {/* Footer */}
-      <PlanFooter userName={displayName} userEmail={user.email || ''} />
+      <PlanFooter
+        userName={displayName}
+        userEmail={user.email || ''}
+        showBringOver={claimStatus !== 'not_member'}
+      />
     </div>
   );
 }

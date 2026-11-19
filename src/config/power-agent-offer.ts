@@ -10,13 +10,31 @@ export { FREE_ACCESS_DAYS } from '@/lib/free-access';
 /** Every join link carries this source so DDS can see sign-ups from the free plan. */
 export const JOIN_SOURCE = 'free-business-plan';
 
-export function joinUrl(params: { placement: string }): string {
+/** The signed-in person, so the order form can be filled in with the same email. */
+export interface JoinPerson {
+  email?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+}
+
+/**
+ * Link to the join page. With a person, it carries their email and name as
+ * Email, FirstName and LastName, which the Keep My Plan page passes on to the
+ * Keap order form and the form fills in. Using the same email means the
+ * membership lands on the same account as the free plan. Nothing else
+ * personal goes in the link.
+ */
+export function joinUrl(params: { placement: string; person?: JoinPerson }): string {
   const base =
     process.env.NEXT_PUBLIC_POWER_AGENT_JOIN_URL || 'https://darrylspeaks.com/';
   const url = new URL(base);
   url.searchParams.set('utm_source', JOIN_SOURCE);
   url.searchParams.set('utm_medium', 'app');
   url.searchParams.set('utm_campaign', params.placement);
+  const { email, firstName, lastName } = params.person ?? {};
+  if (email?.trim()) url.searchParams.set('Email', email.trim());
+  if (firstName?.trim()) url.searchParams.set('FirstName', firstName.trim());
+  if (lastName?.trim()) url.searchParams.set('LastName', lastName.trim());
   return url.toString();
 }
 

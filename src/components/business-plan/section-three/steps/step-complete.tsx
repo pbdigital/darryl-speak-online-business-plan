@@ -119,7 +119,12 @@ function AlmostThereView({
 // "Now get help hitting it": free users are invited to coaching (or to join),
 // members get the coaching-call link when one is set.
 function CoachingCard({ transactions }: { transactions: number }) {
-  const [viewer, setViewer] = useState<{ isMember: boolean; email: string } | null>(null);
+  const [viewer, setViewer] = useState<{
+    isMember: boolean;
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+  } | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -127,17 +132,27 @@ function CoachingCard({ transactions }: { transactions: number }) {
       if (!user) return;
       const { data: profile } = await supabase
         .from("profiles")
-        .select("account_type")
+        .select("account_type, first_name, last_name")
         .eq("id", user.id)
         .single();
-      setViewer({ isMember: profile?.account_type === "member", email: user.email ?? "" });
+      setViewer({
+        isMember: profile?.account_type === "member",
+        email: user.email ?? "",
+        firstName: profile?.first_name ?? null,
+        lastName: profile?.last_name ?? null,
+      });
     });
   }, []);
 
   if (!viewer) return null;
   if (viewer.isMember && !COACHING_CALL_URL) return null;
 
-  const href = COACHING_CALL_URL || joinUrl({ placement: "section-3" });
+  const href =
+    COACHING_CALL_URL ||
+    joinUrl({
+      placement: "section-3",
+      person: { email: viewer.email, firstName: viewer.firstName, lastName: viewer.lastName },
+    });
   const goal =
     transactions > 0
       ? `You've set a goal of ${transactions} ${transactions === 1 ? "transaction" : "transactions"}.`

@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { joinUrl } from '@/config/power-agent-offer';
+import { joinUrl, type JoinPerson } from '@/config/power-agent-offer';
 import {
   countdownSeenKey,
   freeAccessEndsAt,
@@ -23,6 +23,7 @@ import {
 interface FreeAccessCountdownProps {
   userId: string;
   signedUpAt: string;
+  person: JoinPerson;
 }
 
 function alreadySeen(key: string): boolean {
@@ -48,7 +49,7 @@ function markSeen(key: string) {
  * once a day (their own calendar day, per browser) when they open their plan: how many days are left and a link to keep it
  * with POWER AGENT. Not on the print page or in admin.
  */
-export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownProps) {
+export function FreeAccessCountdown({ userId, signedUpAt, person }: FreeAccessCountdownProps) {
   const pathname = usePathname();
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
@@ -102,7 +103,7 @@ export function FreeAccessCountdown({ userId, signedUpAt }: FreeAccessCountdownP
         </DialogHeader>
         <DialogFooter className="flex-col gap-2 sm:flex-col sm:space-x-0">
           <a
-            href={joinUrl({ placement: `countdown-${daysLeft}` })}
+            href={joinUrl({ placement: `countdown-${daysLeft}`, person })}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}

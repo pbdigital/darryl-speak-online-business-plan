@@ -13,6 +13,7 @@ import { TESTIMONIALS, joinUrl } from '@/config/power-agent-offer';
 interface PlanLockedScreenProps {
   email: string;
   firstName: string | null;
+  lastName: string | null;
 }
 
 const money = (value: number) =>
@@ -28,9 +29,8 @@ const whole = (value: number) =>
   new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value);
 
 // Top message and button wording is Sarah's, from her 17 Nov 2026 email.
-// The new wording does not use the name or email, so the props are kept for the gate only.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function PlanLockedScreen(_props: PlanLockedScreenProps) {
+// The name and email only go into the join link, to fill in the order form.
+export function PlanLockedScreen({ email, firstName, lastName }: PlanLockedScreenProps) {
   // Store values differ between server and browser, so show them after mount.
   const mounted = useSyncExternalStore(
     noopSubscribe,
@@ -112,7 +112,7 @@ export function PlanLockedScreen(_props: PlanLockedScreenProps) {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
-              href={joinUrl({ placement: 'lock-screen' })}
+              href={joinUrl({ placement: 'lock-screen', person: { email, firstName, lastName } })}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-lg bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"

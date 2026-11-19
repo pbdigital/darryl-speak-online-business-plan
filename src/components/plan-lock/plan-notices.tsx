@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import Link from 'next/link';
 import { PartyPopper, X } from 'lucide-react';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { joinUrl } from '@/config/power-agent-offer';
@@ -9,7 +10,17 @@ import { freeAccessEndsAt } from '@/lib/free-access';
 // Placeholder copy: DDS will sign off the final wording.
 
 /** Quiet line in the plan header for free users. */
-export function FreeAccessLine({ signedUpAt }: { signedUpAt: string; email?: string }) {
+export function FreeAccessLine({
+  signedUpAt,
+  email,
+  firstName,
+  lastName,
+}: {
+  signedUpAt: string;
+  email?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+}) {
   const until = freeAccessEndsAt(signedUpAt);
   const untilLabel = until.toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -21,7 +32,7 @@ export function FreeAccessLine({ signedUpAt }: { signedUpAt: string; email?: str
     <div className="bg-[#0F172A] px-6 pt-4 text-center text-sm text-slate-400 md:px-12">
       Free online access until {untilLabel}.{' '}
       <a
-        href={joinUrl({ placement: 'header' })}
+        href={joinUrl({ placement: 'header', person: { email, firstName, lastName } })}
         target="_blank"
         rel="noopener noreferrer"
         className="text-slate-200 underline underline-offset-2 hover:text-white"
@@ -111,6 +122,45 @@ export function JoinedBanner() {
         <PartyPopper className="h-5 w-5 text-amber-500" />
         Welcome to POWER AGENT®. Your plan is yours for the year.
       </span>
+    </Banner>
+  );
+}
+
+/**
+ * A POWER AGENT account with nothing in it yet. The member may have started a
+ * free plan under another email, so offer to bring it over until they dismiss
+ * this or start writing.
+ */
+export function BringPlanOverBanner({ userId }: { userId: string }) {
+  const storageKey = `myplanforsuccess:bring-over-dismissed:${userId}`;
+  const [dismissedNow, setDismissedNow] = useState(false);
+  const dismissedBefore = useSyncExternalStore(
+    noopSubscribe,
+    () => readStorage(storageKey) === '1',
+    () => true
+  );
+
+  if (dismissedNow || dismissedBefore) return null;
+
+  return (
+    <Banner
+      onDismiss={() => {
+        setDismissedNow(true);
+        try {
+          localStorage.setItem(storageKey, '1');
+        } catch {
+          // Storage unavailable: it stays hidden for this visit only.
+        }
+      }}
+    >
+      <p className="font-semibold text-slate-900">Started a free plan with a different email?</p>
+      <p className="mt-1">Bring it over so everything you wrote is right here.</p>
+      <Link
+        href="/plan/bring-over"
+        className="mt-3 inline-flex items-center justify-center rounded-lg bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+      >
+        Bring it over
+      </Link>
     </Banner>
   );
 }
