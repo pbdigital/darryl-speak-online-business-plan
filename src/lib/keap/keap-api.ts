@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { PlanNumbers } from './plan-data';
+import { pickUtm, UTM_KEYS, type UtmKey } from '@/lib/utm';
 
 /**
  * Applies Keap tags and plan fields to a user's contact.
@@ -107,6 +108,59 @@ export async function setKeapPlanFields(
   }
 
   try {
+    const contactId = await getContactId(supabase, userId);
+    await keapRequest('PATCH', `/contacts/${contactId}?update_mask=custom_fields`, {
+      custom_fields: customFields,
+    });
+    return null;
+  } catch (err) {
+    return err instanceof Error ? err.message : String(err);
+  }
+}
+
+/**
+ * DDS's Keap custom fields for the utm tags. These IDs are the ones AccessAlly
+ * lists for the fields; Keap's REST v1 API is expected to use the same IDs,
+ * but the first live write is what proves it. Change them here if not.
+ */
+export const KEAP_UTM_FIELD_IDS: Record<UtmKey, number> = {
+  utm_source: 246,
+  utm_term: 302,
+  utm_medium: 312,
+  utm_campaign: 314,
+  utm_content: 316,
+};
+
+/**
+ * Writes the utm tags saved at sign-up to the contact's custom fields,
+ * replacing any older values. Does nothing when the sign-up had none. Call
+ * only in fake or live mode.
+ * Returns null on success or an error message. Never throws.
+ */
+export async function setKeapUtmFields(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<string | null> {
+  try {
+    const { data, error } = await supabase.auth.admin.getUserById(userId);
+    if (error) return `User lookup failed: ${error.message}`;
+
+    const metadata: Record<string, unknown> = data.user?.user_metadata ?? {};
+    const utm = pickUtm((key) => metadata[key]);
+    const customFields = UTM_KEYS.filter((key) => utm[key]).map((key) => ({
+      id: KEAP_UTM_FIELD_IDS[key],
+      content: utm[key],
+    }));
+    if (customFields.length === 0) return null;
+
+    if (getKeapMode() === 'fake') {
+      console.info(
+        `[keap:fake] Would set utm fields for user ${userId}: ` +
+          `PATCH /contacts/{id} ${JSON.stringify({ custom_fields: customFields })}`
+      );
+      return null;
+    }
+
     const contactId = await getContactId(supabase, userId);
     await keapRequest('PATCH', `/contacts/${contactId}?update_mask=custom_fields`, {
       custom_fields: customFields,

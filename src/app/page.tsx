@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 
 // ============================================================================
 // DESIGN TOKENS FROM FIGMA
@@ -18,6 +19,8 @@ import { cn } from "@/lib/utils";
 // Muted blue: #91aec0
 // Footer bg: #0b1c3b
 // ============================================================================
+
+const CTA_LABEL = "Start My Free Plan";
 
 // ============================================================================
 // ICONS COMPONENTS
@@ -273,7 +276,9 @@ function Header() {
           className="h-[44px] px-3 min-[400px]:px-4 sm:px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors"
         >
           <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5 whitespace-nowrap">
-            Get Started
+            {/* The full label overflows the header on the narrowest phones */}
+            <span className="min-[376px]:hidden">Start Free</span>
+            <span className="hidden min-[376px]:inline">{CTA_LABEL}</span>
           </span>
         </Link>
       </nav>
@@ -315,7 +320,7 @@ function HeroSection() {
               >
                 <Star className="w-[20px] h-[20px] text-[#28afb0] fill-[#28afb0]" />
                 <span className="font-[var(--font-poppins)] text-[14px] text-[#28afb0] leading-[28px] tracking-[0.56px]">
-                  35+ Years of Real Estate Coaching Excellence
+                  30+ Years of Real Estate Coaching Excellence
                 </span>
               </div>
 
@@ -328,8 +333,8 @@ function HeroSection() {
                     : "opacity-0 translate-y-4"
                 )}
               >
-                Your Blueprint for a<br />
-                Breakthrough Year
+                Build your {CURRENT_PLAN_YEAR} real estate business plan online,
+                free.
               </h1>
 
               {/* Description paragraphs */}
@@ -341,20 +346,7 @@ function HeroSection() {
                     : "opacity-0 translate-y-4"
                 )}
               >
-                The interactive business plan that calculates your GCI goal,
-                breaks it down into daily activities, and keeps you accountable
-                all year long.
-              </p>
-              <p
-                className={cn(
-                  "font-[var(--font-poppins)] text-[16px] leading-[28px] text-[#e7e9e9] transition-all duration-700 delay-300",
-                  isVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-4"
-                )}
-              >
-                Join thousands of agents using the proven POWER AGENT®
-                methodology to design careers and lives worth smiling about.
+                [[COPY: hero subheadline]]
               </p>
             </div>
 
@@ -372,7 +364,7 @@ function HeroSection() {
                 className="h-[44px] px-[20px] py-[10px] rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-[10px] hover:bg-[#28afb0]/90 transition-colors group"
               >
                 <span className="font-[var(--font-open-sans)] font-semibold text-[14px] text-white capitalize leading-[20px]">
-                  Start Your Plan
+                  {CTA_LABEL}
                 </span>
                 <ArrowRight className="w-[24px] h-[24px] text-white group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -385,6 +377,16 @@ function HeroSection() {
                 </span>
               </Link>
             </div>
+            <p
+              className={cn(
+                "-mt-[24px] font-[var(--font-poppins)] text-[14px] leading-[22px] text-[#e7e9e9] transition-all duration-700 delay-[400ms]",
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              )}
+            >
+              Free for 30 days. Print your plan any time.
+            </p>
           </div>
 
           {/* Right side - App Preview */}
@@ -427,6 +429,58 @@ function HeroSection() {
 }
 
 // ============================================================================
+// SHOW THE MATH SECTION
+// ============================================================================
+
+// Example plan, kept in one place so the numbers are easy to change. The app
+// uses 5 appointments per transaction and 16 conversations per appointment,
+// so 16 transactions = 80 appointments = 1,280 conversations, about 25 a week
+// over 52 weeks. Sarah's draft said 48 appointments, which the app won't show.
+const EXAMPLE_PLAN = [
+  { label: `Your income goal for ${CURRENT_PLAN_YEAR}`, value: "$120,000" },
+  { label: "[[COPY: transactions tile label]]", value: "16" },
+  { label: "[[COPY: appointments tile label]]", value: "80" },
+  { label: "[[COPY: conversations tile label]]", value: "25" },
+];
+
+function ShowTheMathSection() {
+  return (
+    <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+      <div className="max-w-[1180px] mx-auto flex flex-col gap-10 md:gap-[60px] items-center">
+        <div className="text-center max-w-[800px]">
+          <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] mb-4 md:mb-6">
+            [[COPY: show the math headline]]
+          </h2>
+          <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
+            [[COPY: show the math intro]]
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 w-full">
+          {EXAMPLE_PLAN.map((tile) => (
+            <div
+              key={tile.label}
+              className="bg-[#0f172a] rounded-[20px] p-5 md:p-[30px] flex flex-col gap-2 text-center"
+            >
+              <p className="font-[var(--font-poppins)] text-xs md:text-sm text-[#91aec0] leading-5">
+                {tile.label}
+              </p>
+              <p className="font-[var(--font-poppins)] font-bold text-[28px] md:text-[36px] leading-[1.2] text-white">
+                {tile.value}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#0f172a] text-center max-w-[800px]">
+          [[COPY: line under the tiles]]
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
 // BENEFITS SECTION
 // ============================================================================
 
@@ -457,7 +511,7 @@ const benefits = [
     label: "Benefit 4: Access Anywhere",
     title: "Plan on Your Schedule",
     description:
-      "Whether you're at your desk, on your phone, or between showings, your business plan is always within reach. No printing, no paper, no excuses.",
+      "[[COPY: benefit 4 text]]",
   },
 ];
 
@@ -469,7 +523,7 @@ function BenefitsSection() {
           {/* Header */}
           <div className="text-center max-w-[800px]">
             <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[38.4px] text-[#0f172a] mb-4 md:mb-6">
-              Everything You Need to Hit Your Numbers
+              Everything You Need to Hit Your Goals
             </h2>
             <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
               The interactive business plan that calculates your GCI goal, breaks
@@ -509,7 +563,7 @@ function BenefitsSection() {
             className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
           >
             <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
-              Get started Free
+              {CTA_LABEL}
             </span>
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -540,7 +594,7 @@ const steps = [
     step: 3,
     title: "Take Action Daily",
     description:
-      "Use your personalized numbers as your roadmap. Make your reach-outs. Have your conversations. Hit your goals.",
+      "[[COPY: step 3 text]]",
   },
 ];
 
@@ -593,7 +647,7 @@ function ThreeStepsSection() {
             className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
           >
             <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
-              Get started Free
+              {CTA_LABEL}
             </span>
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -763,7 +817,7 @@ function FiveSectionsOverview() {
             className="h-[44px] px-5 py-2.5 rounded-[6px] bg-[#28afb0] flex items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
           >
             <span className="font-[var(--font-open-sans)] font-semibold text-sm text-white capitalize leading-5">
-              Get started Free
+              {CTA_LABEL}
             </span>
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -773,6 +827,44 @@ function FiveSectionsOverview() {
   );
 }
 
+
+// ============================================================================
+// TESTIMONIALS SECTION
+// ============================================================================
+
+const testimonials = [
+  { quote: "[[COPY: testimonial 1 quote]]", name: "[[COPY: name 1]]", brokerage: "[[COPY: brokerage 1]]" },
+  { quote: "[[COPY: testimonial 2 quote]]", name: "[[COPY: name 2]]", brokerage: "[[COPY: brokerage 2]]" },
+  { quote: "[[COPY: testimonial 3 quote]]", name: "[[COPY: name 3]]", brokerage: "[[COPY: brokerage 3]]" },
+];
+
+function TestimonialsSection() {
+  return (
+    <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+      <div className="max-w-[1180px] mx-auto flex flex-col gap-10 md:gap-[60px] items-center">
+        <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] text-center">
+          [[COPY: testimonials headline]]
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 w-full">
+          {testimonials.map((testimonial) => (
+            <figure
+              key={testimonial.name}
+              className="bg-[#f8fafc] border border-[#e7e9e9] rounded-[20px] p-5 md:p-[30px] flex flex-col gap-4"
+            >
+              <blockquote className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#0f172a]">
+                &ldquo;{testimonial.quote}&rdquo;
+              </blockquote>
+              <figcaption className="mt-auto font-[var(--font-poppins)] text-sm leading-5">
+                <span className="block font-semibold text-[#0f172a]">{testimonial.name}</span>
+                <span className="block text-[#737373]">{testimonial.brokerage}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 // ============================================================================
 // ABOUT SECTION (with Darryl)
@@ -797,7 +889,7 @@ function AboutSection() {
             {/* Badge */}
             <div className="absolute bottom-4 left-4 bg-[#28afb0] rounded-lg px-3 md:px-4 py-2">
               <p className="font-[var(--font-poppins)] font-bold text-xs md:text-sm text-white">
-                35+ Years
+                30+ Years
               </p>
               <p className="font-[var(--font-poppins)] text-xs text-white/80">
                 Coaching Excellence
@@ -831,7 +923,7 @@ function AboutSection() {
             {/* Trust points */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mt-2 md:mt-4">
               {[
-                "35+ Years of Real Estate Coaching",
+                "30+ Years of Real Estate Coaching",
                 "Thousands of Agents Coached",
                 "Goldman Sachs 10KSB Alumni",
                 "Certified Speaking Professional",
@@ -869,6 +961,44 @@ function AboutSection() {
 }
 
 // ============================================================================
+// FAQ SECTION
+// ============================================================================
+
+const faqs = [
+  { question: "[[COPY: FAQ question 1]]", answer: "[[COPY: FAQ answer 1]]" },
+  { question: "[[COPY: FAQ question 2]]", answer: "[[COPY: FAQ answer 2]]" },
+  { question: "[[COPY: FAQ question 3]]", answer: "[[COPY: FAQ answer 3]]" },
+  { question: "[[COPY: FAQ question 4]]", answer: "[[COPY: FAQ answer 4]]" },
+];
+
+function FaqSection() {
+  return (
+    <section className="bg-white px-6 md:px-16 lg:px-[130px] py-12 md:py-20">
+      <div className="max-w-[800px] mx-auto flex flex-col gap-8 md:gap-10">
+        <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] text-center">
+          [[COPY: FAQ headline]]
+        </h2>
+        <div className="divide-y divide-[#e7e9e9] border-y border-[#e7e9e9]">
+          {faqs.map((faq) => (
+            <details key={faq.question} className="group py-4 md:py-5">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-[var(--font-poppins)] font-semibold text-base md:text-lg text-[#0f172a] [&::-webkit-details-marker]:hidden">
+                {faq.question}
+                <span aria-hidden="true" className="text-[#28afb0] text-2xl leading-none transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
+                {faq.answer}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
 // FINAL CTA SECTION
 // ============================================================================
 
@@ -881,18 +1011,20 @@ function FinalCTASection() {
             Ready to Make This Your Breakthrough Year?
           </h2>
           <p className="font-[var(--font-poppins)] text-sm md:text-lg leading-6 md:leading-7 text-[#e7e9e9] mb-6 md:mb-8 max-w-[600px] mx-auto">
-            Join thousands of agents using the proven POWER AGENT® methodology.
-            Start building your business plan today.
+            [[COPY: closing paragraph]]
           </p>
           <Link
             href="/register"
             className="inline-flex h-[44px] md:h-[52px] px-6 md:px-8 py-2.5 md:py-3 rounded-[6px] bg-[#28afb0] items-center justify-center gap-2.5 hover:bg-[#28afb0]/90 transition-colors group"
           >
             <span className="font-[var(--font-open-sans)] font-semibold text-sm md:text-base text-white capitalize">
-              Start Your Plan Free
+              {CTA_LABEL}
             </span>
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
           </Link>
+          <p className="mt-4 font-[var(--font-poppins)] text-sm text-[#e7e9e9]">
+            [[COPY: line under the closing button]]
+          </p>
         </div>
       </div>
     </section>
@@ -907,7 +1039,7 @@ function Footer() {
   return (
     <footer className="bg-[#0b1c3b] min-h-[60px] py-4 md:py-0 md:h-[60px] flex items-center justify-center px-6">
       <p className="font-[var(--font-poppins)] text-xs md:text-sm text-white text-center">
-Darryl Davis | Copyright 2025 |{" "}
+Darryl Davis | © 2026 |{" "}
         <a href="https://darrylspeaks.com/terms-of-service" target="_blank" rel="noopener noreferrer" className="hover:underline">Terms &amp; Conditions</a>{" "}|{" "}
         <a href="https://darrylspeaks.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="hover:underline">Privacy Policy</a>
       </p>
@@ -923,10 +1055,13 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen">
       <HeroSection />
+      <ShowTheMathSection />
       <BenefitsSection />
       <ThreeStepsSection />
       <FiveSectionsOverview />
+      <TestimonialsSection />
       <AboutSection />
+      <FaqSection />
       <FinalCTASection />
       <Footer />
     </main>

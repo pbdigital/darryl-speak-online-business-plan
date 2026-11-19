@@ -71,7 +71,7 @@ export function InitialScreen({
           Start your free plan
         </Button>
         <p className="text-center text-sm text-gray-500">
-          Free for any real estate agent.
+          Free for 30 days.
         </p>
         <p className="text-center text-sm text-gray-600">
           Already started one?{' '}

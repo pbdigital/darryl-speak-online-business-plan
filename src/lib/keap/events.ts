@@ -13,7 +13,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
 import { createServiceClient } from './service-client';
-import { applyKeapTag, getKeapMode, setKeapPlanFields } from './keap-api';
+import { applyKeapTag, getKeapMode, setKeapPlanFields, setKeapUtmFields } from './keap-api';
 import { calculatePlanNumbers } from './plan-data';
 
 export const SECTION_KEYS = [
@@ -223,6 +223,12 @@ async function syncToKeap(
     if (getKeapMode() === 'unconfigured') return KEAP_NOT_CONFIGURED;
 
     const errors = [await applyKeapTag(supabase, userId, eventKey)];
+
+    if (eventKey === 'signed_up') {
+      // Logged only, so a bad utm field can't keep the sign-up tag retrying.
+      const utmError = await setKeapUtmFields(supabase, userId);
+      if (utmError) console.error(`[keap] UTM fields not written for user ${userId}: ${utmError}`);
+    }
 
     if (eventKey === 'section_done:income-planning' || eventKey === 'plan_done') {
       const { data: section, error: sectionError } = await supabase

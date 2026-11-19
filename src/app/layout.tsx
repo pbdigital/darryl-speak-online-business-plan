@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Libre_Baskerville, Poppins, Open_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import { CURRENT_PLAN_YEAR } from "@/lib/constants";
+import { MetaPixel } from "@/components/analytics/meta-pixel";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,6 +39,12 @@ export const metadata: Metadata = {
   description: "Build your annual business plan with goal-setting, income planning, and accountability tracking for real estate agents.",
 };
 
+// The pixel loads on the production site only, never on previews or locally.
+const metaPixelId =
+  process.env.VERCEL_ENV === "production" && /^\d+$/.test(process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "")
+    ? process.env.NEXT_PUBLIC_META_PIXEL_ID
+    : undefined;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -50,6 +57,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster position="bottom-center" richColors closeButton />
+        {metaPixelId && <MetaPixel pixelId={metaPixelId} />}
       </body>
     </html>
   );

@@ -7,9 +7,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Check } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { CURRENT_PLAN_YEAR } from '@/lib/constants';
+import { parseUtm, readCookie, UTM_COOKIE } from '@/lib/utm';
+import { newMetaEventId, readMetaBrowserIds, trackMetaEvent } from '@/lib/meta-pixel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -31,8 +32,14 @@ const PRIVACY_URL =
 const BENEFITS = [
   "Darryl's step-by-step plan",
   'Your numbers worked out for you',
-  'Print it and keep it',
+  'Print it any time, and keep your copy',
+  'No credit card needed',
 ];
+
+// TODO: paste Sarah's exact "What happens after 30 days?" text from her 19 Nov email - Claude 20 Nov
+const AFTER_30_DAYS_COPY = '[[COPY: after-30-days answer]]';
+
+const TERMS_URL = 'https://darrylspeaks.com/terms-of-service';
 
 interface SignupScreenProps {
   email?: string;
@@ -53,7 +60,6 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
       firstName: '',
       lastName: '',
       password: '',
-      agreeToTerms: false as unknown as true,
     },
   });
 
@@ -62,6 +68,9 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
     setError(null);
 
     const supabase = createClient();
+    // Shared by the browser pixel event below and the server event sent at
+    // email confirmation, so Meta counts the sign-up once.
+    const metaEventId = newMetaEventId();
 
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: data.email,
@@ -71,6 +80,9 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
         data: {
           first_name: data.firstName,
           last_name: data.lastName,
+          ...parseUtm(readCookie(document.cookie, UTM_COOKIE)),
+          ...readMetaBrowserIds(document.cookie),
+          meta_event_id: metaEventId,
         },
       },
     });
@@ -79,6 +91,12 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
       setError(getAuthErrorMessage(signUpError.message));
       setIsLoading(false);
       return;
+    }
+
+    // An email that already has an account comes back with no identities:
+    // not a new sign-up, so it isn't reported to Meta.
+    if (signUpData.user?.identities?.length) {
+      trackMetaEvent('CompleteRegistration', metaEventId);
     }
 
     // With email confirmation on there is no session yet. Supabase answers
@@ -127,7 +145,7 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
         </Button>
         <div className="space-y-2">
           <p className="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
-            Free for every real estate agent
+            Free for 30 days
           </p>
           <h1 className="text-balance text-2xl font-semibold tracking-tight text-gray-900">
             Build your {CURRENT_PLAN_YEAR} business plan with Darryl
@@ -172,53 +190,55 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700 font-medium">First name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="John"
-                    autoComplete="given-name"
-                    className="h-12 text-base"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-3">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-700 font-medium">First name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="John"
+                      autoComplete="given-name"
+                      className="h-12 text-base"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700 font-medium">Last name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Doe"
-                    autoComplete="family-name"
-                    className="h-12 text-base"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-700 font-medium">Last name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Doe"
+                      autoComplete="family-name"
+                      className="h-12 text-base"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-medium">Password</FormLabel>
+                <FormLabel className="text-gray-700 font-medium">Create a password</FormLabel>
                 <FormControl>
                   <PasswordInput
-                    placeholder="Create a password (min 6 characters)"
+                    placeholder="At least 6 characters"
                     autoComplete="new-password"
                     className="h-12 text-base"
                     {...field}
@@ -229,50 +249,21 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="agreeToTerms"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div>
-                  <FormLabel className="block text-sm font-normal leading-snug cursor-pointer text-gray-600">
-                    I agree to the{' '}
-                    <a
-                      href="https://darrylspeaks.com/terms-of-service"
-                      className="text-primary hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Terms
-                    </a>{' '}
-                    and{' '}
-                    <a
-                      href="https://darrylspeaks.com/privacy-policy"
-                      className="text-primary hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Privacy Policy
-                    </a>
-                  </FormLabel>
-                  <FormMessage />
-                </div>
-              </FormItem>
-            )}
-          />
-
           <Button type="submit" size="xl" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Creating your plan...' : 'Agree and start my plan'}
+            {isLoading ? 'Creating your plan...' : 'Start My Free Plan'}
           </Button>
 
           <p className="text-center text-xs text-gray-500">
-            We&apos;ll email you tips to put your plan to work. Unsubscribe anytime.{' '}
+            By starting your plan, you agree to the{' '}
+            <a
+              href={TERMS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-700"
+            >
+              Terms
+            </a>{' '}
+            and{' '}
             <a
               href={PRIVACY_URL}
               target="_blank"
@@ -281,9 +272,16 @@ export function SignupScreen({ email = '', onBack, onPowerAgentSso }: SignupScre
             >
               Privacy Policy
             </a>
+            . We&apos;ll email you tips to put your plan to work, and you can unsubscribe any
+            time.
           </p>
         </form>
       </Form>
+
+      <div className="rounded-lg bg-gray-50 p-4 text-sm text-gray-600">
+        <p className="font-medium text-gray-900">What happens after 30 days?</p>
+        <p className="mt-1">{AFTER_30_DAYS_COPY}</p>
+      </div>
 
       {onPowerAgentSso && (
         <p className="text-center text-sm text-gray-600">

@@ -55,7 +55,7 @@ export function UnifiedAuthPage() {
           />
         </div>
 
-        <div className="rounded-2xl bg-white px-10 py-10 shadow-sm border border-gray-100">
+        <div className="rounded-2xl bg-white px-6 py-10 sm:px-10 shadow-sm border border-gray-100">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
             {screen === 'signup' && (
               <SignupScreen

@@ -2,6 +2,7 @@ import { type EmailOtpType } from '@supabase/supabase-js';
 import { after, NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { recordPlanEvent } from '@/lib/keap/events';
+import { sendRegistrationEvent } from '@/lib/meta-capi';
 
 /**
  * Email link landing route for sign-up confirmation and password reset.
@@ -38,17 +39,21 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  await recordSignUp(supabase);
+  await recordSignUp(supabase, request);
 
   return NextResponse.redirect(new URL(next, request.url));
 }
 
 /**
- * Tags a confirmed free user as signed up in Keap. recordPlanEvent records
- * each event once per user, so repeat visits here are harmless. A failure is
- * logged and never blocks sign-in.
+ * Tags a confirmed free user as signed up in Keap and, the first time only,
+ * reports the sign-up to Meta with the event_id the browser pixel used.
+ * recordPlanEvent records each event once per user, so repeat visits here are
+ * harmless. A failure is logged and never blocks sign-in.
  */
-async function recordSignUp(supabase: Awaited<ReturnType<typeof createClient>>) {
+async function recordSignUp(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  request: NextRequest
+) {
   try {
     const {
       data: { user },
@@ -62,7 +67,22 @@ async function recordSignUp(supabase: Awaited<ReturnType<typeof createClient>>) 
       .maybeSingle();
     if (profile?.account_type !== 'free') return;
 
-    await recordPlanEvent(user.id, 'signed_up', { defer: after });
+    const { recorded } = await recordPlanEvent(user.id, 'signed_up', { defer: after });
+    if (!recorded || !user.email) return;
+
+    const metadata = user.user_metadata ?? {};
+    const text = (value: unknown) => (typeof value === 'string' && value ? value : undefined);
+    const event = {
+      email: user.email,
+      eventId: text(metadata.meta_event_id) ?? user.id,
+      eventTime: new Date(),
+      eventSourceUrl: new URL('/register', request.url).toString(),
+      clientUserAgent: request.headers.get('user-agent') ?? undefined,
+      clientIpAddress: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined,
+      fbp: text(metadata.fbp),
+      fbc: text(metadata.fbc),
+    };
+    after(() => sendRegistrationEvent(event));
   } catch (err) {
     console.error('Failed to record signed_up plan event:', err);
   }
