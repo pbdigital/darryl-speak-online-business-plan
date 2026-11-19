@@ -23,7 +23,6 @@ export interface JoinPerson {
  * address. A member who upgrades with a different email brings their free
  * plan over with /plan/bring-over instead.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function joinUrl(params: { placement: string; person?: JoinPerson }): string {
   const base =
     process.env.NEXT_PUBLIC_POWER_AGENT_JOIN_URL || 'https://darrylspeaks.com/';
