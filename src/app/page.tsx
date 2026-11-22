@@ -14,7 +14,7 @@ import { CURRENT_PLAN_YEAR } from "@/lib/constants";
 // Blue gradient: #1c4ca1
 // Teal accent: #28afb0
 // Light gray text: #e7e9e9
-// Muted gray: #737373
+// Body gray: #404040
 // Dark card bg: #1e293b
 // Muted blue: #91aec0
 // Footer bg: #0b1c3b
@@ -340,7 +340,7 @@ function HeroSection() {
               {/* Description paragraphs */}
               <p
                 className={cn(
-                  "font-[var(--font-poppins)] text-[16px] leading-[28px] text-[#e7e9e9] transition-all duration-700 delay-200",
+                  "font-[var(--font-poppins)] font-medium text-[16px] leading-[28px] text-[#e7e9e9] transition-all duration-700 delay-200",
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-4"
@@ -380,7 +380,7 @@ function HeroSection() {
             </div>
             <p
               className={cn(
-                "-mt-[24px] font-[var(--font-poppins)] text-[14px] leading-[22px] text-[#e7e9e9] transition-all duration-700 delay-[400ms]",
+                "-mt-[24px] font-[var(--font-poppins)] font-medium text-[14px] leading-[22px] text-[#e7e9e9] transition-all duration-700 delay-[400ms]",
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"
@@ -453,7 +453,7 @@ function ShowTheMathSection() {
           <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] mb-4 md:mb-6">
             Your plan turns one big goal into this week&apos;s to-do list.
           </h2>
-          <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
+          <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#404040]">
             Here&apos;s an example of the math your plan does for you.
           </p>
         </div>
@@ -474,7 +474,7 @@ function ShowTheMathSection() {
           ))}
         </div>
 
-        <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#0f172a] text-center max-w-[800px]">
+        <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#0f172a] text-center max-w-[800px]">
           Change one number and the rest of the plan updates for you.
         </p>
       </div>
@@ -527,7 +527,7 @@ function BenefitsSection() {
             <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[38.4px] text-[#0f172a] mb-4 md:mb-6">
               Everything You Need to Hit Your Goals
             </h2>
-            <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
+            <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#404040]">
               The interactive business plan that calculates your GCI goal, breaks
               it down into daily activities, and keeps you accountable all year
               long.
@@ -551,7 +551,7 @@ function BenefitsSection() {
                   <h3 className="font-[var(--font-poppins)] font-semibold text-lg md:text-xl text-[#0f172a] leading-6 md:leading-7">
                     {benefit.title}
                   </h3>
-                  <p className="font-[var(--font-poppins)] font-light text-sm md:text-base text-[#737373] leading-6 md:leading-7">
+                  <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base text-[#404040] leading-6 md:leading-7">
                     {benefit.description}
                   </p>
                 </div>
@@ -610,7 +610,7 @@ function ThreeStepsSection() {
             <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-[#0f172a] mb-4 md:mb-6">
               Three Steps to Your Best Year Yet
             </h2>
-            <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
+            <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#404040]">
               Your best year doesn&apos;t happen by accident—it happens by
               design. Follow these three steps to build clarity, create
               momentum, and turn your vision into measurable results.
@@ -635,7 +635,7 @@ function ThreeStepsSection() {
                   <h3 className="font-[var(--font-poppins)] font-semibold text-lg md:text-[22px] text-[#0b1c3b] leading-6 md:leading-7">
                     {step.title}
                   </h3>
-                  <p className="font-[var(--font-poppins)] text-sm md:text-base text-[#737373] leading-6 md:leading-7">
+                  <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base text-[#404040] leading-6 md:leading-7">
                     {step.description}
                   </p>
                 </div>
@@ -732,7 +732,7 @@ function FiveSectionsOverview() {
             <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] leading-[1.2] text-white mb-4 md:mb-6">
               Five Sections. One Complete Business Plan.
             </h2>
-            <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#e7e9e9]">
+            <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#e7e9e9]">
               Build a business plan that works from every angle. These five
               sections guide you through reflection, strategy, goal-setting,
               mindset, and accountability—giving you a complete, actionable
@@ -769,7 +769,7 @@ function FiveSectionsOverview() {
                         {section.subtitle}
                       </span>
                     </h3>
-                    <p className="font-[var(--font-poppins)] text-sm md:text-base text-[#e7e9e9] leading-6 md:leading-7">
+                    <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base text-[#e7e9e9] leading-6 md:leading-7">
                       {section.description}
                     </p>
                   </div>
@@ -804,7 +804,7 @@ function FiveSectionsOverview() {
                         {section.subtitle}
                       </span>
                     </h3>
-                    <p className="font-[var(--font-poppins)] text-sm md:text-base text-[#e7e9e9] leading-6 md:leading-7">
+                    <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base text-[#e7e9e9] leading-6 md:leading-7">
                       {section.description}
                     </p>
                   </div>
@@ -865,12 +865,12 @@ function TestimonialsSection() {
               key={testimonial.name}
               className="bg-[#f8fafc] border border-[#e7e9e9] rounded-[20px] p-5 md:p-[30px] flex flex-col gap-4"
             >
-              <blockquote className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#0f172a]">
+              <blockquote className="font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#0f172a]">
                 &ldquo;{testimonial.quote}&rdquo;
               </blockquote>
               <figcaption className="mt-auto font-[var(--font-poppins)] text-sm leading-5">
                 <span className="block font-semibold text-[#0f172a]">{testimonial.name}</span>
-                <span className="block text-[#737373]">{testimonial.brokerage}</span>
+                <span className="block text-[#404040]">{testimonial.brokerage}</span>
               </figcaption>
             </figure>
           ))}
@@ -917,7 +917,7 @@ function AboutSection() {
               Built on Decades of Real Estate Success
             </h2>
             <div className="space-y-3 md:space-y-4">
-              <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373] text-center lg:text-left">
+              <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#404040] text-center lg:text-left">
                 MyPlanForSuccess is powered by{" "}
                 <strong className="text-[#0f172a]">
                   Darryl Davis Seminars
@@ -926,7 +926,7 @@ function AboutSection() {
                 thousands of real estate professionals design careers and lives
                 worth smiling about.
               </p>
-              <p className="font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373] text-center lg:text-left">
+              <p className="font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#404040] text-center lg:text-left">
                 For over three decades, Darryl Davis has been coaching agents to
                 prospect without fear, list with confidence, and build
                 businesses that last. This digital business plan brings that
@@ -1015,7 +1015,7 @@ function FaqSection() {
                   +
                 </span>
               </summary>
-              <p className="mt-3 font-[var(--font-poppins)] text-sm md:text-base leading-6 md:leading-7 text-[#737373]">
+              <p className="mt-3 font-[var(--font-poppins)] font-medium text-sm md:text-base leading-6 md:leading-7 text-[#404040]">
                 {faq.answer}
               </p>
             </details>
@@ -1038,7 +1038,7 @@ function FinalCTASection() {
           <h2 className="font-[var(--font-poppins)] font-bold text-[24px] md:text-[32px] lg:text-[40px] leading-[1.2] text-white mb-4 md:mb-6">
             Ready to Make This Your Breakthrough Year?
           </h2>
-          <p className="font-[var(--font-poppins)] text-sm md:text-lg leading-6 md:leading-7 text-[#e7e9e9] mb-6 md:mb-8 max-w-[600px] mx-auto">
+          <p className="font-[var(--font-poppins)] font-medium text-sm md:text-lg leading-6 md:leading-7 text-[#e7e9e9] mb-6 md:mb-8 max-w-[600px] mx-auto">
             Start your {CURRENT_PLAN_YEAR} plan free today, and work through it at your own pace.
           </p>
           <Link
@@ -1050,7 +1050,7 @@ function FinalCTASection() {
             </span>
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:translate-x-1 transition-transform" />
           </Link>
-          <p className="mt-4 font-[var(--font-poppins)] text-sm text-[#e7e9e9]">
+          <p className="mt-4 font-[var(--font-poppins)] font-medium text-sm text-[#e7e9e9]">
             Free for 30 days. Print your plan any time.
           </p>
         </div>
