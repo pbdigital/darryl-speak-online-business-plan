@@ -253,9 +253,9 @@ function ShieldCheckIcon({ className }: { className?: string }) {
 function Header() {
   return (
     <header className="flex items-center justify-between gap-3 w-full max-w-[1180px] mx-auto">
-      <div className="relative h-[16px] w-[112px] shrink-0 min-[400px]:h-[20px] min-[400px]:w-[150px] sm:h-[25px] sm:w-[200px]">
+      <div className="relative h-[28px] w-[125px] shrink-0 min-[400px]:h-[32px] min-[400px]:w-[143px] sm:h-[44px] sm:w-[197px]">
         <Image
-          src="/logo-white.svg"
+          src="/dds-logo-white.png"
           alt="Darryl Davis Seminars"
           fill
           className="object-contain object-left"
@@ -757,7 +757,7 @@ function FiveSectionsOverview() {
                     <section.icon className="w-full h-full text-[#91aec0]" />
                   </div>
 
-                  <p className="font-[var(--font-poppins)] font-semibold text-xs md:text-sm text-[rgba(145,174,192,0.6)] tracking-[1.96px] leading-7 mb-3 md:mb-4">
+                  <p className="inline-block rounded-full border border-[#2b7a8c] bg-[#12334f] px-3 py-0.5 font-(family-name:--font-poppins) font-semibold text-xs md:text-sm text-[#8ee1e1] tracking-[1px] leading-6 mb-3 md:mb-4">
                     SECTION {section.number}
                   </p>
                   <div className="flex flex-col gap-2">
@@ -792,7 +792,7 @@ function FiveSectionsOverview() {
                     <section.icon className="w-full h-full text-[#91aec0]" />
                   </div>
 
-                  <p className="font-[var(--font-poppins)] font-semibold text-xs md:text-sm text-[rgba(145,174,192,0.6)] tracking-[1.96px] leading-7 mb-3 md:mb-4">
+                  <p className="inline-block rounded-full border border-[#2b7a8c] bg-[#12334f] px-3 py-0.5 font-(family-name:--font-poppins) font-semibold text-xs md:text-sm text-[#8ee1e1] tracking-[1px] leading-6 mb-3 md:mb-4">
                     SECTION {section.number}
                   </p>
                   <div className="flex flex-col gap-2">

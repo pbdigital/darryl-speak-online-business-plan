@@ -168,7 +168,7 @@ export function SectionCard({
 
       {/* Section label */}
       <div className="mb-4">
-        <span className="text-xs font-black uppercase tracking-widest text-slate-300">
+        <span className="inline-block rounded-full border border-[#2b7a8c] bg-[#12334f] px-3 py-0.5 font-(family-name:--font-poppins) text-xs font-semibold uppercase tracking-wider text-[#8ee1e1]">
           Section {sectionNumber}
         </span>
       </div>

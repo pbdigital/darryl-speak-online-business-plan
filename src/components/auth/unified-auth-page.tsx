@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import { InitialScreen, LoginScreen, SignupScreen } from './screens';
 
 type Screen = 'initial' | 'signup' | 'login';
@@ -46,12 +45,10 @@ export function UnifiedAuthPage() {
       <div className="w-full max-w-[420px]">
         {/* Logo above card */}
         <div className="flex justify-center mb-8">
-          <Image
-            src="/logo.svg"
-            alt="MyPlanForSuccess"
-            width={180}
-            height={40}
-            priority
+          <div
+            role="img"
+            aria-label="Darryl Davis Seminars"
+            className="h-[40px] w-[179px] bg-[#1a2744] mask-[url(/dds-logo-white.png)] mask-contain mask-center mask-no-repeat"
           />
         </div>
 

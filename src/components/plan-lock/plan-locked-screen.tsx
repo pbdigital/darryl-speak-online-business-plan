@@ -55,7 +55,7 @@ export function PlanLockedScreen({ email, firstName, lastName }: PlanLockedScree
     <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
       <section className="bg-[#0F172A] px-6 pb-32 pt-12 text-white md:px-12">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
-          <Image src="/logo-white.svg" alt="Darryl Davis Seminars" width={140} height={40} />
+          <Image src="/dds-logo-white.png" alt="Darryl Davis Seminars" width={161} height={36} />
           <div className="text-slate-900">
             <LogoutButton />
           </div>
