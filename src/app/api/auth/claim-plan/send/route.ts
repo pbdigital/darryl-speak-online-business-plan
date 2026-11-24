@@ -82,7 +82,8 @@ async function sendCode(to: string, code: string): Promise<string | null> {
   try {
     const { subject, text, html } = claimCodeEmail(code);
     const { error } = await new Resend(apiKey).emails.send({
-      from: 'My Plan For Success <support@myplanforsuccess.com>',
+      from: 'Darryl Davis | My Plan For Success <support@myplanforsuccess.com>',
+      replyTo: 'galec@darrylspeaks.com',
       to: [to],
       subject,
       text,
