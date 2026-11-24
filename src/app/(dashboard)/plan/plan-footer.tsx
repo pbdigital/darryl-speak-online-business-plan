@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { LogoutButton } from './logout-button';
+import { Button } from '@/components/ui/button';
 import { BugReportDialog } from '@/components/bug-report-dialog';
 import { Bug } from 'lucide-react';
 
@@ -11,9 +12,11 @@ interface PlanFooterProps {
   userEmail: string;
   /** POWER AGENT members get a link to bring over a free plan. */
   showBringOver?: boolean;
+  /** Admins get a link to the admin dashboard. */
+  showAdminLink?: boolean;
 }
 
-export function PlanFooter({ userName, userEmail, showBringOver }: PlanFooterProps) {
+export function PlanFooter({ userName, userEmail, showBringOver, showAdminLink }: PlanFooterProps) {
   const [bugDialogOpen, setBugDialogOpen] = useState(false);
 
   return (
@@ -22,6 +25,11 @@ export function PlanFooter({ userName, userEmail, showBringOver }: PlanFooterPro
         <div className="mx-auto max-w-7xl px-6 md:px-12">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-4">
+              {showAdminLink && (
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/admin">Admin Dashboard</Link>
+                </Button>
+              )}
               <LogoutButton />
             </div>
             <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">

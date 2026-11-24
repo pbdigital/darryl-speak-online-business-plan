@@ -75,7 +75,7 @@ export default async function PlanPage({ searchParams }: PlanPageProps) {
   // Get profile data
   const { data: profile } = await supabase
     .from('profiles')
-    .select('first_name, last_name, account_type, created_at')
+    .select('first_name, last_name, account_type, created_at, is_admin')
     .eq('id', user.id)
     .single();
 
@@ -135,6 +135,7 @@ export default async function PlanPage({ searchParams }: PlanPageProps) {
         userName={displayName}
         userEmail={user.email || ''}
         showBringOver={claimStatus !== 'not_member'}
+        showAdminLink={profile?.is_admin === true}
       />
     </div>
   );
