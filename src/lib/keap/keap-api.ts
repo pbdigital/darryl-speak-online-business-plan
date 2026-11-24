@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { PlanNumbers } from './plan-data';
 import { pickUtm, UTM_KEYS, type UtmKey } from '@/lib/utm';
+import { findOrCreateKeapContact } from './contact';
 
 /**
  * Applies Keap tags and plan fields to a user's contact.
@@ -54,7 +55,7 @@ export async function applyKeapTag(
   if (getKeapMode() === 'fake') {
     console.info(
       `[keap:fake] Would apply tag ${tagId || `(${envName} not set)`} for ${eventKey} to user ${userId}: ` +
-        `find or create the contact by email, then POST /contacts/{id}/tags {"tagIds":[${tagId || ''}]}`
+        `find or create the contact by email and opt it in, then POST /contacts/{id}/tags {"tagIds":[${tagId || ''}]}`
     );
     return null;
   }
@@ -186,7 +187,8 @@ function getContactId(supabase: SupabaseClient, userId: string): Promise<number>
 
 /**
  * Returns the user's Keap contact ID: the stored one, an existing contact
- * with the same email, or a new contact. Stores the ID on the profile only if
+ * with the same email, or a new contact. A found or new contact is opted in
+ * to marketing. Stores the ID on the profile only if
  * none is stored yet; if another process stored one first, that one wins.
  */
 async function findOrCreateContact(
@@ -208,20 +210,10 @@ async function findOrCreateContact(
     throw new Error(`No email found for user: ${userError?.message ?? 'email missing'}`);
   }
 
-  const found = await keapRequest<{ contacts?: { id: number }[] }>(
-    'GET',
-    `/contacts?email=${encodeURIComponent(email)}&limit=1`
-  );
-  let contactId = found.contacts?.[0]?.id;
-
-  if (!contactId) {
-    const created = await keapRequest<{ id: number }>('POST', '/contacts', {
-      email_addresses: [{ email, field: 'EMAIL1' }],
-      given_name: profile.first_name ?? undefined,
-      family_name: profile.last_name ?? undefined,
-    });
-    contactId = created.id;
-  }
+  const contactId = await findOrCreateKeapContact(keapRequest, email, {
+    givenName: profile.first_name ?? undefined,
+    familyName: profile.last_name ?? undefined,
+  });
 
   const { data: stored, error: updateError } = await supabase
     .from('profiles')

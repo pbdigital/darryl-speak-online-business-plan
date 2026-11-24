@@ -14,7 +14,7 @@ Only **free** accounts are sent to Keap. POWER AGENT members (`profiles.account_
 | `KEAP_FIELD_*` | The numeric Keap custom field ID for each plan number (see below). |
 | `SUPABASE_SERVICE_ROLE_KEY` | Used server-side to write `plan_events` and `profiles.keap_contact_id`. |
 
-In live mode the app finds the contact by email (or creates one with the user's first and last name) and stores its ID in `profiles.keap_contact_id`, then applies the tag. Contact lookups for one user run one at a time, and the ID is only stored if none is stored yet, which keeps duplicate contacts down. The user never waits on Keap: the event row is written during the request and the Keap calls run after the response is sent.
+In live mode the app finds the contact by email (or creates one with the user's first and last name) and stores its ID in `profiles.keap_contact_id`, then applies the tag. Either way it opts the contact in to marketing with the reason "Signed up for the free Online Business Plan at MyPlanForSuccess.com." (`opt_in_reason` on the create, or a `PATCH /contacts/{id}?update_mask=opt_in_reason` on a found contact). Keap only makes an email marketable from Unengaged Marketable, Unengaged Non-Marketable, Non-Marketable or Opt-Out: Manual, so anyone who unsubscribed stays unsubscribed. A failed opt-in on a found contact is logged and doesn't stop the tag. Contact lookups for one user run one at a time, and the ID is only stored if none is stored yet, which keeps duplicate contacts down. The user never waits on Keap: the event row is written during the request and the Keap calls run after the response is sent.
 
 ### Sync status and retries
 
